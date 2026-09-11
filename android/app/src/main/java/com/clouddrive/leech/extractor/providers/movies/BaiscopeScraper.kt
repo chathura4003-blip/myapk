@@ -1,12 +1,17 @@
 package com.clouddrive.leech.extractor.providers.movies
 
 import com.clouddrive.leech.extractor.models.MediaItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
 import java.net.URLEncoder
 
 /**
  * Dedicated Scraper for Baiscopes.lk (Sinhala Subtitles & Cinema).
+ * High-speed parallel fetching of Pages 1, 2, and 3.
  */
 class BaiscopeScraper(
     client: OkHttpClient = defaultClient
@@ -19,22 +24,38 @@ class BaiscopeScraper(
         val isGeneric = cleanQ.isEmpty() || cleanQ == "2026" || cleanQ == "trending" || cleanQ == "popular" || cleanQ == "all" || cleanQ == "latest"
         try {
             val pageUrls = if (!isGeneric) {
-                listOf("$primaryUrl?s=${URLEncoder.encode(cleanQ, "UTF-8")}")
+                val encoded = URLEncoder.encode(cleanQ, "UTF-8")
+                listOf(
+                    "$primaryUrl?s=$encoded",
+                    "${primaryUrl}page/2/?s=$encoded",
+                    "${primaryUrl}page/3/?s=$encoded"
+                )
             } else {
                 listOf(
                     primaryUrl,
                     "${primaryUrl}page/2/",
-                    "${primaryUrl}page/3/",
-                
+                    "${primaryUrl}page/3/"
                 )
             }
+
+            // ⚡ Fetch Pages 1, 2, and 3 concurrently in parallel
+            val htmlPages = runBlocking(Dispatchers.IO) {
+                pageUrls.map { targetUrl ->
+                    async {
+                        try {
+                            fetchHtml(targetUrl)
+                        } catch (_: Exception) {
+                            ""
+                        }
+                    }
+                }.awaitAll()
+            }
+
             val list = mutableListOf<MediaItem>()
             val seen = HashSet<String>()
 
-            for (targetUrl in pageUrls) {
-                val html = fetchHtml(targetUrl)
+            for (html in htmlPages) {
                 if (html.isEmpty()) continue
-
                 val doc = Jsoup.parse(html)
                 val items = doc.select(".result-item, .search-page article, article, .item, .movies-list .item, .items .item, [class*='result'], [class*='post-'], .item-box")
 

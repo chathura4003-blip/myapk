@@ -47,41 +47,13 @@ class MainActivity : BridgeActivity() {
         const val STORAGE_PERMISSION_REQ_CODE = 102
 
         /**
-         * Feature-specific on-demand storage permission request.
-         * Only invoked when the user explicitly triggers a local file/media feature.
+         * Scoped Storage compliance (Android 10-15):
+         * All app downloads, torrents, and media files reside in app-specific created storage
+         * (getExternalFilesDir), requiring zero dangerous runtime storage permissions.
          */
         @JvmStatic
         fun requestStoragePermissions(activity: android.app.Activity) {
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    val perms = mutableListOf<String>()
-                    if (activity.checkSelfPermission(android.Manifest.permission.READ_MEDIA_VIDEO) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                        perms.add(android.Manifest.permission.READ_MEDIA_VIDEO)
-                    }
-                    if (activity.checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                        perms.add(android.Manifest.permission.READ_MEDIA_IMAGES)
-                    }
-                    if (activity.checkSelfPermission(android.Manifest.permission.READ_MEDIA_AUDIO) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                        perms.add(android.Manifest.permission.READ_MEDIA_AUDIO)
-                    }
-                    if (perms.isNotEmpty()) {
-                        activity.requestPermissions(perms.toTypedArray(), STORAGE_PERMISSION_REQ_CODE)
-                    }
-                } else {
-                    val perms = mutableListOf<String>()
-                    if (activity.checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                        perms.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                    }
-                    if (activity.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                        perms.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    }
-                    if (perms.isNotEmpty()) {
-                        activity.requestPermissions(perms.toTypedArray(), STORAGE_PERMISSION_REQ_CODE)
-                    }
-                }
-            } catch (e: Exception) {
-                Log.w(TAG, "Error requesting feature-specific storage permissions: ${e.message}")
-            }
+            Log.d(TAG, "Scoped Storage active: App-specific directories accessible with zero permission prompts.")
         }
     }
 

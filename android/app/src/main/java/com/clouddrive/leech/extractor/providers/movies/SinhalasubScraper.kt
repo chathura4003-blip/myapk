@@ -1,12 +1,17 @@
 package com.clouddrive.leech.extractor.providers.movies
 
 import com.clouddrive.leech.extractor.models.MediaItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
 import java.net.URLEncoder
 
 /**
  * Dedicated Scraper for Sinhalasub.lk and its mirrors.
+ * High-speed parallel fetching of Pages 1, 2, and 3.
  */
 class SinhalasubScraper(
     client: OkHttpClient = defaultClient
@@ -24,30 +29,40 @@ class SinhalasubScraper(
         
         for (baseUrl in mirrors) {
             try {
-                val list = mutableListOf<MediaItem>()
-                val seen = HashSet<String>()
-                
                 val pageUrls = if (isGeneric) {
                     listOf(
                         "${baseUrl}movies/",
                         "${baseUrl}movies/page/2/",
-                        "${baseUrl}movies/page/3/",
-                        "${baseUrl}movies/page/4/",
-                      
+                        "${baseUrl}movies/page/3/"
                     )
                 } else {
                     val encoded = URLEncoder.encode(cleanQ, "UTF-8")
                     listOf(
                         "${baseUrl}?s=$encoded",
-                        "${baseUrl}page/2/?s=$encoded"
+                        "${baseUrl}page/2/?s=$encoded",
+                        "${baseUrl}page/3/?s=$encoded"
                     )
                 }
 
-                for (targetUrl in pageUrls) {
-                    try {
-                        val html = fetchHtml(targetUrl)
-                        if (html.isEmpty()) continue
+                // ⚡ Fetch Pages 1, 2, and 3 concurrently in parallel
+                val htmlPages = runBlocking(Dispatchers.IO) {
+                    pageUrls.map { targetUrl ->
+                        async {
+                            try {
+                                fetchHtml(targetUrl)
+                            } catch (_: Exception) {
+                                ""
+                            }
+                        }
+                    }.awaitAll()
+                }
 
+                val list = mutableListOf<MediaItem>()
+                val seen = HashSet<String>()
+
+                for (html in htmlPages) {
+                    if (html.isEmpty()) continue
+                    try {
                         val doc = Jsoup.parse(html)
                         val items = doc.select(".item-box, .display-item, .result-item, article, a[href*='/movies/'], .item, .movies-list .item")
 

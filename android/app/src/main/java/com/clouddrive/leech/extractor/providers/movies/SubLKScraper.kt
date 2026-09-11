@@ -1,12 +1,17 @@
 package com.clouddrive.leech.extractor.providers.movies
 
 import com.clouddrive.leech.extractor.models.MediaItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
 import java.net.URLEncoder
 
 /**
  * Dedicated Scraper for Sub.lk (Sinhala Subtitles & Cinema).
+ * High-speed parallel fetching of Pages 1, 2, and 3.
  */
 class SubLKScraper(
     client: OkHttpClient = defaultClient
@@ -19,30 +24,41 @@ class SubLKScraper(
             listOf(
                 "https://sub.lk/category/%e0%b6%94%e0%b6%9a%e0%b7%8a%e0%b6%9a%e0%b7%9c%e0%b6%b8-%e0%b6%91%e0%b6%9a%e0%b6%a7/films/",
                 "https://sub.lk/category/%e0%b6%94%e0%b6%9a%e0%b7%8a%e0%b6%9a%e0%b7%9c%e0%b6%b8-%e0%b6%91%e0%b6%9a%e0%b6%a7/films/page/2/",
-                "https://sub.lk/category/%e0%b6%94%e0%b6%9a%e0%b7%8a%e0%b6%9a%e0%b7%9c%e0%b6%b8-%e0%b6%91%e0%b6%9a%e0%b6%a7/films/page/3/",
-                "https://sub.lk/category/%e0%b6%94%e0%b6%9a%e0%b7%8a%e0%b6%9a%e0%b7%9c%e0%b6%b8-%e0%b6%91%e0%b6%9a%e0%b6%a7/films/page/4/",
-              
+                "https://sub.lk/category/%e0%b6%94%e0%b6%9a%e0%b7%8a%e0%b6%9a%e0%b7%9c%e0%b6%b8-%e0%b6%91%e0%b6%9a%e0%b6%a7/films/page/3/"
             )
         } else {
             val encoded = URLEncoder.encode(cleanQ, "UTF-8")
             listOf(
-                "https://sub.lk/?s=$encoded"
+                "https://sub.lk/?s=$encoded",
+                "https://sub.lk/page/2/?s=$encoded",
+                "https://sub.lk/page/3/?s=$encoded"
             )
+        }
+
+        // ⚡ Fetch Pages 1, 2, and 3 concurrently in parallel
+        val htmlPages = runBlocking(Dispatchers.IO) {
+            urls.map { targetUrl ->
+                async {
+                    try {
+                        fetchHtml(targetUrl)
+                    } catch (_: Exception) {
+                        ""
+                    }
+                }
+            }.awaitAll()
         }
 
         val list = mutableListOf<MediaItem>()
         val seen = HashSet<String>()
 
-        for (targetUrl in urls) {
+        for (html in htmlPages) {
+            if (html.isEmpty()) continue
             try {
-                val html = fetchHtml(targetUrl)
-                if (html.isEmpty()) continue
-
                 val doc = Jsoup.parse(html)
 
-                // If not found, skip
+                // If not found, skip this page
                 if (!isGeneric && (doc.select(".not-found, .no-results").isNotEmpty() || html.contains("nothing matched your search terms", ignoreCase = true))) {
-                    break
+                    continue
                 }
 
                 val items = doc.select("article.item-list, .post-listing article, .archive-box article, article, div.entry, li")

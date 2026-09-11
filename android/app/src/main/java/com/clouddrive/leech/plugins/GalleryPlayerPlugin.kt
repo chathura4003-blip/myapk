@@ -49,15 +49,6 @@ class GalleryPlayerPlugin : Plugin() {
         }
 
         activity?.let { act ->
-            val hasStoragePerm = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                act.checkSelfPermission(android.Manifest.permission.READ_MEDIA_VIDEO) == android.content.pm.PackageManager.PERMISSION_GRANTED
-            } else {
-                act.checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == android.content.pm.PackageManager.PERMISSION_GRANTED
-            }
-
-            if (!hasStoragePerm && (path.startsWith("/storage") || path.startsWith("file://") || playlist.any { it.startsWith("/storage") || it.startsWith("file://") })) {
-                com.clouddrive.leech.MainActivity.requestStoragePermissions(act)
-            }
             GalleryPlayerActivity.start(
                 context = act,
                 url = path,

@@ -4,6 +4,7 @@ import com.clouddrive.leech.extractor.models.MediaItem
 import com.google.gson.JsonParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
@@ -77,6 +78,7 @@ class YtsScraper(
         return list
     }
 
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     fun search(query: String): List<MediaItem> {
         val cleanQ = query.trim()
         val isGeneric = cleanQ.isEmpty() || cleanQ == "2026" || cleanQ == "trending" || cleanQ == "popular" || cleanQ == "all" || cleanQ == "latest"
@@ -124,24 +126,35 @@ class YtsScraper(
                 jobs.forEach { it.cancel() }
             }
 
-            // Deep Page 2 Fetch for generic queries to maximize library breadth
+            // Deep Pages 2 and 3 Fetch for generic queries to maximize library breadth concurrently
             val (initial, baseMirror) = if (deferredResult.isCompleted) deferredResult.getCompleted() else Pair(null, null)
             if (isGeneric && !initial.isNullOrEmpty() && !baseMirror.isNullOrEmpty()) {
                 try {
-                    val page2Url = "$baseMirror?sort_by=date_added&order_by=desc&limit=50&page=2"
-                    val req2 = Request.Builder()
-                        .url(page2Url)
-                        .header("User-Agent", userAgent)
-                        .header("Accept", "application/json")
-                        .build()
-                    okHttpClient.newCall(req2).execute().use { res2 ->
-                        if (res2.isSuccessful) {
-                            val json2 = res2.body?.string() ?: ""
-                            val list2 = parseMoviesFromJson(json2)
-                            if (list2.isNotEmpty()) {
-                                return initial + list2
+                    val extraPages: List<Int> = listOf(2, 3)
+                    val extraItems: List<MediaItem> = runBlocking(Dispatchers.IO) {
+                        extraPages.map { p: Int ->
+                            async {
+                                val pUrl = "$baseMirror?sort_by=date_added&order_by=desc&limit=50&page=$p"
+                                try {
+                                    val req = Request.Builder()
+                                        .url(pUrl)
+                                        .header("User-Agent", userAgent)
+                                        .header("Accept", "application/json")
+                                        .build()
+                                    okHttpClient.newCall(req).execute().use { res ->
+                                        if (res.isSuccessful) {
+                                            val json = res.body?.string() ?: ""
+                                            parseMoviesFromJson(json)
+                                        } else emptyList()
+                                    }
+                                } catch (_: Exception) {
+                                    emptyList()
+                                }
                             }
-                        }
+                        }.awaitAll().flatten()
+                    }
+                    if (extraItems.isNotEmpty()) {
+                        return initial + extraItems
                     }
                 } catch (_: Exception) {}
             }

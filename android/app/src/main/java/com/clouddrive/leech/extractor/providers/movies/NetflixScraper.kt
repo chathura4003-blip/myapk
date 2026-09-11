@@ -2,6 +2,10 @@ package com.clouddrive.leech.extractor.providers.movies
 
 import android.util.Log
 import com.clouddrive.leech.extractor.models.MediaItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -12,6 +16,7 @@ import java.net.URLEncoder
  * Retains the 'Netflix' brand & UI badges while sourcing directly from Cinejoy's
  * TMDB Watch Provider 8 (Netflix US) high-definition movie & series catalog.
  * Directs streams to Cinejoy VIP player (https://cinejoy.to/watch/movie/{id}).
+ * High-speed parallel fetching of Pages 1, 2, and 3.
  */
 class NetflixScraper(
     client: OkHttpClient = defaultClient
@@ -48,57 +53,76 @@ class NetflixScraper(
         val seenIds = HashSet<String>()
         val seenTitles = HashSet<String>()
 
+        fun addDeduplicated(items: List<MediaItem>) {
+            for (item in items) {
+                val normTitle = item.title.lowercase().replace(Regex("[^a-z0-9]"), "")
+                if (seenIds.add(item.id) && seenTitles.add(normTitle)) {
+                    list.add(item)
+                }
+            }
+        }
+
         try {
             if (isGeneric) {
                 val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date())
 
-                fun addDeduplicated(items: List<MediaItem>) {
-                    for (item in items) {
-                        val normTitle = item.title.lowercase().replace(Regex("[^a-z0-9]"), "")
-                        if (seenIds.add(item.id) && seenTitles.add(normTitle)) {
-                            list.add(item)
+                // Prepare request tasks for Pages 1, 2, and 3 across:
+                // 1. Trending Cinejoy Movies (Pages 1..3)
+                // 2. Trending Cinejoy TV Series (Pages 1..3)
+                // 3. Latest Updated Cinejoy Movies (Pages 1..3)
+                // 4. Latest Updated Cinejoy TV Series (Pages 1..3)
+                val querySpecs = mutableListOf<Pair<String, Boolean>>() // Pair(url, isMovie)
+                for (page in 1..3) {
+                    querySpecs.add(Pair("$TMDB_BASE_URL/discover/movie?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=popularity.desc&page=$page", true))
+                    querySpecs.add(Pair("$TMDB_BASE_URL/discover/tv?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=popularity.desc&page=$page", false))
+                    querySpecs.add(Pair("$TMDB_BASE_URL/discover/movie?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=primary_release_date.desc&primary_release_date.lte=$today&page=$page", true))
+                    querySpecs.add(Pair("$TMDB_BASE_URL/discover/tv?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=first_air_date.desc&first_air_date.lte=$today&page=$page", false))
+                }
+
+                // ⚡ Fetch all Pages 1, 2, and 3 queries concurrently in parallel
+                val fetchedBatches = runBlocking(Dispatchers.IO) {
+                    querySpecs.map { (url, isMovie) ->
+                        async {
+                            try {
+                                val json = fetchJson(url)
+                                parseTmdbItems(json, isMovie = isMovie)
+                            } catch (_: Exception) {
+                                emptyList()
+                            }
                         }
-                    }
+                    }.awaitAll()
                 }
 
-                // 1. Fetch Trending Cinejoy Movies (Pages 1 & 2)
-                for (page in 1..2) {
-                    val movieUrl = "$TMDB_BASE_URL/discover/movie?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=popularity.desc&page=$page"
-                    val items = parseTmdbItems(fetchJson(movieUrl), isMovie = true)
-                    addDeduplicated(items)
+                for (batch in fetchedBatches) {
+                    addDeduplicated(batch)
                 }
-
-                // 2. Fetch Trending Cinejoy TV Series (Page 1)
-                val tvUrl = "$TMDB_BASE_URL/discover/tv?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=popularity.desc&page=1"
-                val tvItems = parseTmdbItems(fetchJson(tvUrl), isMovie = false)
-                addDeduplicated(tvItems)
-
-                // 3. Fetch Latest Updated Cinejoy Movies up to today (Pages 1 & 2)
-                for (page in 1..2) {
-                    val latestMovieUrl = "$TMDB_BASE_URL/discover/movie?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=primary_release_date.desc&primary_release_date.lte=$today&page=$page"
-                    val items = parseTmdbItems(fetchJson(latestMovieUrl), isMovie = true)
-                    addDeduplicated(items)
-                }
-
-                // 4. Fetch Latest Updated Cinejoy TV Series up to today (Page 1)
-                val latestTvUrl = "$TMDB_BASE_URL/discover/tv?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=first_air_date.desc&first_air_date.lte=$today&page=1"
-                val latestTvItems = parseTmdbItems(fetchJson(latestTvUrl), isMovie = false)
-                addDeduplicated(latestTvItems)
 
                 if (list.isNotEmpty()) {
                     cachedCatalog = list
                     cacheTime = System.currentTimeMillis()
                 }
             } else {
-                // Specific search query across multi-search
+                // Specific search query across multi-search for Pages 1, 2, and 3
                 val encodedQ = URLEncoder.encode(cleanQ, "UTF-8")
-                val searchUrl = "$TMDB_BASE_URL/search/multi?api_key=$CINEJOY_TMDB_API_KEY&query=$encodedQ&include_adult=false"
-                val searchItems = parseTmdbItems(fetchJson(searchUrl), isMulti = true)
-                for (item in searchItems) {
-                    val normTitle = item.title.lowercase().replace(Regex("[^a-z0-9]"), "")
-                    if (seenIds.add(item.id) && seenTitles.add(normTitle)) {
-                        list.add(item)
-                    }
+                val searchUrls = listOf(
+                    "$TMDB_BASE_URL/search/multi?api_key=$CINEJOY_TMDB_API_KEY&query=$encodedQ&include_adult=false&page=1",
+                    "$TMDB_BASE_URL/search/multi?api_key=$CINEJOY_TMDB_API_KEY&query=$encodedQ&include_adult=false&page=2",
+                    "$TMDB_BASE_URL/search/multi?api_key=$CINEJOY_TMDB_API_KEY&query=$encodedQ&include_adult=false&page=3"
+                )
+                val searchBatches = runBlocking(Dispatchers.IO) {
+                    searchUrls.map { sUrl ->
+                        async {
+                            try {
+                                val json = fetchJson(sUrl)
+                                parseTmdbItems(json, isMulti = true)
+                            } catch (_: Exception) {
+                                emptyList()
+                            }
+                        }
+                    }.awaitAll()
+                }
+                for (batch in searchBatches) {
+                    addDeduplicated(batch)
                 }
             }
         } catch (e: Exception) {

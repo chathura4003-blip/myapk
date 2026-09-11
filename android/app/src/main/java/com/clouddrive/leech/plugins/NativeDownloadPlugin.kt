@@ -326,26 +326,8 @@ class NativeDownloadPlugin : Plugin() {
         fun getSafeDownloadDir(cat: String): File {
             val subFolder = getSubFolderName(cat)
             val app = App.instance
-
-            // 1. Probe Public Downloads directory first
-            val publicDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), subFolder)
-            val canWritePublic = try {
-                if (!publicDir.exists()) publicDir.mkdirs()
-                val probe = File(publicDir, ".probe_${System.currentTimeMillis()}")
-                if (probe.createNewFile()) {
-                    probe.delete()
-                    true
-                } else false
-            } catch (_: Throwable) {
-                false
-            }
-
-            if (canWritePublic && publicDir.exists()) {
-                return publicDir
-            }
-
-            // 2. Fallback to App-Specific External Storage: 100% POSIX Writable on Android 10-15 without permission blocks
             val relFolder = subFolder.substringAfter("CloudDrive Leech/")
+            // Dedicated Scoped Storage folder created and owned by this APK (100% accessible without permission blocks)
             val appExtDir = File(app.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), relFolder)
             if (!appExtDir.exists()) appExtDir.mkdirs()
             return appExtDir
@@ -2281,25 +2263,12 @@ class NativeDownloadPlugin : Plugin() {
 
     @PluginMethod
     fun checkStoragePermission(call: PluginCall) {
-        val act = activity ?: run {
-            call.resolve(JSObject().apply { put("granted", false) })
-            return
-        }
-        val granted = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            act.checkSelfPermission(android.Manifest.permission.READ_MEDIA_VIDEO) == android.content.pm.PackageManager.PERMISSION_GRANTED
-        } else {
-            act.checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == android.content.pm.PackageManager.PERMISSION_GRANTED
-        }
-        call.resolve(JSObject().apply { put("granted", granted) })
+        // Scoped Storage: App-created folder has 100% full POSIX access without runtime permission popups
+        call.resolve(JSObject().apply { put("granted", true) })
     }
 
     @PluginMethod
     fun requestStoragePermission(call: PluginCall) {
-        val act = activity ?: run {
-            call.reject("Activity context not available")
-            return
-        }
-        com.clouddrive.leech.MainActivity.requestStoragePermissions(act)
         call.resolve(JSObject().apply { put("success", true) })
     }
 
@@ -2307,17 +2276,8 @@ class NativeDownloadPlugin : Plugin() {
     fun getOfflineGallery(call: PluginCall) {
         scope.launch(Dispatchers.IO) {
             try {
-                val act = activity
-                val hasStoragePerm = if (act != null) {
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                        act.checkSelfPermission(android.Manifest.permission.READ_MEDIA_VIDEO) == android.content.pm.PackageManager.PERMISSION_GRANTED
-                    } else {
-                        act.checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == android.content.pm.PackageManager.PERMISSION_GRANTED
-                    }
-                } else true
-
                 val dbList = App.instance.database.downloadDao().getAllDownloads()
-                val downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                val appExtDir = App.instance.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
                 val filesArr = JSArray()
                 val seenPaths = HashSet<String>()
                 var totalBytesOnDevice = 0L
@@ -2388,10 +2348,16 @@ class NativeDownloadPlugin : Plugin() {
                     }
                 }
 
-                // 2. Scan Download Directory & Subdirectories for all video files
-                if (downloadDir.exists() && downloadDir.isDirectory) {
+                // 2. Scan APK's own created folder & subdirectories only
+                val appFolders = listOfNotNull(
+                    appExtDir,
+                    File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "CloudDrive Leech").takeIf { it.exists() }
+                )
+
+                for (targetDir in appFolders) {
+                    if (!targetDir.exists() || !targetDir.isDirectory) continue
                     val allVideoFiles = mutableListOf<File>()
-                    
+
                     fun scanDir(dir: File) {
                         val files = dir.listFiles() ?: return
                         for (f in files) {
@@ -2405,7 +2371,7 @@ class NativeDownloadPlugin : Plugin() {
                             }
                         }
                     }
-                    scanDir(downloadDir)
+                    scanDir(targetDir)
 
                     for (f in allVideoFiles) {
                         if (!seenPaths.add(f.absolutePath) || f.length() <= 0) continue
@@ -2472,7 +2438,7 @@ class NativeDownloadPlugin : Plugin() {
                     put("success", true)
                     put("totalBytes", totalBytesOnDevice)
                     put("totalFormatted", totalFormatted)
-                    put("permissionDenied", !hasStoragePerm)
+                    put("permissionDenied", false)
                     put("files", filesArr)
                 }
                 call.resolve(ret)

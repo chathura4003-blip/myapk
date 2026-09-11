@@ -76,29 +76,11 @@ object TorrentEngineManager {
 
     val defaultSaveDir: File by lazy {
         val app = App.instance
-        // 1. Probe Public Downloads directory first
-        val publicDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "CloudDrive Leech/Torrents")
-        val canWritePublic = try {
-            if (!publicDir.exists()) publicDir.mkdirs()
-            val probe = File(publicDir, ".probe_${System.currentTimeMillis()}")
-            if (probe.createNewFile()) {
-                probe.delete()
-                true
-            } else false
-        } catch (_: Throwable) {
-            false
-        }
-
-        if (canWritePublic && publicDir.exists()) {
-            Log.i(TAG, "📂 Using Public Downloads Directory: ${publicDir.absolutePath}")
-            publicDir
-        } else {
-            // 2. Fallback to App-Specific External Storage: 100% POSIX Writable on Android 10, 11, 12, 13, 14, 15 without permission blocks!
-            val appExtDir = File(app.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "Torrents")
-            if (!appExtDir.exists()) appExtDir.mkdirs()
-            Log.i(TAG, "📂 Using App-Specific External Storage (100% POSIX Writable): ${appExtDir.absolutePath}")
-            appExtDir
-        }
+        // App-specific created storage: 100% POSIX Writable on Android 10-15 without permission prompts
+        val appExtDir = File(app.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "Torrents")
+        if (!appExtDir.exists()) appExtDir.mkdirs()
+        Log.i(TAG, "📂 Using App-Specific Storage (Scoped): ${appExtDir.absolutePath}")
+        appExtDir
     }
 
     val PUBLIC_TRACKERS = listOf(

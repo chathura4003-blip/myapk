@@ -1,13 +1,17 @@
 package com.clouddrive.leech.extractor.providers.movies
 
 import com.clouddrive.leech.extractor.models.MediaItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
 import java.net.URLEncoder
 
 /**
  * Clean & High-Precision Scraper for PirateLK Cinema portal.
- * Direct parsing of WordPress / Sahifa post streams with 100% accurate HD posters.
+ * High-speed parallel fetching of Pages 1, 2, and 3.
  */
 class PirateLKScraper(
     client: OkHttpClient = defaultClient
@@ -21,21 +25,35 @@ class PirateLKScraper(
                 listOf(
                     "https://piratelk.com/category/%e0%b7%83%e0%b7%92%e0%b6%82%e0%b7%84%e0%b6%bd-%e0%b6%8b%e0%b6%b4%e0%b7%83%e0%b7%92%e0%b6%bb%e0%b7%90%e0%b7%83%e0%b7%92/%e0%b6%a0%e0%b7%92%e0%b6%ad%e0%b7%8a%e0%b6%bb%e0%b6%b4%e0%b6%a7%e0%b7%92/",
                     "https://piratelk.com/category/%e0%b7%83%e0%b7%92%e0%b6%82%e0%b7%84%e0%b6%bd-%e0%b6%8b%e0%b6%b4%e0%b7%83%e0%b7%92%e0%b6%bb%e0%b7%90%e0%b7%83%e0%b7%92/%e0%b6%a0%e0%b7%92%e0%b6%ad%e0%b7%8a%e0%b6%bb%e0%b6%b4%e0%b6%a7%e0%b7%92/page/2/",
-                    "https://piratelk.com/category/%e0%b7%83%e0%b7%92%e0%b6%82%e0%b7%84%e0%b6%bd-%e0%b6%8b%e0%b6%b4%e0%b7%83%e0%b7%92%e0%b6%bb%e0%b7%90%e0%b7%83%e0%b7%92/%e0%b6%a0%e0%b7%92%e0%b6%ad%e0%b7%8a%e0%b6%bb%e0%b6%b4%e0%b6%a7%e0%b7%92/page/3/",
-                    "https://piratelk.com/category/trending-movies/"
+                    "https://piratelk.com/category/%e0%b7%83%e0%b7%92%e0%b6%82%e0%b7%84%e0%b6%bd-%e0%b6%8b%e0%b6%b4%e0%b7%83%e0%b7%92%e0%b6%bb%e0%b7%90%e0%b7%83%e0%b7%92/%e0%b6%a0%e0%b7%92%e0%b6%ad%e0%b7%8a%e0%b6%bb%e0%b6%b4%e0%b6%a7%e0%b7%92/page/3/"
                 )
             } else {
                 val encoded = URLEncoder.encode(cleanQ, "UTF-8")
-                listOf("https://piratelk.com/?s=$encoded")
+                listOf(
+                    "https://piratelk.com/?s=$encoded",
+                    "https://piratelk.com/page/2/?s=$encoded",
+                    "https://piratelk.com/page/3/?s=$encoded"
+                )
+            }
+
+            // ⚡ Fetch Pages 1, 2, and 3 concurrently in parallel
+            val htmlPages = runBlocking(Dispatchers.IO) {
+                urls.map { targetUrl ->
+                    async {
+                        try {
+                            fetchHtml(targetUrl)
+                        } catch (_: Exception) {
+                            ""
+                        }
+                    }
+                }.awaitAll()
             }
 
             val list = mutableListOf<MediaItem>()
             val seen = HashSet<String>()
 
-            for (targetUrl in urls) {
-                val html = fetchHtml(targetUrl)
+            for (html in htmlPages) {
                 if (html.isEmpty()) continue
-
                 val doc = Jsoup.parse(html)
                 val items = doc.select("article.item-list, .post-item, .post-listing article, article")
 
