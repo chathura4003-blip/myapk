@@ -21,12 +21,7 @@ class BaiscopeScraper(
             val pageUrls = if (!isGeneric) {
                 listOf("$primaryUrl?s=${URLEncoder.encode(cleanQ, "UTF-8")}")
             } else {
-                listOf(
-                    primaryUrl,
-                    "${primaryUrl}page/2/",
-                    "${primaryUrl}page/3/",
-                
-                )
+                listOf(primaryUrl)
             }
             val list = mutableListOf<MediaItem>()
             val seen = HashSet<String>()

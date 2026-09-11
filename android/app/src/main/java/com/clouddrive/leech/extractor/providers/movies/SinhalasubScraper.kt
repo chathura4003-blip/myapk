@@ -28,19 +28,10 @@ class SinhalasubScraper(
                 val seen = HashSet<String>()
                 
                 val pageUrls = if (isGeneric) {
-                    listOf(
-                        "${baseUrl}movies/",
-                        "${baseUrl}movies/page/2/",
-                        "${baseUrl}movies/page/3/",
-                        "${baseUrl}movies/page/4/",
-                      
-                    )
+                    listOf("${baseUrl}movies/")
                 } else {
                     val encoded = URLEncoder.encode(cleanQ, "UTF-8")
-                    listOf(
-                        "${baseUrl}?s=$encoded",
-                        "${baseUrl}page/2/?s=$encoded"
-                    )
+                    listOf("${baseUrl}?s=$encoded")
                 }
 
                 for (targetUrl in pageUrls) {

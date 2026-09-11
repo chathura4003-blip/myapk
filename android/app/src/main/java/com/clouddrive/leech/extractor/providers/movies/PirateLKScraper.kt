@@ -19,10 +19,7 @@ class PirateLKScraper(
             val isGeneric = cleanQ.isEmpty() || cleanQ == "2026" || cleanQ == "trending" || cleanQ == "popular" || cleanQ == "all" || cleanQ == "latest"
             val urls = if (isGeneric) {
                 listOf(
-                    "https://piratelk.com/category/%e0%b7%83%e0%b7%92%e0%b6%82%e0%b7%84%e0%b6%bd-%e0%b6%8b%e0%b6%b4%e0%b7%83%e0%b7%92%e0%b6%bb%e0%b7%90%e0%b7%83%e0%b7%92/%e0%b6%a0%e0%b7%92%e0%b6%ad%e0%b7%8a%e0%b6%bb%e0%b6%b4%e0%b6%a7%e0%b7%92/",
-                    "https://piratelk.com/category/%e0%b7%83%e0%b7%92%e0%b6%82%e0%b7%84%e0%b6%bd-%e0%b6%8b%e0%b6%b4%e0%b7%83%e0%b7%92%e0%b6%bb%e0%b7%90%e0%b7%83%e0%b7%92/%e0%b6%a0%e0%b7%92%e0%b6%ad%e0%b7%8a%e0%b6%bb%e0%b6%b4%e0%b6%a7%e0%b7%92/page/2/",
-                    "https://piratelk.com/category/%e0%b7%83%e0%b7%92%e0%b6%82%e0%b7%84%e0%b6%bd-%e0%b6%8b%e0%b6%b4%e0%b7%83%e0%b7%92%e0%b6%bb%e0%b7%90%e0%b7%83%e0%b7%92/%e0%b6%a0%e0%b7%92%e0%b6%ad%e0%b7%8a%e0%b6%bb%e0%b6%b4%e0%b6%a7%e0%b7%92/page/3/",
-                    "https://piratelk.com/category/trending-movies/"
+                    "https://piratelk.com/category/%e0%b7%83%e0%b7%92%e0%b6%82%e0%b7%84%e0%b6%bd-%e0%b6%8b%e0%b6%b4%e0%b7%83%e0%b7%92%e0%b6%bb%e0%b7%90%e0%b7%83%e0%b7%92/%e0%b6%a0%e0%b7%92%e0%b6%ad%e0%b7%8a%e0%b6%bb%e0%b6%b4%e0%b6%a7%e0%b7%92/"
                 )
             } else {
                 val encoded = URLEncoder.encode(cleanQ, "UTF-8")

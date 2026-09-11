@@ -2078,9 +2078,9 @@ function filterAndRenderMovies() {
     return;
   }
 
-  const cardFragment = document.createDocumentFragment();
+  let activeRenderToken = ++activeMovieRequestId;
 
-  curated.forEach(movie => {
+  function createMovieCard(movie) {
     if (movie.poster && movie.poster.includes('unsplash')) movie.poster = '';
     if (movie.thumbnail && movie.thumbnail.includes('unsplash')) movie.thumbnail = '';
 
@@ -2160,10 +2160,46 @@ function filterAndRenderMovies() {
       filterAndRenderMovies();
     });
 
-    cardFragment.appendChild(card);
-  });
+    return card;
+  }
 
+  // ⚡ Instant 0ms Render: Inject initial batch of 48 cards immediately
+  const INITIAL_BATCH_SIZE = 48;
+  const initialBatch = curated.slice(0, INITIAL_BATCH_SIZE);
+  const remainingBatch = curated.slice(INITIAL_BATCH_SIZE);
+
+  const cardFragment = document.createDocumentFragment();
+  initialBatch.forEach(movie => {
+    cardFragment.appendChild(createMovieCard(movie));
+  });
   movieGrid.appendChild(cardFragment);
+
+  // 🚀 Background Progressive Streaming: Render remaining catalog without UI jank
+  if (remainingBatch.length > 0) {
+    let offset = 0;
+    const CHUNK_SIZE = 48;
+    function appendNextChunk() {
+      if (activeRenderToken !== activeMovieRequestId || !movieGrid) return;
+      if (offset >= remainingBatch.length) return;
+      const chunk = remainingBatch.slice(offset, offset + CHUNK_SIZE);
+      offset += CHUNK_SIZE;
+      const frag = document.createDocumentFragment();
+      chunk.forEach(m => frag.appendChild(createMovieCard(m)));
+      movieGrid.appendChild(frag);
+      if (offset < remainingBatch.length) {
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(appendNextChunk, { timeout: 100 });
+        } else {
+          requestAnimationFrame(appendNextChunk);
+        }
+      }
+    }
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(appendNextChunk, { timeout: 100 });
+    } else {
+      setTimeout(appendNextChunk, 30);
+    }
+  }
 }
 
 

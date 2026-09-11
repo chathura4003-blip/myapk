@@ -17,11 +17,7 @@ class SubLKScraper(
         val isGeneric = cleanQ.isEmpty() || cleanQ == "2026" || cleanQ == "trending" || cleanQ == "popular" || cleanQ == "all" || cleanQ == "latest"
         val urls = if (isGeneric) {
             listOf(
-                "https://sub.lk/category/%e0%b6%94%e0%b6%9a%e0%b7%8a%e0%b6%9a%e0%b7%9c%e0%b6%b8-%e0%b6%91%e0%b6%9a%e0%b6%a7/films/",
-                "https://sub.lk/category/%e0%b6%94%e0%b6%9a%e0%b7%8a%e0%b6%9a%e0%b7%9c%e0%b6%b8-%e0%b6%91%e0%b6%9a%e0%b6%a7/films/page/2/",
-                "https://sub.lk/category/%e0%b6%94%e0%b6%9a%e0%b7%8a%e0%b6%9a%e0%b7%9c%e0%b6%b8-%e0%b6%91%e0%b6%9a%e0%b6%a7/films/page/3/",
-                "https://sub.lk/category/%e0%b6%94%e0%b6%9a%e0%b7%8a%e0%b6%9a%e0%b7%9c%e0%b6%b8-%e0%b6%91%e0%b6%9a%e0%b6%a7/films/page/4/",
-              
+                "https://sub.lk/category/%e0%b6%94%e0%b6%9a%e0%b7%8a%e0%b6%9a%e0%b7%9c%e0%b6%b8-%e0%b6%91%e0%b6%9a%e0%b6%a7/films/"
             )
         } else {
             val encoded = URLEncoder.encode(cleanQ, "UTF-8")
