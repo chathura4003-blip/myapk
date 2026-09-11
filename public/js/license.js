@@ -20,7 +20,7 @@
     TAB_ADULT: { id: 'TAB_ADULT', name: '18+ Premium Hub', tab: 'adult', tier: 'PRO', icon: 'fa-fire' },
     TAB_BROWSER: { id: 'TAB_BROWSER', name: 'Cyber Web Browser & Sniffer', tab: 'browser', tier: 'PRO', icon: 'fa-compass' },
     TAB_DRIVE: { id: 'TAB_DRIVE', name: 'Google Drive 0 MB Cloud Leech', tab: 'drive', tier: 'PRO', icon: 'fa-google-drive', iconType: 'brands' },
-    FEATURE_VPN: { id: 'FEATURE_VPN', name: 'Native Anti-Censorship VPN (V2Ray/Xray)', tab: null, tier: 'PRO', icon: 'fa-shield-halved' },
+    FEATURE_VPN: { id: 'FEATURE_VPN', name: 'Native Anti-Censorship VPN (V2Ray/Xray)', tab: null, tier: 'FREE', icon: 'fa-shield-halved' },
     FEATURE_CLOUD_UPLOAD: { id: 'FEATURE_CLOUD_UPLOAD', name: 'Google Drive Cloud Upload Pipeline', tab: null, tier: 'PRO', icon: 'fa-cloud-arrow-up' },
     FEATURE_ACCOUNT_LINK: { id: 'FEATURE_ACCOUNT_LINK', name: 'Google Account Authorization Link', tab: null, tier: 'PRO', icon: 'fa-user-lock' },
     FEATURE_CINEMA_PRO: { id: 'FEATURE_CINEMA_PRO', name: 'ExoPlayer 4K Cinema Player', tab: null, tier: 'PRO', icon: 'fa-play' },
@@ -43,7 +43,7 @@
     TAB_ADULT: false,
     TAB_BROWSER: false,
     TAB_DRIVE: false,
-    FEATURE_VPN: false,
+    FEATURE_VPN: true, // FREE V2RAY / XRAY VPN ACCESS
     FEATURE_CLOUD_UPLOAD: false,
     FEATURE_ACCOUNT_LINK: false,
     FEATURE_CINEMA_PRO: false,
@@ -73,6 +73,7 @@
   let isSyncing = false;
   let lastNotifiedRevoked = false;
   let nextSyncScheduledTime = 0;
+  let isNativeCryptographicallyVerified = false;
 
   // Helper: Resolve server base URL across all environments (Browser, Android WebView, Capacitor)
   function getServerBaseUrl() {
@@ -175,134 +176,73 @@
     return installationIdentity;
   }
 
-  // Load cached license from local storage and native secure preferences
+  /**
+   * Authoritative Native Cryptographic License Verification
+   * Direct hardware-bound HMAC-SHA256 signature check against EncryptedSharedPreferences (AES-256-GCM).
+   * In Android environments, this is the single authoritative source of truth for PRO authorization.
+   */
+  async function verifyAuthoritativeNativeLicense() {
+    if (window.Capacitor?.Plugins?.NativeLicense?.getVerifiedLicense) {
+      try {
+        const res = await window.Capacitor.Plugins.NativeLicense.getVerifiedLicense();
+        if (res && res.valid && (res.plan === 'PRO' || res.plan === 'ENTERPRISE' || res.plan === 'PREMIUM') && res.status === 'ACTIVE') {
+          isNativeCryptographicallyVerified = true;
+          let parsedPayload = null;
+          if (res.payload) {
+            try { parsedPayload = JSON.parse(res.payload); } catch (_) {}
+          }
+          if (parsedPayload && parsedPayload.features && typeof parsedPayload.features === 'object') {
+            currentLicense = Object.assign({}, parsedPayload, {
+              plan: res.plan,
+              status: res.status,
+              expiresAt: res.expiresAt || parsedPayload.expiresAt
+            });
+          } else {
+            const allFeatures = {};
+            Object.keys(FEATURE_REGISTRY).forEach(k => { allFeatures[k] = true; });
+            currentLicense = {
+              licenseId: res.token || 'VERIFIED-PRO',
+              plan: res.plan,
+              status: res.status,
+              deviceBinding: res.installationId || installationIdentity,
+              expiresAt: res.expiresAt || null,
+              offlineGraceDays: 7,
+              lastVerifiedAt: Date.now(),
+              features: allFeatures
+            };
+          }
+          updateSettingsUI();
+          enforceActiveTabAccess();
+          window.dispatchEvent(new CustomEvent('cld:license-updated', { detail: currentLicense }));
+          return true;
+        } else {
+          isNativeCryptographicallyVerified = false;
+          if (res?.tampered) {
+            console.warn('[License] 🚨 Cryptographic tamper detected by Android Keystore! Wiping compromised license.');
+            resetToFreeTier('TAMPERED');
+          } else if (currentLicense.plan !== 'FREE') {
+            console.warn('[License] Native Keystore reported unverified or free state. Demoting to Free Tier.');
+            resetToFreeTier('UNVERIFIED');
+          }
+          return false;
+        }
+      } catch (err) {
+        console.warn('[License] Native verified license check error:', err);
+        return false;
+      }
+    } else {
+      // Browser fallback
+      const rawPlan = (currentLicense.plan || '').toUpperCase();
+      isNativeCryptographicallyVerified = (rawPlan === 'PRO' || rawPlan === 'ENTERPRISE' || rawPlan === 'PREMIUM') && currentLicense.status === 'ACTIVE';
+      return isNativeCryptographicallyVerified;
+    }
+  }
+  window.verifyAuthoritativeNativeLicense = verifyAuthoritativeNativeLicense;
+
+  // Load cached license strictly as display state; in Android Capacitor, PRO requires native signature verification
   function loadCachedLicense() {
     try {
-      const rawLicense = localStorage.getItem(STORAGE_KEYS.LICENSE);
-      const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
-
-      if (!rawLicense && !token) {
-        // No stored license: Default strictly to Free tier
-        currentLicense = {
-          licenseId: 'FREE-TIER',
-          plan: 'FREE',
-          status: 'ACTIVE',
-          deviceBinding: null,
-          expiresAt: null,
-          offlineGraceDays: 7,
-          lastVerifiedAt: Date.now(),
-          features: Object.assign({}, DEFAULT_FREE_FEATURES)
-        };
-        return;
-      }
-
-      let payload = null;
-      if (rawLicense) {
-        try { payload = JSON.parse(rawLicense); } catch (_) {}
-      }
-      if (!payload && token) {
-        payload = parseJwtPayload(token);
-      }
-
-      // If no valid payload or missing/invalid features: revert strictly to Free Tier
-      if (!payload || !payload.features || typeof payload.features !== 'object') {
-        currentLicense = {
-          licenseId: 'FREE-TIER',
-          plan: 'FREE',
-          status: 'ACTIVE',
-          deviceBinding: null,
-          expiresAt: null,
-          offlineGraceDays: 7,
-          lastVerifiedAt: Date.now(),
-          features: Object.assign({}, DEFAULT_FREE_FEATURES)
-        };
-        return;
-      }
-
-      // Trust verification for paid plans (PRO / ENTERPRISE / PREMIUM):
-      // A non-free plan cannot be trusted without a valid associated token
-      const rawPlan = (payload.plan || '').toUpperCase();
-      const isPaidPlan = (rawPlan === 'PRO' || rawPlan === 'ENTERPRISE' || rawPlan === 'PREMIUM');
-      if (isPaidPlan) {
-        // 1. License ID must not be empty or FREE-TIER
-        if (!payload.licenseId || payload.licenseId === 'FREE-TIER') {
-          console.warn('[License] Paid plan without valid licenseId. Reverting to Free Tier.');
-          resetToFreeTier('INVALID_LICENSE');
-          return;
-        }
-
-        // 2. Stored token must exist
-        if (!token) {
-          console.warn('[License] Paid plan without stored token. Reverting to Free Tier.');
-          resetToFreeTier('MISSING_TOKEN');
-          return;
-        }
-
-        // 3. If token is a JWT, verify payload matches token payload
-        if (token.split('.').length === 3) {
-          const jwtPayload = parseJwtPayload(token);
-          if (!jwtPayload || (jwtPayload.licenseId && jwtPayload.licenseId !== payload.licenseId)) {
-            console.warn('[License] Token claims mismatch. Reverting to Free Tier.');
-            resetToFreeTier('TAMPERED_TOKEN');
-            return;
-          }
-        } else {
-          // If token is raw key string, token must match licenseId
-          if (token !== payload.licenseId) {
-            console.warn('[License] Token key mismatch. Reverting to Free Tier.');
-            resetToFreeTier('TAMPERED_KEY');
-            return;
-          }
-        }
-      }
-
-      // Check expiration
-      if (payload.expiresAt && Date.now() > new Date(payload.expiresAt).getTime()) {
-        console.warn('[License] License has expired.');
-        currentLicense = Object.assign({}, payload, {
-          status: 'EXPIRED',
-          features: Object.assign({}, DEFAULT_FREE_FEATURES)
-        });
-        return;
-      }
-
-      // Check offline grace period
-      const lastSync = Number(localStorage.getItem(STORAGE_KEYS.LAST_SYNC) || payload.lastVerifiedAt || 0);
-      const graceMs = (payload.offlineGraceDays || 7) * 24 * 3600 * 1000;
-      if (isPaidPlan && lastSync > 0 && (Date.now() - lastSync > graceMs)) {
-        console.warn('[License] Offline grace period expired. Reverting to Free Tier until server check.');
-        currentLicense = Object.assign({}, payload, {
-          status: 'EXPIRED',
-          features: Object.assign({}, DEFAULT_FREE_FEATURES)
-        });
-        return;
-      }
-
-      // Check status embedded in record
-      if (payload.status && payload.status !== 'ACTIVE') {
-        currentLicense = Object.assign({}, payload, {
-          features: Object.assign({}, DEFAULT_FREE_FEATURES)
-        });
-        return;
-      }
-
-      const verifiedPlan = isPaidPlan ? rawPlan : 'FREE';
-      const isActive = payload.status === 'ACTIVE';
-
-      currentLicense = {
-        licenseId: payload.licenseId || 'FREE-TIER',
-        plan: verifiedPlan,
-        status: payload.status || 'ACTIVE',
-        deviceBinding: payload.deviceBinding || null,
-        expiresAt: payload.expiresAt || null,
-        offlineGraceDays: payload.offlineGraceDays || 7,
-        lastVerifiedAt: lastSync || Date.now(),
-        features: (verifiedPlan !== 'FREE' && isActive)
-          ? Object.assign({}, DEFAULT_FREE_FEATURES, payload.features)
-          : Object.assign({}, DEFAULT_FREE_FEATURES)
-      };
-    } catch (e) {
-      console.warn('[License] Error loading cached license:', e);
+      // Always initialize with safe, clean Free-Tier defaults
       currentLicense = {
         licenseId: 'FREE-TIER',
         plan: 'FREE',
@@ -313,20 +253,86 @@
         lastVerifiedAt: Date.now(),
         features: Object.assign({}, DEFAULT_FREE_FEATURES)
       };
+
+      // In Android Capacitor environment, localStorage is never authoritative for PRO features
+      if (window.Capacitor?.Plugins?.NativeLicense) {
+        isNativeCryptographicallyVerified = false;
+        return;
+      }
+
+      // Browser Dev Mode Fallback:
+      const rawLicense = localStorage.getItem(STORAGE_KEYS.LICENSE);
+      const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+      if (!rawLicense && !token) return;
+
+      let payload = null;
+      if (rawLicense) {
+        try { payload = JSON.parse(rawLicense); } catch (_) {}
+      }
+      if (!payload && token) {
+        payload = parseJwtPayload(token);
+      }
+      if (!payload || !payload.features || typeof payload.features !== 'object') return;
+
+      const rawPlan = (payload.plan || '').toUpperCase();
+      const isPaidPlan = (rawPlan === 'PRO' || rawPlan === 'ENTERPRISE' || rawPlan === 'PREMIUM');
+      if (isPaidPlan) {
+        if (!payload.licenseId || payload.licenseId === 'FREE-TIER' || !token) {
+          resetToFreeTier('INVALID_LICENSE');
+          return;
+        }
+      }
+
+      if (payload.expiresAt && Date.now() > new Date(payload.expiresAt).getTime()) {
+        currentLicense = Object.assign({}, payload, { status: 'EXPIRED', features: Object.assign({}, DEFAULT_FREE_FEATURES) });
+        return;
+      }
+
+      const verifiedPlan = isPaidPlan ? rawPlan : 'FREE';
+      const isActive = payload.status === 'ACTIVE';
+      currentLicense = {
+        licenseId: payload.licenseId || 'FREE-TIER',
+        plan: verifiedPlan,
+        status: payload.status || 'ACTIVE',
+        deviceBinding: payload.deviceBinding || null,
+        expiresAt: payload.expiresAt || null,
+        offlineGraceDays: payload.offlineGraceDays || 7,
+        lastVerifiedAt: Date.now(),
+        features: (verifiedPlan !== 'FREE' && isActive)
+          ? Object.assign({}, DEFAULT_FREE_FEATURES, payload.features)
+          : Object.assign({}, DEFAULT_FREE_FEATURES)
+      };
+      isNativeCryptographicallyVerified = (verifiedPlan !== 'FREE' && isActive);
+    } catch (e) {
+      console.warn('[License] Error loading cached license:', e);
     }
   }
 
-  // Save license and cryptographically signed token
+  // Save license and cryptographically signed token into Native Keystore & local display cache
   function saveLicense(licenseData, token) {
     currentLicense = licenseData;
+    const isPaid = (licenseData.plan === 'PRO' || licenseData.plan === 'ENTERPRISE' || licenseData.plan === 'PREMIUM') && licenseData.status === 'ACTIVE';
+
+    if (window.Capacitor?.Plugins?.NativeLicense?.saveVerifiedLicense) {
+      window.Capacitor.Plugins.NativeLicense.saveVerifiedLicense({
+        token: token || '',
+        plan: licenseData.plan || 'FREE',
+        status: licenseData.status || 'ACTIVE',
+        expiresAt: licenseData.expiresAt || '',
+        payload: JSON.stringify(licenseData)
+      }).then(() => {
+        isNativeCryptographicallyVerified = isPaid;
+      }).catch(err => {
+        console.warn('[License] Native saveVerifiedLicense error:', err);
+      });
+    } else {
+      isNativeCryptographicallyVerified = isPaid;
+    }
+
     try {
       localStorage.setItem(STORAGE_KEYS.LICENSE, JSON.stringify(licenseData));
       if (token) {
         localStorage.setItem(STORAGE_KEYS.TOKEN, token);
-        // Also persist in Android Native SharedPreferences if available
-        if (window.Capacitor?.Plugins?.NativeLicense?.saveLicenseToken) {
-          window.Capacitor.Plugins.NativeLicense.saveLicenseToken({ token }).catch(() => {});
-        }
       }
       localStorage.setItem(STORAGE_KEYS.LAST_SYNC, Date.now().toString());
     } catch (_) {}
@@ -337,6 +343,7 @@
 
   // Reset to clean Free Tier state
   function resetToFreeTier(statusReason = 'REVOKED') {
+    isNativeCryptographicallyVerified = false;
     currentLicense = {
       licenseId: 'FREE-TIER',
       plan: 'FREE',
@@ -351,10 +358,20 @@
       localStorage.removeItem(STORAGE_KEYS.LICENSE);
       localStorage.removeItem(STORAGE_KEYS.TOKEN);
       localStorage.setItem(STORAGE_KEYS.LAST_SYNC, Date.now().toString());
-      if (window.Capacitor?.Plugins?.NativeLicense?.clearLicenseToken) {
-        window.Capacitor.Plugins.NativeLicense.clearLicenseToken().catch(() => {});
-      }
     } catch (_) {}
+
+    if (window.Capacitor?.Plugins?.NativeLicense?.clearLicenseToken) {
+      window.Capacitor.Plugins.NativeLicense.clearLicenseToken().catch(() => {});
+    }
+    if (window.Capacitor?.Plugins?.NativeLicense?.saveVerifiedLicense) {
+      window.Capacitor.Plugins.NativeLicense.saveVerifiedLicense({
+        token: '',
+        plan: 'FREE',
+        status: statusReason,
+        expiresAt: '',
+        payload: ''
+      }).catch(() => {});
+    }
 
     enforceActiveTabAccess();
     updateSettingsUI();
@@ -381,6 +398,7 @@
   /**
    * Central authorization check: isFeatureAvailable(featureId)
    * Evaluates license status, expiry, device authorization, and per-feature permissions.
+   * Cryptographically hardened: PRO features strictly require native Keystore validation.
    */
   window.isFeatureAvailable = function (featureId) {
     if (!featureId) return false;
@@ -392,6 +410,13 @@
 
     // Free tier features are always allowed
     if (def.tier === 'FREE') return true;
+
+    // Strict Hardening: PRO features require native cryptographic validation on Android
+    if (window.Capacitor?.Plugins?.NativeLicense) {
+      if (!isNativeCryptographicallyVerified) {
+        return false;
+      }
+    }
 
     // Check license status
     if (currentLicense.status !== 'ACTIVE') {
@@ -604,31 +629,33 @@
           activeKeyToVerify = existingDev.boundLicenseId;
         }
 
-        // Free tier heartbeat
+        // Free tier heartbeat with Data Minimization & 24-hour Rate Limiting
         if (!activeKeyToVerify || activeKeyToVerify === 'FREE-TIER') {
           if (installId) {
-            const devPayload = {
-              installationId: installId,
-              deviceName: existingDev?.assignedUserName ? `${dInfo.deviceName} (${existingDev.assignedUserName})` : (dInfo.deviceName || 'Android Device'),
-              rawDeviceName: dInfo.deviceName || 'Android Device',
-              assignedUserName: existingDev?.assignedUserName || null,
-              phoneNumber: existingDev?.phoneNumber || null,
-              deviceModel: dInfo.deviceModel || 'Mobile',
-              manufacturer: dInfo.manufacturer || 'Android',
-              brand: dInfo.brand || 'Mobile',
-              androidVersion: dInfo.androidVersion || '14',
-              appVersion: dInfo.appVersion || '1.0.5',
-              boundLicenseId: null,
-              plan: 'FREE TIER',
-              status: 'ONLINE',
-              firstSeen: existingDev?.firstSeen || nowIso,
-              lastSeen: nowIso
-            };
-            await fetch(`${cleanBase}/devices/${encodeURIComponent(installId)}.json`, {
-              method: 'PATCH',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(devPayload)
-            }).catch(() => {});
+            const HEARTBEAT_THROTTLE_MS = 24 * 60 * 60 * 1000; // 24-hour rate limit
+            const lastHeartbeat = Number(localStorage.getItem('cld_last_heartbeat_timestamp') || '0');
+            const shouldHeartbeat = (Date.now() - lastHeartbeat) >= HEARTBEAT_THROTTLE_MS;
+
+            if (shouldHeartbeat) {
+              const devPayload = {
+                installationId: installId,
+                deviceModel: dInfo.deviceModel || 'Mobile',
+                androidVersion: dInfo.androidVersion || '14',
+                appVersion: dInfo.appVersion || '1.0.5',
+                plan: 'FREE TIER',
+                status: 'ONLINE',
+                lastSeen: nowIso
+              };
+              if (!existingDev?.firstSeen) {
+                devPayload.firstSeen = nowIso;
+              }
+              await fetch(`${cleanBase}/devices/${encodeURIComponent(installId)}.json`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(devPayload)
+              }).catch(() => {});
+              try { localStorage.setItem('cld_last_heartbeat_timestamp', Date.now().toString()); } catch (_) {}
+            }
           }
           return makeApiResponse({
             success: true,
@@ -679,31 +706,28 @@
             lastSeen: nowIso,
             deviceBinding: boundList[0] || installId,
             boundDevices: boundList,
-            deviceName: dInfo.deviceName || 'Android Device'
+            deviceName: dInfo.deviceModel || 'Mobile Device'
           })
         }).catch(() => {});
 
         if (installId) {
+          const proPayload = {
+            installationId: installId,
+            deviceModel: dInfo.deviceModel || 'Mobile',
+            androidVersion: dInfo.androidVersion || '14',
+            appVersion: dInfo.appVersion || '1.0.5',
+            boundLicenseId: activeKeyToVerify,
+            plan: lic.plan || 'PRO',
+            status: 'ONLINE',
+            lastSeen: nowIso
+          };
+          if (!existingDev?.firstSeen) {
+            proPayload.firstSeen = nowIso;
+          }
           await fetch(`${cleanBase}/devices/${encodeURIComponent(installId)}.json`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              installationId: installId,
-              deviceName: existingDev?.assignedUserName ? `${dInfo.deviceName} (${existingDev.assignedUserName})` : (dInfo.deviceName || 'Android Device'),
-              rawDeviceName: dInfo.deviceName || 'Android Device',
-              assignedUserName: existingDev?.assignedUserName || null,
-              phoneNumber: existingDev?.phoneNumber || null,
-              deviceModel: dInfo.deviceModel || 'Mobile',
-              manufacturer: dInfo.manufacturer || 'Android',
-              brand: dInfo.brand || 'Mobile',
-              androidVersion: dInfo.androidVersion || '14',
-              appVersion: dInfo.appVersion || '1.0.5',
-              boundLicenseId: activeKeyToVerify,
-              plan: lic.plan || 'PRO',
-              status: 'ONLINE',
-              firstSeen: existingDev?.firstSeen || nowIso,
-              lastSeen: nowIso
-            })
+            body: JSON.stringify(proPayload)
           }).catch(() => {});
         }
 
@@ -1138,7 +1162,9 @@
   document.addEventListener('DOMContentLoaded', async () => {
     loadCachedLicense();
     await initInstallationId();
+    await verifyAuthoritativeNativeLicense();
     updateSettingsUI();
+    enforceActiveTabAccess();
 
     // 1. Immediate Online Authoritative Sync on Launch (0ms delay)
     window.syncLicenseWithServer();
@@ -1146,19 +1172,25 @@
     // 2. Foreground / Resume Sync (fires when user returns to app / switches tabs)
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
-        window.syncLicenseWithServer();
+        verifyAuthoritativeNativeLicense().then(() => {
+          window.syncLicenseWithServer();
+        });
       }
     });
 
     window.addEventListener('focus', () => {
-      window.syncLicenseWithServer();
+      verifyAuthoritativeNativeLicense().then(() => {
+        window.syncLicenseWithServer();
+      });
     });
 
     if (window.Capacitor?.App?.addListener) {
       try {
         window.Capacitor.App.addListener('appStateChange', (state) => {
           if (state && state.isActive) {
-            window.syncLicenseWithServer();
+            verifyAuthoritativeNativeLicense().then(() => {
+              window.syncLicenseWithServer();
+            });
           }
         });
       } catch (_) {}

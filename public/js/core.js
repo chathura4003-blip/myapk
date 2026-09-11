@@ -720,6 +720,34 @@ window.setServerHost = function (newHost) {
       } catch (err) {
         return bridgeError('CLEAR_TOKEN_FAILED', err.message);
       }
+    },
+    saveVerifiedLicense: async function ({ token, plan, status, expiresAt, payload }) {
+      try {
+        if (window.Capacitor?.Plugins?.NativeLicense?.saveVerifiedLicense) {
+          const res = await window.Capacitor.Plugins.NativeLicense.saveVerifiedLicense({
+            token: token || '',
+            plan: plan || 'FREE',
+            status: status || 'ACTIVE',
+            expiresAt: expiresAt || '',
+            payload: typeof payload === 'object' ? JSON.stringify(payload) : (payload || '')
+          });
+          return bridgeSuccess(res || { saved: true });
+        }
+        return bridgeError('PLUGIN_UNAVAILABLE', 'NativeLicense plugin is unavailable');
+      } catch (err) {
+        return bridgeError('SAVE_VERIFIED_FAILED', err.message);
+      }
+    },
+    getVerifiedLicense: async function () {
+      try {
+        if (window.Capacitor?.Plugins?.NativeLicense?.getVerifiedLicense) {
+          const res = await window.Capacitor.Plugins.NativeLicense.getVerifiedLicense();
+          return bridgeSuccess(res || { valid: false, plan: 'FREE' });
+        }
+        return bridgeSuccess({ valid: false, plan: 'FREE' });
+      } catch (err) {
+        return bridgeError('GET_VERIFIED_FAILED', err.message);
+      }
     }
   };
 
