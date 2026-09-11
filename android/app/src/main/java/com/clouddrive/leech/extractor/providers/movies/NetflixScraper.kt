@@ -2,10 +2,6 @@ package com.clouddrive.leech.extractor.providers.movies
 
 import android.util.Log
 import com.clouddrive.leech.extractor.models.MediaItem
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -55,35 +51,39 @@ class NetflixScraper(
         try {
             if (isGeneric) {
                 val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date())
-                val queries = listOf(
-                    "$TMDB_BASE_URL/discover/movie?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=popularity.desc&page=1" to true,
-                    "$TMDB_BASE_URL/discover/movie?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=popularity.desc&page=2" to true,
-                    "$TMDB_BASE_URL/discover/tv?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=popularity.desc&page=1" to false,
-                    "$TMDB_BASE_URL/discover/movie?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=primary_release_date.desc&primary_release_date.lte=$today&page=1" to true,
-                    "$TMDB_BASE_URL/discover/tv?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=first_air_date.desc&first_air_date.lte=$today&page=1" to false
-                )
 
-                // ⚡ High-speed parallel TMDB catalog fetch across IO coroutines
-                val parallelBatches = runBlocking(Dispatchers.IO) {
-                    queries.map { (url, isMovie) ->
-                        async {
-                            try {
-                                parseTmdbItems(fetchJson(url), isMovie = isMovie)
-                            } catch (_: Exception) {
-                                emptyList()
-                            }
-                        }
-                    }.awaitAll()
-                }
-
-                for (batch in parallelBatches) {
-                    for (item in batch) {
+                fun addDeduplicated(items: List<MediaItem>) {
+                    for (item in items) {
                         val normTitle = item.title.lowercase().replace(Regex("[^a-z0-9]"), "")
                         if (seenIds.add(item.id) && seenTitles.add(normTitle)) {
                             list.add(item)
                         }
                     }
                 }
+
+                // 1. Fetch Trending Cinejoy Movies (Pages 1 & 2)
+                for (page in 1..2) {
+                    val movieUrl = "$TMDB_BASE_URL/discover/movie?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=popularity.desc&page=$page"
+                    val items = parseTmdbItems(fetchJson(movieUrl), isMovie = true)
+                    addDeduplicated(items)
+                }
+
+                // 2. Fetch Trending Cinejoy TV Series (Page 1)
+                val tvUrl = "$TMDB_BASE_URL/discover/tv?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=popularity.desc&page=1"
+                val tvItems = parseTmdbItems(fetchJson(tvUrl), isMovie = false)
+                addDeduplicated(tvItems)
+
+                // 3. Fetch Latest Updated Cinejoy Movies up to today (Pages 1 & 2)
+                for (page in 1..2) {
+                    val latestMovieUrl = "$TMDB_BASE_URL/discover/movie?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=primary_release_date.desc&primary_release_date.lte=$today&page=$page"
+                    val items = parseTmdbItems(fetchJson(latestMovieUrl), isMovie = true)
+                    addDeduplicated(items)
+                }
+
+                // 4. Fetch Latest Updated Cinejoy TV Series up to today (Page 1)
+                val latestTvUrl = "$TMDB_BASE_URL/discover/tv?api_key=$CINEJOY_TMDB_API_KEY&with_watch_providers=8&watch_region=US&sort_by=first_air_date.desc&first_air_date.lte=$today&page=1"
+                val latestTvItems = parseTmdbItems(fetchJson(latestTvUrl), isMovie = false)
+                addDeduplicated(latestTvItems)
 
                 if (list.isNotEmpty()) {
                     cachedCatalog = list

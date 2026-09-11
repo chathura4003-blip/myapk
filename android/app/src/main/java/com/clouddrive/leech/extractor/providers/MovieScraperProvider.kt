@@ -92,22 +92,22 @@ class MovieScraperProvider(
 
         val results = coroutineScope {
             val taskSinhala = async {
-                withTimeoutOrNull(3000) { sinhalasubScraper.search(cleanQ) } ?: emptyList()
+                withTimeoutOrNull(4000) { sinhalasubScraper.search(cleanQ) } ?: emptyList()
             }
             val taskBaiscope = async {
-                withTimeoutOrNull(3000) { baiscopeScraper.search(cleanQ) } ?: emptyList()
+                withTimeoutOrNull(4000) { baiscopeScraper.search(cleanQ) } ?: emptyList()
             }
             val taskSubLK = async {
-                withTimeoutOrNull(3000) { subLKScraper.search(cleanQ) } ?: emptyList()
+                withTimeoutOrNull(4000) { subLKScraper.search(cleanQ) } ?: emptyList()
             }
             val taskPirate = async {
-                withTimeoutOrNull(3000) { pirateLKScraper.search(cleanQ) } ?: emptyList()
+                withTimeoutOrNull(4000) { pirateLKScraper.search(cleanQ) } ?: emptyList()
             }
             val taskYts = async {
-                withTimeoutOrNull(3000) { ytsScraper.search(cleanQ) } ?: emptyList()
+                withTimeoutOrNull(4000) { ytsScraper.search(cleanQ) } ?: emptyList()
             }
             val taskNetflix = async {
-                withTimeoutOrNull(3500) { netflixScraper.search(cleanQ) } ?: emptyList()
+                withTimeoutOrNull(7000) { netflixScraper.search(cleanQ) } ?: emptyList()
             }
 
             val sinhalaList = taskSinhala.await()

@@ -2078,9 +2078,9 @@ function filterAndRenderMovies() {
     return;
   }
 
-  let activeRenderToken = ++activeMovieRequestId;
+  const cardFragment = document.createDocumentFragment();
 
-  function createMovieCard(movie) {
+  curated.forEach(movie => {
     if (movie.poster && movie.poster.includes('unsplash')) movie.poster = '';
     if (movie.thumbnail && movie.thumbnail.includes('unsplash')) movie.thumbnail = '';
 
@@ -2160,46 +2160,10 @@ function filterAndRenderMovies() {
       filterAndRenderMovies();
     });
 
-    return card;
-  }
-
-  // ⚡ Instant 0ms Render: Inject initial batch of 48 cards immediately
-  const INITIAL_BATCH_SIZE = 48;
-  const initialBatch = curated.slice(0, INITIAL_BATCH_SIZE);
-  const remainingBatch = curated.slice(INITIAL_BATCH_SIZE);
-
-  const cardFragment = document.createDocumentFragment();
-  initialBatch.forEach(movie => {
-    cardFragment.appendChild(createMovieCard(movie));
+    cardFragment.appendChild(card);
   });
-  movieGrid.appendChild(cardFragment);
 
-  // 🚀 Background Progressive Streaming: Render remaining catalog without UI jank
-  if (remainingBatch.length > 0) {
-    let offset = 0;
-    const CHUNK_SIZE = 48;
-    function appendNextChunk() {
-      if (activeRenderToken !== activeMovieRequestId || !movieGrid) return;
-      if (offset >= remainingBatch.length) return;
-      const chunk = remainingBatch.slice(offset, offset + CHUNK_SIZE);
-      offset += CHUNK_SIZE;
-      const frag = document.createDocumentFragment();
-      chunk.forEach(m => frag.appendChild(createMovieCard(m)));
-      movieGrid.appendChild(frag);
-      if (offset < remainingBatch.length) {
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(appendNextChunk, { timeout: 100 });
-        } else {
-          requestAnimationFrame(appendNextChunk);
-        }
-      }
-    }
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(appendNextChunk, { timeout: 100 });
-    } else {
-      setTimeout(appendNextChunk, 30);
-    }
-  }
+  movieGrid.appendChild(cardFragment);
 }
 
 
@@ -4211,7 +4175,7 @@ window.openMovieModal = async function (movie, cachedDetails, forceFresh = false
             if (meta.type === 'series') isTv = true;
             updated = true;
           }
-        } catch (_) {}
+        } catch (_) { }
       }
 
       if (!targetTmdbCode && imdbCode) {
@@ -4223,7 +4187,7 @@ window.openMovieModal = async function (movie, cachedDetails, forceFresh = false
             targetTmdbCode = String(fItem.id);
             updated = true;
           }
-        } catch (_) {}
+        } catch (_) { }
       }
 
       movie.imdb = imdbCode;
@@ -4265,7 +4229,7 @@ window.openMovieModal = async function (movie, cachedDetails, forceFresh = false
     if ((!torrents || torrents.length === 0) && movie.torrentsJson) {
       try {
         torrents = typeof movie.torrentsJson === 'string' ? JSON.parse(movie.torrentsJson) : movie.torrentsJson;
-      } catch (_) {}
+      } catch (_) { }
     }
     let movieSynopsis = movie.synopsis || '';
     let movieRuntime = movie.runtime ? `${movie.runtime} min` : '';
@@ -4434,7 +4398,7 @@ window.openMovieModal = async function (movie, cachedDetails, forceFresh = false
           if (!movieSynopsis) movieSynopsis = yObj.description_full || yObj.summary || '';
           if (!movieRuntime && yObj.runtime) movieRuntime = `${yObj.runtime} min`;
         }
-      } catch (_) {}
+      } catch (_) { }
 
       // Fast TMDB find if imdbCode is available
       if (!tmdbCode && imdbCode) {
@@ -4444,7 +4408,7 @@ window.openMovieModal = async function (movie, cachedDetails, forceFresh = false
           if (findRes?.movie_results?.[0]?.id) {
             tmdbCode = String(findRes.movie_results[0].id);
           }
-        } catch (_) {}
+        } catch (_) { }
       }
 
       const finalYtsDetails = {
