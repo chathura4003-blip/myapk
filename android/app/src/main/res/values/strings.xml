@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Cloud Drive Leech</string>
+    <string name="title_activity_main">Cloud Drive Leech</string>
+    <string name="package_name">com.clouddrive.leech</string>
+    <string name="custom_url_scheme">com.clouddrive.leech</string>
+</resources>

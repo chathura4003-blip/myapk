@@ -1,0 +1,2957 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>Cloud Drive Leech - Movies & Media</title>
+  <meta name="theme-color" content="#0a0c10">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/app.css?v=2026.4.10">
+  <link rel="stylesheet" href="/css/license.css?v=2026.3.35">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print"
+    onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  </noscript>
+  <style>
+    /* ⚡ 0ms Instant Dark Background to Eliminate Black Screen on App Launch */
+    html,
+    body {
+      background-color: #0a0c10 !important;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* Strict Tab Isolation & Seamless Browser In-App Layout */
+    .tab-view {
+      display: none !important;
+    }
+
+    .tab-view.active {
+      display: block !important;
+    }
+
+    #view-browser.tab-view {
+      display: none !important;
+    }
+
+    #view-browser.tab-view.active {
+      display: flex !important;
+      flex-direction: column !important;
+      width: calc(100% + 32px) !important;
+      margin-left: -16px !important;
+      margin-right: -16px !important;
+      margin-top: -16px !important;
+      margin-bottom: -16px !important;
+      height: calc(100vh - 60px - 75px) !important;
+      position: relative !important;
+      overflow: hidden !important;
+      background: var(--bg-primary, #05070b) !important;
+    }
+  </style>
+</head>
+
+<body class="dark-theme">
+  <!-- Top App Bar -->
+  <header class="app-header">
+    <div class="logo-area">
+      <div class="logo-icon" style="background: transparent; padding: 0; overflow: visible; box-shadow: none;">
+        <img src="icon.png" alt="Cloud Drive Leech Logo"
+          style="width: 40px; height: 40px; object-fit: contain; display: block; filter: drop-shadow(0 0 12px rgba(0, 242, 254, 0.7));">
+      </div>
+      <div>
+        <h1 class="app-title">Cloud Drive Leech</h1>
+        <span class="app-tagline">Cloud ➔ Google Drive Downloader</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div id="vpnHeaderBadge" class="status-badge vpn-badge hidden" title="VPN Status">
+        <span class="vpn-flag" id="vpnHeaderFlag">🇸🇬</span>
+        <span class="vpn-code" id="vpnHeaderCode">SG</span>
+        <span class="vpn-ping" id="vpnHeaderPing">35ms</span>
+      </div>
+      <div id="driveStatusBadge" class="status-badge connected">
+        <span class="status-dot"></span>
+        <span class="status-text">⚡ Direct Engine</span>
+      </div>
+      <button id="btnAmoledToggle" class="btn-theme-toggle" title="Toggle AMOLED Pure Black Theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <button id="btnSettings" class="icon-btn" title="Settings"><i class="fa-solid fa-gear"></i></button>
+    </div>
+  </header>
+
+  <!-- 📢 Real-Time Cyber Broadcast Announcement Banner -->
+  <div id="cldBroadcastBanner" class="cld-broadcast-banner hidden">
+    <i class="fa-solid fa-bullhorn banner-icon"></i>
+    <span id="cldBroadcastText" class="banner-text"></span>
+    <button type="button" class="banner-close" onclick="window.dismissBroadcastBanner()">&times;</button>
+  </div>
+
+  <!-- 🔄 Pull-to-Refresh Gesture Indicator -->
+  <div id="ptrIndicator" class="ptr-indicator">
+    <i class="fa-solid fa-arrow-rotate-right ptr-icon"></i>
+    <span id="ptrText" class="ptr-text">Pull to refresh</span>
+  </div>
+
+  <!-- 📋 Smart Clipboard Auto-Paste Banner -->
+  <div id="clipboardSmartBanner" class="clipboard-smart-banner hidden"></div>
+
+  <!-- Main Scrollable Body Area -->
+  <main class="app-body">
+
+    <!-- 1. Movies Tab View (2026 Ultra-Modern Cinema Experience) -->
+    <section id="view-movies" class="tab-view">
+
+      <!-- 2026 Hero Spotlight Carousel (Top 10 Auto-Transition) -->
+      <div id="movieHeroBanner" class="hero-spotlight-card hero-carousel-card" role="button" tabindex="0"
+        title="Tap to open movie">
+        <div class="hero-carousel-progress">
+          <div id="heroProgressBar" class="hero-progress-fill"></div>
+        </div>
+        <div class="hero-backdrop-glow"></div>
+        <img id="heroBackdropImg" src="https://image.tmdb.org/t/p/w1280/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg"
+          alt="Featured Movie Backdrop" class="hero-img hero-ambient-bg">
+        <div class="hero-gradient-overlay"></div>
+
+        <div class="hero-content">
+          <div class="hero-main-layout">
+            <!-- Left Info Area -->
+            <div class="hero-text-area">
+              <div class="hero-badge-row">
+                <span class="hero-live-badge"><i class="fa-solid fa-fire"></i> TOP <span id="heroSlideIndex">1</span>
+                  SPOTLIGHT</span>
+                <span id="heroSubBadge" class="hero-tag-pill"><i class="fa-solid fa-closed-captioning"></i> Sinhala
+                  Sub</span>
+                <span id="heroQualityBadge" class="hero-tag-pill quality-4k">4K UHD</span>
+              </div>
+
+              <h2 id="heroMovieTitle" class="hero-title">Kingdom of the Planet of the Apes</h2>
+              <p id="heroMovieSynopsis" class="hero-synopsis">Tap anywhere to stream in 4K UHD / 1080p or leech to
+                Google Drive.</p>
+            </div>
+
+            <!-- Right Crisp HD Poster Showcase -->
+            <div class="hero-poster-preview">
+              <img id="heroPosterThumb" src="https://image.tmdb.org/t/p/w1280/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg"
+                alt="Movie Poster" class="hero-thumb-img">
+              <span class="hero-poster-rating" id="heroRatingBadge"><i class="fa-solid fa-star"></i> 8.5</span>
+            </div>
+          </div>
+
+          <div class="hero-footer-bar">
+            <div id="heroDotsContainer" class="hero-dots-row"></div>
+            <div class="hero-tap-hint"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tap to View</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2026 Next-Gen Cinema Search Command Deck -->
+      <div class="cinema-command-deck">
+        <!-- Top Search Capsule -->
+        <div class="search-capsule-2026">
+          <div class="search-radar-badge">
+            <i class="fa-solid fa-magnifying-glass search-icon-radar"></i>
+            <span class="radar-ping-ring"></span>
+          </div>
+
+          <input type="text" id="movieSearchInput" class="movie-search-input-command"
+            placeholder="Search 2026 Movies, Sinhala Subtitles, Marvel, Netflix..." autocomplete="off"
+            spellcheck="false">
+
+          <button id="btnClearMovieSearch" class="btn-clear-search-2026 hidden" title="Clear Search">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </button>
+
+          <button id="btnSearchMovie" class="btn-search-turbo-2026" title="Instant Search">
+            <i class="fa-solid fa-bolt-lightning"></i>
+            <span>Search</span>
+          </button>
+
+          <!-- Live Instant Search Suggestions Dropdown -->
+          <div id="movieLiveSuggestions" class="movie-live-suggestions hidden"></div>
+        </div>
+
+        <!-- Real-time Multi-Web Search Radar Status Bar -->
+        <div id="movieSearchStatus" class="movie-search-status-bar hidden">
+          <div class="status-pulse-dot"></div>
+          <span id="movieSearchStatusText"><i class="fa-solid fa-satellite-dish fa-fade"></i> Searching across
+            Sinhalasub, Baiscope, Sub.lk, PirateLK, YTS, Netflix...</span>
+        </div>
+
+        <!-- Portal Source Filter Bar -->
+        <div class="portal-segmented-bar">
+          <button class="portal-btn active" data-portal="all"><i class="fa-solid fa-globe"></i> All Portals <span
+              class="portal-count" id="countAll"></span></button>
+          <button class="portal-btn" data-portal="sinhalasub"><i class="fa-solid fa-clapperboard"></i> Sinhalasub <span
+              class="portal-count" id="countSinhalasub"></span></button>
+          <button class="portal-btn" data-portal="sublk"><i class="fa-solid fa-play"></i> Sub.lk <span
+              class="portal-count" id="countSublk"></span></button>
+          <button class="portal-btn" data-portal="baiscope"><i class="fa-solid fa-film"></i> Baiscope <span
+              class="portal-count" id="countBaiscope"></span></button>
+          <button class="portal-btn" data-portal="piratelk"><i class="fa-solid fa-skull-crossbones"
+              style="color: #00f2fe;"></i> PirateLK <span class="portal-count" id="countPiratelk"></span></button>
+          <button class="portal-btn" data-portal="yts"><i class="fa-solid fa-crown" style="color: #ffd700;"></i> YTS 4K
+            <span class="portal-count" id="countYts"></span></button>
+          <button class="portal-btn" data-portal="netflix"><i class="fa-solid fa-n"
+              style="color: #e50914; font-weight: 900;"></i> Netflix <span class="portal-count"
+              id="countNetflix"></span></button>
+        </div>
+
+        <!-- 2026 Dynamic Category Pills -->
+        <div class="quick-tags category-pills-2026">
+          <span class="tag-pill active" data-q="Trending"><i class="fa-solid fa-fire"></i> Trending 2026</span>
+          <span class="tag-pill tag-pill-watchlist" data-q="watchlist"><i class="fa-solid fa-heart"
+              style="color: #ff4757;"></i> My Watchlist (<span id="watchlistCountPill">0</span>)</span>
+          <span class="tag-pill" data-q="Netflix" style="border-color: rgba(229, 9, 20, 0.4);"><i class="fa-solid fa-n"
+              style="color: #e50914; font-weight: 900;"></i> Netflix Originals</span>
+          <span class="tag-pill" data-q="2026"><i class="fa-solid fa-star"></i> Latest 2026</span>
+          <span class="tag-pill" data-q="Sinhala Subtitles"><i class="fa-solid fa-closed-captioning"></i> Sinhala
+            Subtitles</span>
+          <span class="tag-pill" data-q="Marvel"><i class="fa-solid fa-shield-halved"></i> Marvel / DC</span>
+          <span class="tag-pill" data-q="Action"><i class="fa-solid fa-explosion"></i> Action & Sci-Fi</span>
+          <span class="tag-pill" data-q="Horror"><i class="fa-solid fa-ghost"></i> Horror & Thriller</span>
+          <span class="tag-pill" data-q="Animation"><i class="fa-solid fa-wand-magic-sparkles"></i> Animation</span>
+          <span class="tag-pill" data-q="Tamil"><i class="fa-solid fa-music"></i> Tamil & Hindi</span>
+        </div>
+      </div>
+
+      <!-- Section Title & Results Counter -->
+      <div class="section-title-row">
+        <h3 id="movieSectionTitle" class="section-heading"><i class="fa-solid fa-fire"
+            style="color: var(--accent-magenta);"></i> 🔥 Trending 2026 Cinema Releases</h3>
+        <span id="movieResultsCount" class="results-count-pill">Showing 40 Movies</span>
+      </div>
+
+      <!-- 2026 Skeleton Loading Shimmer -->
+      <div id="movieSkeletonGrid" class="cards-grid skeleton-grid hidden">
+        <div class="skeleton-card">
+          <div class="skeleton-poster shimmer"></div>
+          <div class="skeleton-line shimmer"></div>
+          <div class="skeleton-line short shimmer"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-poster shimmer"></div>
+          <div class="skeleton-line shimmer"></div>
+          <div class="skeleton-line short shimmer"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-poster shimmer"></div>
+          <div class="skeleton-line shimmer"></div>
+          <div class="skeleton-line short shimmer"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-poster shimmer"></div>
+          <div class="skeleton-line shimmer"></div>
+          <div class="skeleton-line short shimmer"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-poster shimmer"></div>
+          <div class="skeleton-line shimmer"></div>
+          <div class="skeleton-line short shimmer"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-poster shimmer"></div>
+          <div class="skeleton-line shimmer"></div>
+          <div class="skeleton-line short shimmer"></div>
+        </div>
+      </div>
+
+      <!-- Traditional Spinner Fallback -->
+      <div id="movieLoading" class="loading-spinner hidden">
+        <div class="spinner"></div>
+        <p>Connecting to Cloud Movie Datacenter...</p>
+      </div>
+
+      <!-- Main Movie Cards Grid -->
+      <div id="movieGrid" class="cards-grid movie-grid-2026">
+        <!-- Dynamic Next-Gen Movie Cards -->
+      </div>
+    </section>
+
+    <!-- 2. Universal Turbo Downloader Tab -->
+    <section id="view-downloads" class="tab-view active">
+      <!-- Universal Command Deck -->
+      <div class="dl-hub-command-deck">
+        <div class="dl-stats-top-row">
+          <div class="dl-stat-col">
+            <div class="dl-stat-title"><i class="fa-solid fa-circle-down" style="color: var(--accent-cyan);"></i> Turbo
+              Downloader Hub</div>
+            <div class="dl-stat-subtitle">Universal multi-thread downloader & social media extractor</div>
+          </div>
+          <div class="dl-actions-right">
+            <span id="dlLiveSpeedPill" class="dl-speed-pill"><i class="fa-solid fa-gauge-high"></i> Idle</span>
+            <button id="btnClearDownloads" class="btn-clear-dl-all" title="Clear finished tasks">
+              <i class="fa-solid fa-trash-can"></i> <span>Clear Finished</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cyber Floating URL Capsule (Clean, Spacious & Intuitive) -->
+        <div class="search-capsule-dl">
+          <div class="search-radar-badge-dl">
+            <i id="dlPlatformIcon" class="fa-solid fa-link search-icon-dl" style="color: var(--accent-cyan);"></i>
+            <span class="radar-ping-ring-dl" id="dlRadarPing"></span>
+          </div>
+
+          <input type="url" id="dlUniversalInput" class="dl-url-input-command"
+            placeholder="Paste any YouTube, TikTok, FB, Magnet, Cloud or File link..." autocomplete="off"
+            spellcheck="false">
+
+          <button id="btnClearDlInput" class="btn-clear-dl-input hidden" title="Clear Link">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </button>
+
+          <button id="btnPasteClipboard" class="btn-paste-clip" title="Paste from Clipboard">
+            <i class="fa-solid fa-paste"></i>
+            <span class="btn-paste-label">Paste</span>
+          </button>
+
+          <button id="btnStartUniversalDownload" class="btn-dl-turbo-start" title="Start Download / Extract">
+            <i class="fa-solid fa-bolt-lightning"></i>
+            <span>Download</span>
+          </button>
+        </div>
+        <input type="file" id="torrentFileInput" accept=".torrent,application/x-bittorrent" class="hidden">
+
+        <!-- Social Media & Cloud Platform Pills Ribbon -->
+        <div class="social-platforms-ribbon" id="socialPlatformsRibbon">
+          <span class="social-pill" data-platform="torrent"><i class="fa-solid fa-magnet" style="color: #ff4757;"></i> Torrent / Magnet</span>
+          <span class="social-pill" data-platform="youtube"><i class="fa-brands fa-youtube" style="color: #ff0000;"></i> YouTube</span>
+          <span class="social-pill" data-platform="tiktok"><i class="fa-brands fa-tiktok" style="color: #00f2fe;"></i> TikTok</span>
+          <span class="social-pill" data-platform="instagram"><i class="fa-brands fa-instagram" style="color: #e1306c;"></i> Instagram</span>
+          <span class="social-pill" data-platform="facebook"><i class="fa-brands fa-facebook" style="color: #1877f2;"></i> Facebook</span>
+          <span class="social-pill" data-platform="pixeldrain"><i class="fa-solid fa-hard-drive" style="color: #2ed573;"></i> PixelDrain</span>
+          <span class="social-pill" data-platform="drive"><i class="fa-brands fa-google-drive" style="color: #4285f4;"></i> Google Drive</span>
+          <span class="social-pill" data-platform="mega"><i class="fa-solid fa-cloud" style="color: #ea2027;"></i> Mega</span>
+          <span class="social-pill" data-platform="mediafire"><i class="fa-solid fa-fire" style="color: #0070f3;"></i> MediaFire</span>
+          <span class="social-pill" data-platform="twitter"><i class="fa-brands fa-x-twitter" style="color: #ffffff;"></i> Twitter / X</span>
+          <span class="social-pill" data-platform="direct"><i class="fa-solid fa-link" style="color: #00f2fe;"></i> Direct MP4/MKV</span>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="dlLoading" class="loading-spinner hidden">
+        <div class="spinner media-spinner"></div>
+        <p id="dlLoadingText">Analyzing link and preparing high-speed multi-thread download...</p>
+      </div>
+
+      <!-- Format Extractor Result Card (if social stream has multiple formats) -->
+      <div id="dlResultCard" class="media-result-deck hidden" style="position: relative;">
+        <button id="btnCloseDlResultCard" title="Clear / Close Card"
+          style="position: absolute; top: 12px; right: 12px; background: rgba(255, 71, 87, 0.2); border: 1px solid rgba(255, 71, 87, 0.5); color: #ff4757; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; z-index: 10; transition: all 0.2s ease;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="media-preview-header">
+          <div class="media-thumb-frame">
+            <img id="dlResultThumb" src="" alt="Thumbnail" class="media-thumbnail-img">
+            <span id="dlResultDurationBadge" class="media-dur-pill"><i class="fa-solid fa-clock"></i> HD</span>
+            <span id="dlResultPlatformBadge" class="media-src-pill">Social Video</span>
+          </div>
+          <div class="media-meta-details">
+            <h3 id="dlResultTitle" class="media-title-text">Media Title</h3>
+            <div class="media-submeta-row">
+              <span id="dlResultUploader" class="meta-pill-mini"><i class="fa-solid fa-user"></i> Creator</span>
+              <span id="dlResultTag" class="meta-pill-mini cloud-tag"><i class="fa-solid fa-bolt"></i> Ready to
+                Download</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="formats-list-header">
+          <div class="formats-list-title">
+            <i class="fa-solid fa-sliders" style="color: var(--accent-cyan);"></i>
+            <span>Choose Resolution:</span>
+          </div>
+          <span id="dlFormatCountBadge" class="results-count-pill">0 Options</span>
+        </div>
+
+        <!-- Video vs Audio Filter Bar -->
+        <div id="dlFormatsCategoryBar" class="formats-category-bar">
+          <button class="fmt-category-pill active" data-filter="all">
+            <i class="fa-solid fa-layer-group"></i> All (<span id="fmtCountAll">0</span>)
+          </button>
+          <button class="fmt-category-pill" data-filter="video">
+            <i class="fa-solid fa-video"></i> Video Qualities (<span id="fmtCountVideo">0</span>)
+          </button>
+          <button class="fmt-category-pill" data-filter="audio">
+            <i class="fa-solid fa-music"></i> Audio Only (<span id="fmtCountAudio">0</span>)
+          </button>
+        </div>
+
+        <div id="dlFormatsGrid" class="media-formats-grid-2026">
+          <!-- Dynamic Format Cards -->
+        </div>
+      </div>
+
+      <!-- Downloader Hub Mode Switcher (Device Downloads vs Google Drive Cloud Transfers) -->
+      <div class="dl-mode-switcher-bar">
+        <button id="btnSubTabDownloads" class="dl-mode-btn active" data-subtab="device">
+          <i class="fa-solid fa-circle-down"></i>
+          <span>Device Downloads</span>
+          <span id="subBadgeDownloads" class="sub-counter-pill">0</span>
+        </button>
+        <button id="btnSubTabTransfers" class="dl-mode-btn" data-subtab="transfers">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <span>Drive Transfers</span>
+          <span id="subBadgeTransfers" class="sub-counter-pill">0</span>
+        </button>
+      </div>
+
+      <!-- Container 1: Device Downloads Queue -->
+      <div id="dlContainerDevice" class="dl-sub-container">
+        <!-- Active Downloads Deck Header & Filters -->
+        <div class="dl-active-section-header" style="margin-top: 10px;">
+          <div class="section-title-row">
+            <h3 class="section-heading"><i class="fa-solid fa-layer-group" style="color: var(--accent-cyan);"></i>
+              Active
+              Download Queue</h3>
+            <span id="dlQueueCountBadge" class="results-count-pill">0 Tasks</span>
+          </div>
+
+          <!-- Filter Segmented Tabs -->
+          <div class="dl-segmented-filter-bar">
+            <button class="dl-filter-btn active" data-filter="all"><i class="fa-solid fa-layer-group"></i> All (<span
+                id="dlCountAll">0</span>)</button>
+            <button class="dl-filter-btn" data-filter="downloading"><i class="fa-solid fa-arrow-down"></i> Downloading
+              (<span id="dlCountDownloading">0</span>)</button>
+            <button class="dl-filter-btn" data-filter="paused"><i class="fa-solid fa-pause"></i> Paused (<span
+                id="dlCountPaused">0</span>)</button>
+            <button class="dl-filter-btn" data-filter="completed"><i class="fa-solid fa-circle-check"></i> Completed
+              (<span id="dlCountCompleted">0</span>)</button>
+            <button class="dl-filter-btn" data-filter="failed"><i class="fa-solid fa-triangle-exclamation"></i> Failed
+              (<span id="dlCountFailed">0</span>)</button>
+          </div>
+        </div>
+
+        <!-- Downloads Active Cards Grid -->
+        <div id="downloadsList" class="dl-cards-grid-2026">
+          <div class="dl-empty-state-2026" id="emptyDownloads">
+            <div class="dl-empty-icon-radar"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+            <h3>No Active Downloads</h3>
+            <p>Paste any video URL above or tap [Download MP4] on any Movie or Adult card to start instant offline
+              downloads.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Container 2: Cloud-to-Drive Transfers Queue (Drive Uploads) -->
+      <div id="dlContainerTransfers" class="dl-sub-container hidden">
+        <div class="tasks-header" style="margin-top: 10px;">
+          <div class="section-title">
+            <h2><i class="fa-solid fa-arrows-rotate"></i> Active Cloud Transfers</h2>
+            <p>Real-time Google Drive 0 MB uploads & cloud leech tasks</p>
+          </div>
+          <button id="btnClearTasks" class="btn-secondary"><i class="fa-solid fa-trash-can"></i> Clear Done</button>
+        </div>
+
+        <div id="tasksList" class="tasks-list">
+          <div class="empty-state" id="emptyTasks">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <h3>No Active Cloud Transfers</h3>
+            <p>Paste links or leech movies/18+ videos to upload directly into Google Drive.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 18+ Adult Tab View (2026 Velvet-Cinema Experience) -->
+    <section id="view-adult" class="tab-view">
+
+      <!-- Mode 0: Age Verification Gatekeeper Overlay (Section 3) -->
+      <div id="adultAgeGate" class="adult-age-gate-container">
+        <div class="adult-age-gate-card">
+          <div class="age-gate-badge"><i class="fa-solid fa-shield-halved"></i> 18+ Age Gate</div>
+          <h2>Adults Only (18+)</h2>
+          <p>This section contains mature age-restricted media. You must confirm that you are at least 18 years of age or older to enter.</p>
+          <div class="age-gate-actions">
+            <button id="btnConfirmAgeGate" class="btn-primary btn-age-confirm">
+              <i class="fa-solid fa-check"></i> I am 18 or Older — Enter
+            </button>
+            <button id="btnExitAgeGate" class="btn-secondary btn-age-exit">
+              <i class="fa-solid fa-arrow-left"></i> Exit to Movies
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mode A: Cinema Theater Video Watch Page -->
+      <div id="adultWatchView" class="adult-watch-view hidden">
+        <div class="watch-back-bar">
+          <button id="btnBackToAdultBrowse" class="btn-back-yt" title="Back to Feed">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back to 18+ Feed</span>
+          </button>
+          <div class="watch-meta-pills-right">
+            <span id="adultWatchSourceBadge" class="watch-src-pill">Pornhub</span>
+            <span class="watch-pipe-badge"><i class="fa-solid fa-bolt"></i> 0 MB PC Data Pipe</span>
+          </div>
+        </div>
+
+        <!-- Theater 16:9 Video Player Box with Pro Overlay Controls -->
+        <div id="adultTheaterContainer" class="theater-player-container fit-width">
+          <div class="video-theater-wrapper">
+            <iframe id="adultIframePlayer" class="hidden" src=""
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+              allowfullscreen="true"></iframe>
+            <video id="adultHtmlVideoPlayer" controls autoplay playsinline webkit-playsinline preload="auto"
+              class="hidden"></video>
+
+            <!-- Floating Exit Fullscreen Button -->
+            <button id="btnAdultExitFullscreen" class="btn-adult-exit-fullscreen" title="Exit Fullscreen">
+              <i class="fa-solid fa-compress"></i>
+              <span>Exit Fullscreen</span>
+            </button>
+
+            <!-- Seamless Cinematic Cross-Fade Backdrop (Section 9) -->
+            <div id="adultTransitionBackdrop" class="adult-transition-backdrop hidden"></div>
+
+            <!-- Touch Swipe Gesture Indicator HUD -->
+            <div id="adultSwipeIndicator" class="adult-swipe-indicator hidden">
+              <span id="adultSwipeIcon"><i class="fa-solid fa-forward-step"></i></span>
+              <span id="adultSwipeText">Next Video</span>
+            </div>
+
+            <!-- Pro Double-Tap Ripple Overlay -->
+            <div id="adultRippleLeft" class="player-seek-ripple left hidden">
+              <i class="fa-solid fa-backward"></i>
+              <span>-10s</span>
+            </div>
+            <div id="adultRippleRight" class="player-seek-ripple right hidden">
+              <i class="fa-solid fa-forward"></i>
+              <span>+10s</span>
+            </div>
+
+            <!-- Auto-Play Up Next Countdown Overlay -->
+            <div id="adultUpNextOverlay" class="adult-up-next-overlay hidden">
+              <div class="up-next-card">
+                <div class="up-next-badge"><i class="fa-solid fa-bolt"></i> Up Next in <span
+                    id="adultUpNextSec">4</span>s</div>
+                <div id="adultUpNextTitle" class="up-next-title">Next Video Title</div>
+                <div class="up-next-actions">
+                  <button id="btnCancelUpNext" class="btn-upnext-cancel">Cancel</button>
+                  <button id="btnPlayUpNextNow" class="btn-upnext-play"><i class="fa-solid fa-play"></i> Play
+                    Now</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Info & Theater Action Bar -->
+        <div class="yt-video-details">
+          <h2 id="adultWatchTitle" class="yt-video-title">Video Title</h2>
+          <div class="yt-video-submeta">
+            <span id="adultWatchDuration" class="meta-pill-mini"><i class="fa-solid fa-clock"></i> HD</span>
+            <span id="adultWatchRating" class="meta-pill-mini rating"><i class="fa-solid fa-star"></i> 1080p Full
+              HD</span>
+            <span class="meta-pill-mini cloud-tag"><i class="fa-solid fa-cloud-bolt"></i> Cloud Streaming</span>
+          </div>
+
+          <!-- YouTube Quality / Resolution Picker -->
+          <div id="adultQualityRow" class="yt-quality-row">
+            <div class="quality-label"><i class="fa-solid fa-sliders" style="color: var(--accent-magenta);"></i>
+              Resolution / Quality:</div>
+            <div id="adultQualityPills" class="quality-pills-container"></div>
+          </div>
+
+          <!-- YouTube Action Buttons Row with Next/Prev & Fit Screen -->
+          <div class="yt-action-bar">
+            <button id="btnAdultWatchPrev" class="yt-action-btn" title="Previous Video in Playlist">
+              <i class="fa-solid fa-backward-step"></i>
+              <span>Prev</span>
+            </button>
+            <button id="btnAdultWatchNext" class="yt-action-btn" title="Next Video in Playlist"
+              style="background: linear-gradient(135deg, #ff0844, #ff4e50); color: #fff; font-weight: 800;">
+              <i class="fa-solid fa-forward-step"></i>
+              <span>Next Video</span>
+            </button>
+            <button id="btnAdultWatchFullscreen" class="yt-action-btn" title="Fullscreen Cinema">
+              <i class="fa-solid fa-maximize"></i>
+              <span>Fullscreen</span>
+            </button>
+            <button id="btnAdultWatchNative" class="yt-action-btn"
+              title="Open in Hardware Cinema Pro Player (ExoPlayer)"
+              style="background: linear-gradient(135deg, #00f2fe, #4facfe); color: #05070b; font-weight: 800;">
+              <i class="fa-solid fa-play"></i>
+              <span>Pro Player</span>
+            </button>
+            <button id="btnAdultWatchDrive" class="yt-action-btn primary"
+              title="Upload directly to Google Drive (0 MB Local Data)">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <span>Leech to Drive</span>
+            </button>
+            <button id="btnAdultWatchDownload" class="yt-action-btn" title="Download MP4 to Device">
+              <i class="fa-solid fa-download"></i>
+              <span>Download</span>
+            </button>
+            <button id="btnAdultWatchPiP" class="yt-action-btn" title="Picture-in-Picture Floating Mode">
+              <i class="fa-solid fa-clone"></i>
+              <span>PiP</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Next-Gen 2026 Up Next / Related Videos Deck -->
+        <div class="yt-related-section-2026">
+          <div class="yt-related-header-row">
+            <h3 class="yt-related-title-heading">
+              <i class="fa-solid fa-layer-group" style="color: var(--accent-magenta);"></i>
+              <span>Up Next / Related Videos</span>
+            </h3>
+            <span class="related-badge-auto"><i class="fa-solid fa-bolt" style="color: var(--accent-magenta);"></i> Auto
+              Recommended</span>
+          </div>
+
+          <div id="adultRelatedFeed" class="yt-related-grid-2026"></div>
+        </div>
+      </div>
+
+      <!-- Mode B: Velvet-Cinema Browse Feed -->
+      <div id="adultBrowseView" class="adult-browse-view hidden">
+        <!-- 2026 Velvet Command Deck -->
+        <div class="adult-command-deck">
+          <div class="search-capsule-adult">
+            <div class="search-radar-badge-adult">
+              <i class="fa-solid fa-magnifying-glass search-icon-adult"></i>
+              <span class="radar-ping-ring-adult"></span>
+            </div>
+
+            <select id="adultSourceSelect" class="source-select-adult">
+              <option value="all">🌐 All Sources</option>
+              <option value="pornhub">🔥 Pornhub</option>
+              <option value="xhamster">🐹 xHamster</option>
+              <option value="xvideos">🔞 XVideos</option>
+              <option value="xnxx">💎 XNXX</option>
+              <option value="eporner">🌟 Eporner (4K)</option>
+              <option value="redtube">🎬 RedTube</option>
+            </select>
+
+            <input type="text" id="adultSearchInput" class="adult-search-input-command"
+              placeholder="Search 18+ 4K Videos, Japanese, Amateur, VR..." autocomplete="off" spellcheck="false">
+
+            <button id="btnClearAdultSearch" class="btn-clear-adult-search hidden" title="Clear Search">
+              <i class="fa-solid fa-circle-xmark"></i>
+            </button>
+
+            <button id="btnSearchAdult" class="btn-search-turbo-adult" title="Instant Search">
+              <i class="fa-solid fa-bolt-lightning"></i>
+              <span>Search</span>
+            </button>
+
+            <button id="btnAdultSettings" class="btn-search-turbo-adult" style="background: rgba(255,255,255,0.08); width: 42px; padding: 0; display: inline-flex; align-items: center; justify-content: center; margin-left: 6px;" title="Recommendation Settings">
+              <i class="fa-solid fa-sliders"></i>
+            </button>
+          </div>
+
+          <!-- Multi-Source Segmented Bar -->
+          <div class="source-pill-bar-2026">
+            <span class="source-pill active" data-src="all"><i class="fa-solid fa-globe"></i> All Sites</span>
+            <span class="source-pill" data-src="pornhub"><i class="fa-solid fa-fire"></i> Pornhub</span>
+            <span class="source-pill" data-src="xhamster"><i class="fa-solid fa-paw"></i> xHamster</span>
+            <span class="source-pill" data-src="xvideos"><i class="fa-solid fa-play"></i> XVideos</span>
+            <span class="source-pill" data-src="xnxx"><i class="fa-solid fa-gem"></i> XNXX</span>
+            <span class="source-pill" data-src="eporner"><i class="fa-solid fa-star"></i> Eporner (4K)</span>
+            <span class="source-pill" data-src="redtube"><i class="fa-solid fa-video"></i> RedTube</span>
+          </div>
+
+          <!-- Category Pills -->
+          <div class="category-pills-adult">
+            <span class="tag-pill active" data-q="for-you"><i class="fa-solid fa-wand-magic-sparkles"></i> 🎯 For You (AI)</span>
+            <span class="tag-pill" data-q="popular"><i class="fa-solid fa-fire"></i> Trending 2026</span>
+            <span class="tag-pill" data-q="fresh"><i class="fa-solid fa-seedling"></i> 🌱 Fresh</span>
+            <span class="tag-pill" data-q="4k"><i class="fa-solid fa-crown"></i> 4K Ultra HD</span>
+            <span class="tag-pill" data-q="japanese"><i class="fa-solid fa-sun"></i> Japanese</span>
+            <span class="tag-pill" data-q="amateur"><i class="fa-solid fa-camera"></i> Verified Amateur</span>
+            <span class="tag-pill" data-q="romance"><i class="fa-solid fa-heart"></i> Romance & VR</span>
+            <span class="tag-pill" data-q="hardcore"><i class="fa-solid fa-explosion"></i> Hardcore</span>
+          </div>
+
+          <!-- Algorithm Selector Bar -->
+          <div class="adult-algo-selector-bar">
+            <button class="algo-pill active" data-algo="for-you"><i class="fa-solid fa-wand-magic-sparkles"></i> 🎯 For You (AI)</button>
+            <button class="algo-pill" data-algo="fresh"><i class="fa-solid fa-seedling"></i> 🌱 Fresh</button>
+            <button class="algo-pill" data-algo="trending"><i class="fa-solid fa-fire"></i> 🔥 Trending</button>
+            <button class="algo-pill" data-algo="preferred-sources"><i class="fa-solid fa-star"></i> ⭐ Preferred Sources</button>
+            <button class="algo-pill" data-algo="4k"><i class="fa-solid fa-crown"></i> 👑 4K Master</button>
+            <button class="algo-pill" data-algo="top-rated"><i class="fa-solid fa-star"></i> ⭐ Top Rated</button>
+            <button class="algo-pill btn-algo-surprise" id="btnAdultSurprise"><i class="fa-solid fa-dice"></i> 🎲 Surprise Match</button>
+          </div>
+        </div>
+
+        <!-- Continue Watching Horizontal Rail (Section 26) -->
+        <div id="adultContinueWatchingSection" class="adult-rail-section hidden">
+          <div class="adult-rail-header">
+            <h4 class="adult-rail-title"><i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-magenta);"></i> Continue Watching</h4>
+            <span class="adult-rail-sub">Resume playback</span>
+          </div>
+          <div id="adultContinueWatchingRail" class="adult-rail-scroll"></div>
+        </div>
+
+        <!-- Because You Watched Horizontal Rail (Section 28) -->
+        <div id="adultBecauseYouWatchedSection" class="adult-rail-section hidden">
+          <div class="adult-rail-header">
+            <h4 class="adult-rail-title" id="adultBecauseYouWatchedTitle"><i class="fa-solid fa-sparkles" style="color: #ffd700;"></i> Because You Watched</h4>
+            <span class="adult-rail-sub">Personalized for you</span>
+          </div>
+          <div id="adultBecauseYouWatchedRail" class="adult-rail-scroll"></div>
+        </div>
+
+        <!-- Section Title & Results Counter -->
+        <div class="section-title-row">
+          <h3 class="section-heading" id="adultSectionTitle">
+            <i class="fa-solid fa-fire" style="color: var(--accent-magenta);"></i> 18+ Trending & HD Releases
+          </h3>
+          <span id="adultResultsCount" class="results-count-pill adult-pill">Live HD Feed</span>
+        </div>
+
+        <!-- Loading State Indicator -->
+        <div id="adultLoading" class="loading-spinner hidden">
+          <div class="spinner adult-spinner"></div>
+          <p>Extracting high-speed 1080p/4K streams...</p>
+        </div>
+
+        <!-- Video Results Grid -->
+        <div id="adultGrid" class="yt-video-feed"></div>
+
+        <!-- Hardware-Accelerated 60fps Infinite Scroll Sentinel -->
+        <div id="adultScrollSentinel" class="adult-scroll-sentinel"></div>
+
+        <!-- Floating Scroll to Top Pill Button -->
+        <button id="btnAdultScrollTop" class="btn-adult-scroll-top hidden" title="Back to Top">
+          <i class="fa-solid fa-arrow-up"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- 4. Offline Video Vault (Gallery) Tab View -->
+    <section id="view-gallery" class="tab-view">
+      <!-- Gallery Command Deck -->
+      <div class="gallery-command-deck">
+        <div class="gallery-stats-top-row">
+          <div class="gallery-stat-title">
+            <i class="fa-solid fa-film" style="color: #0084FF;"></i>
+            <span>Video Library</span>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <span class="gallery-storage-pill">
+              <i class="fa-solid fa-hard-drive"></i>
+              <span id="galleryTotalStorageText">0 MB</span>
+            </span>
+            <button id="btnRefreshGallery" class="btn-icon-simple" title="Scan Storage">
+              <i class="fa-solid fa-rotate-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Controls Row: Dual-Layout Switcher & Sorting Dropdown -->
+        <div class="gallery-controls-row">
+          <div class="gallery-layout-toggle">
+            <button class="btn-layout-mode active" id="btnLayoutGrid" data-layout="grid" title="Grid View">
+              <i class="fa-solid fa-table-cells"></i> <span>Grid</span>
+            </button>
+            <button class="btn-layout-mode" id="btnLayoutList" data-layout="list" title="List View">
+              <i class="fa-solid fa-list"></i> <span>List</span>
+            </button>
+          </div>
+
+          <select id="gallerySortSelect" class="gallery-sort-select">
+            <option value="newest">🔥 Date (Newest)</option>
+            <option value="name">🔤 Name (A-Z)</option>
+            <option value="largest">💾 Size (Largest)</option>
+            <option value="duration">⏱️ Duration (Longest)</option>
+          </select>
+        </div>
+
+        <!-- Search Capsule -->
+        <div class="search-capsule-gallery">
+          <i class="fa-solid fa-magnifying-glass" style="color: #0084FF;"></i>
+          <input type="text" id="gallerySearchInput" class="gallery-search-input" placeholder="Search offline videos..."
+            autocomplete="off">
+          <button id="btnClearGallerySearch" class="btn-clear-search-2026 hidden" title="Clear"><i
+              class="fa-solid fa-circle-xmark"></i></button>
+        </div>
+
+        <!-- Segmented Category Filters Bar (All, Movies, Media, 18+ Adult, Folders, Favorites) -->
+        <div class="gallery-segmented-bar">
+          <button class="gallery-filter-btn active" data-filter="all"><i class="fa-solid fa-layer-group"></i>
+            All</button>
+          <button class="gallery-filter-btn" data-filter="movies"><i class="fa-solid fa-film"></i> 🎬
+            Movies</button>
+          <button class="gallery-filter-btn" data-filter="media"><i class="fa-solid fa-bolt"></i> 📱
+            Media</button>
+          <button class="gallery-filter-btn" data-filter="adult"><i class="fa-solid fa-fire"></i> 🔞 18+
+            Vault</button>
+          <button class="gallery-filter-btn" data-filter="folders"><i class="fa-solid fa-folder"></i>
+            Folders</button>
+          <button class="gallery-filter-btn" data-filter="favorites"><i class="fa-solid fa-star"></i>
+            Favorites</button>
+        </div>
+      </div>
+
+      <!-- Section Title & Results Counter -->
+      <div class="section-title-row">
+        <h3 class="section-heading" id="gallerySectionHeading"><i class="fa-solid fa-folder-open"
+            style="color: #0084FF;"></i> All Offline Videos</h3>
+        <span id="galleryFileCountBadge" class="results-count-pill">0 Videos</span>
+      </div>
+
+      <!-- Gallery Grid (Supports grid-view and list-view) -->
+      <div id="galleryGrid" class="gallery-grid-2026 grid-view">
+        <!-- Dynamic Offline Cards -->
+      </div>
+    </section>
+
+    <!-- 5. Cloud Browser Tab View (Supports Native In-App Browser & Cyber Web Fallback) -->
+    <section id="view-browser" class="tab-view" style="background: #0a0c10; min-height: 100vh;">
+      <!-- Web Browser Navigation Header Bar -->
+      <div class="web-browser-toolbar" style="background: #15171e; border-bottom: 1px solid #262d40; padding: 10px 14px; display: flex; align-items: center; gap: 8px; z-index: 10;">
+        <button id="btnWebBrowserHome" class="btn-icon-simple" title="Browser Home" style="color: #00f2fe; width: 36px; height: 36px;">
+          <i class="fa-solid fa-house"></i>
+        </button>
+        <button id="btnWebBrowserReload" class="btn-icon-simple" title="Reload Page" style="width: 36px; height: 36px;">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+        <div class="web-browser-omnibox" style="flex: 1; display: flex; align-items: center; background: #0a0c10; border: 1px solid #262d40; border-radius: 20px; padding: 0 12px; height: 38px;">
+          <i id="webBrowserLockIcon" class="fa-solid fa-lock" style="color: #10b981; font-size: 0.8rem; margin-right: 8px;"></i>
+          <input type="text" id="webBrowserUrlInput" placeholder="Search Google or enter web address..." autocomplete="off" spellcheck="false" style="flex: 1; background: transparent; border: none; color: #fff; font-size: 0.85rem; outline: none;">
+          <button id="btnClearWebBrowserUrl" class="btn-clear-search-2026 hidden" title="Clear URL" style="margin-right: 4px;">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </button>
+          <select id="webBrowserEngineSelect" style="background: #15171e; color: #8a8d93; border: 1px solid #262d40; border-radius: 12px; font-size: 0.72rem; padding: 2px 6px; outline: none; margin-left: 6px;">
+            <option value="google">Google</option>
+            <option value="duckduckgo">DuckDuckGo</option>
+            <option value="bing">Bing</option>
+          </select>
+        </div>
+        <button id="btnWebBrowserGo" class="btn-micro-action" title="Navigate" style="background: linear-gradient(135deg, #00f2fe, #4facfe); color: #000; border: none; border-radius: 18px; padding: 7px 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+          <span>Go</span> <i class="fa-solid fa-arrow-right" style="font-size: 0.75rem;"></i>
+        </button>
+      </div>
+
+      <!-- Web Browser Start Page (Speed Dial & Cloud Link) -->
+      <div id="webBrowserStartPage" style="flex: 1; overflow-y: auto; padding: 24px 16px; display: flex; flex-direction: column; align-items: center;">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div style="width: 58px; height: 58px; border-radius: 50%; background: radial-gradient(circle, rgba(0, 242, 254, 0.2), rgba(10, 15, 29, 0.9)); border: 1px solid rgba(0, 242, 254, 0.4); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; box-shadow: 0 0 25px rgba(0, 242, 254, 0.25);">
+            <i class="fa-solid fa-compass" style="font-size: 1.8rem; color: #00f2fe;"></i>
+          </div>
+          <h2 style="font-size: 1.35rem; font-weight: 800; color: #fff; margin: 0 0 4px;">Cloud Web Browser</h2>
+          <p style="font-size: 0.8rem; color: #94a3b8; margin: 0;">uBlock AdBlock Shield • 0 MB Leech to Google Drive</p>
+        </div>
+
+        <!-- Google Drive Cloud Card -->
+        <div id="webBrowserDriveCard" style="width: 100%; max-width: 520px; background: #15171e; border: 1px solid #262d40; border-radius: 14px; padding: 14px 16px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(66, 133, 244, 0.15); border: 1px solid rgba(66, 133, 244, 0.35); display: flex; align-items: center; justify-content: center;">
+              <i class="fa-brands fa-google-drive" style="color: #4285f4; font-size: 1.2rem;"></i>
+            </div>
+            <div>
+              <div id="webBrowserDriveEmail" style="font-size: 0.85rem; font-weight: 700; color: #fff;">Google Drive</div>
+              <div id="webBrowserDriveQuota" style="font-size: 0.75rem; color: #94a3b8;">15 GB Cloud Storage Link</div>
+            </div>
+          </div>
+          <button id="btnWebBrowserDriveAction" class="btn-micro-action" style="background: rgba(0, 242, 254, 0.15); border: 1px solid rgba(0, 242, 254, 0.4); color: #00f2fe; padding: 6px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+            Open Drive
+          </button>
+        </div>
+
+        <!-- Speed Dial Shortcuts Grid -->
+        <div style="width: 100%; max-width: 520px;">
+          <div style="font-size: 0.8rem; font-weight: 700; color: #8a8d93; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">Quick Shortcuts</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px;">
+            <div class="web-speed-dial" data-url="https://www.google.com" style="background: #15171e; border: 1px solid #262d40; border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.2s ease;">
+              <span style="font-size: 1.5rem; margin-bottom: 6px;">🔍</span>
+              <span style="font-size: 0.75rem; font-weight: 600; color: #fff;">Google</span>
+            </div>
+            <div class="web-speed-dial" data-url="https://drive.google.com" style="background: #15171e; border: 1px solid #262d40; border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.2s ease;">
+              <span style="font-size: 1.5rem; margin-bottom: 6px;">📁</span>
+              <span style="font-size: 0.75rem; font-weight: 600; color: #fff;">Drive</span>
+            </div>
+            <div class="web-speed-dial" data-url="https://www.youtube.com" style="background: #15171e; border: 1px solid #262d40; border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.2s ease;">
+              <span style="font-size: 1.5rem; margin-bottom: 6px;">▶️</span>
+              <span style="font-size: 0.75rem; font-weight: 600; color: #fff;">YouTube</span>
+            </div>
+            <div class="web-speed-dial" data-url="https://sinhalasub.lk" style="background: #15171e; border: 1px solid #262d40; border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.2s ease;">
+              <span style="font-size: 1.5rem; margin-bottom: 6px;">🎬</span>
+              <span style="font-size: 0.75rem; font-weight: 600; color: #fff;">Sinhalasub</span>
+            </div>
+            <div class="web-speed-dial" data-url="https://www.baiscopelk.com" style="background: #15171e; border: 1px solid #262d40; border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.2s ease;">
+              <span style="font-size: 1.5rem; margin-bottom: 6px;">🍿</span>
+              <span style="font-size: 0.75rem; font-weight: 600; color: #fff;">Baiscope</span>
+            </div>
+            <div class="web-speed-dial" data-url="https://yts.mx" style="background: #15171e; border: 1px solid #262d40; border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.2s ease;">
+              <span style="font-size: 1.5rem; margin-bottom: 6px;">👑</span>
+              <span style="font-size: 0.75rem; font-weight: 600; color: #fff;">YTS 4K</span>
+            </div>
+            <div class="web-speed-dial" data-url="https://torrentgalaxy.to" style="background: #15171e; border: 1px solid #262d40; border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.2s ease;">
+              <span style="font-size: 1.5rem; margin-bottom: 6px;">🌌</span>
+              <span style="font-size: 0.75rem; font-weight: 600; color: #fff;">TorrentGalaxy</span>
+            </div>
+            <div class="web-speed-dial" data-url="https://1337x.to" style="background: #15171e; border: 1px solid #262d40; border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.2s ease;">
+              <span style="font-size: 1.5rem; margin-bottom: 6px;">⚡</span>
+              <span style="font-size: 0.75rem; font-weight: 600; color: #fff;">1337x</span>
+            </div>
+            <div class="web-speed-dial" data-url="https://www.wikipedia.org" style="background: #15171e; border: 1px solid #262d40; border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.2s ease;">
+              <span style="font-size: 1.5rem; margin-bottom: 6px;">📖</span>
+              <span style="font-size: 0.75rem; font-weight: 600; color: #fff;">Wikipedia</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Web Page Frame Container (Preview / Fallback Mode) -->
+      <div id="webBrowserFrameContainer" class="hidden" style="flex: 1; position: relative; width: 100%; height: 100%;">
+        <iframe id="browserProxyIframe" style="width: 100%; height: 100%; border: none; background: #fff;" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"></iframe>
+      </div>
+    </section>
+
+    <!-- 6. Google Drive Library Tab View (Clean Minimalist 2026 Edition) -->
+    <section id="view-drive" class="tab-view">
+      <!-- Drive Account Status / Connect Card -->
+      <div class="drive-account-card-simple" id="driveAccountCard">
+        <!-- State A: Not Connected View -->
+        <div id="driveDisconnectedView" class="drive-disconnected-box">
+          <div class="drive-simple-left">
+            <div class="drive-simple-icon"><i class="fa-brands fa-google-drive"></i></div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #fff;">Google Drive Cloud Link</h3>
+                <span class="auth-status-tag tag-not-linked"><i class="fa-solid fa-circle-xmark"></i> Not linked</span>
+              </div>
+              <p style="margin: 0; font-size: 0.8rem; color: #94a3b8; line-height: 1.4;">
+                Link your Google account for direct 0 MB cloud transfers, instant video streaming, and drive management.
+              </p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button id="btnGoogleSignInDirect" class="btn-google-auth-2026" title="Sign in with Google">
+              <svg class="google-g-svg" viewBox="0 0 24 24">
+                <path fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                <path fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+              </svg>
+              <span id="txtGoogleSignInLabel">Sign in with Google</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- State B: Connected Clean Dashboard -->
+        <div id="driveConnectedView" class="drive-connected-simple hidden">
+          <div class="drive-profile-row">
+            <div class="drive-user-info-clean">
+              <div class="drive-avatar-simple" id="driveAvatar">
+                <i class="fa-brands fa-google-drive"></i>
+              </div>
+              <div>
+                <div class="drive-name-text">
+                  <span id="driveUserName">Google User</span>
+                  <span class="auth-status-tag tag-linked"><i class="fa-solid fa-circle-check"></i> Linked</span>
+                </div>
+                <div class="drive-email-sub" id="driveUserEmail">user@gmail.com</div>
+              </div>
+            </div>
+
+            <!-- Storage Progress Meter -->
+            <div class="drive-storage-clean">
+              <div class="storage-text-row">
+                <span><i class="fa-solid fa-cloud"></i> Storage Quota</span>
+                <span id="driveStorageText" class="storage-number">0 GB of 15 GB</span>
+              </div>
+              <div class="storage-track-clean">
+                <div class="storage-fill-clean" id="driveStorageFill" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="drive-profile-actions">
+              <button id="btnSwitchGoogleAccount" class="btn-icon-simple" title="Switch Google Account"><i
+                  class="fa-solid fa-user-gear"></i></button>
+              <button id="btnRefreshDrive" class="btn-icon-simple" title="Refresh Drive Files"><i
+                  class="fa-solid fa-rotate-right"></i></button>
+              <button id="btnDisconnectDrive" class="btn-icon-simple danger" title="Unlink Google Account"><i
+                  class="fa-solid fa-link-slash"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drive Search & Quick Filter Deck -->
+      <div class="drive-search-filter-deck">
+        <div class="drive-search-capsule">
+          <i class="fa-solid fa-magnifying-glass search-icon-drive"></i>
+          <input type="text" id="driveFileSearchInput" placeholder="Search files in your Google Drive..."
+            autocomplete="off">
+          <button id="btnClearDriveSearch" class="btn-clear-drive-search hidden" title="Clear Search"><i
+              class="fa-solid fa-circle-xmark"></i></button>
+        </div>
+        <div class="drive-type-filters">
+          <button class="drive-filter-pill active" data-category="all"><i class="fa-solid fa-layer-group"></i> All Drive
+            Files</button>
+          <button class="drive-filter-pill" data-category="appFolder"><i class="fa-solid fa-folder"></i> 📁 Cloud
+            Drive Leech</button>
+          <button class="drive-filter-pill" data-category="movies"><i class="fa-solid fa-film"></i> 🎬 Videos</button>
+          <button class="drive-filter-pill" data-category="images"><i class="fa-solid fa-image"></i> 🖼️ Images</button>
+          <button class="drive-filter-pill" data-category="documents"><i class="fa-solid fa-file-lines"></i> 📄
+            Documents</button>
+          <button class="drive-filter-pill" data-category="archives"><i class="fa-solid fa-file-zipper"></i> 📦
+            Archives</button>
+        </div>
+      </div>
+
+      <!-- Real-Time Upload & Cloud Transfer Progress Banner -->
+      <div id="driveTransferProgressBanner" class="drive-transfer-progress-box hidden">
+        <div class="transfer-prog-header">
+          <div class="transfer-prog-title">
+            <i class="fa-solid fa-cloud-arrow-up fa-bounce" style="color: #4285F4;"></i>
+            <span id="driveTransferFileName">Uploading file...</span>
+          </div>
+          <span id="driveTransferPercentBadge" class="transfer-prog-badge">0%</span>
+        </div>
+        <div class="transfer-track">
+          <div id="driveTransferProgressBar" class="transfer-fill" style="width: 0%;"></div>
+        </div>
+        <div class="transfer-prog-footer">
+          <span id="driveTransferMetaText">0 MB / 0 MB</span>
+          <span id="driveTransferSpeedText">Streaming to Drive...</span>
+        </div>
+      </div>
+
+      <!-- Section Title & Results Counter -->
+      <div class="section-title-row">
+        <h3 class="section-heading"><i class="fa-solid fa-folder-open" style="color: #4285F4;"></i> Cloud Media Library
+        </h3>
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          <button id="btnUploadToDrive" class="btn-micro-action"
+            style="background: rgba(52, 168, 83, 0.15); border: 1px solid rgba(52, 168, 83, 0.4); color: #34A853; padding: 5px 11px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;"
+            title="Upload local file from device">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+            <span>Upload</span>
+          </button>
+          <button id="btnQuickTransferToDrive" class="btn-micro-action"
+            style="background: rgba(66, 133, 244, 0.15); border: 1px solid rgba(66, 133, 244, 0.35); color: #4285F4; padding: 5px 11px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;"
+            title="Leech remote URL directly into Drive">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>Transfer Link</span>
+          </button>
+          <button id="btnCreateDriveFolder" class="btn-micro-action"
+            style="background: rgba(251, 188, 5, 0.15); border: 1px solid rgba(251, 188, 5, 0.4); color: #fbbc05; padding: 5px 11px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;"
+            title="Create new folder in Drive">
+            <i class="fa-solid fa-folder-plus"></i>
+            <span>New Folder</span>
+          </button>
+          <span id="driveFileCountBadge" class="results-count-pill drive-count-pill">0 Files</span>
+        </div>
+      </div>
+
+      <div id="driveLoading" class="loading-spinner hidden">
+        <div class="spinner drive-spinner"></div>
+        <p>Loading files from Google Drive...</p>
+      </div>
+
+      <div id="driveFilesGrid" class="drive-files-grid-simple">
+        <!-- Dynamic Clean Drive File Cards -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <button class="nav-item" data-tab="movies">
+      <span class="nav-pro-tag">PRO</span>
+      <i class="fa-solid fa-film"></i>
+      <span>Movies</span>
+    </button>
+    <button class="nav-item active" data-tab="downloads">
+      <div class="nav-badge-wrapper">
+        <i class="fa-solid fa-circle-down"></i>
+        <span id="navDownloadsBadge" class="nav-badge hidden">0</span>
+      </div>
+      <span>Downloader</span>
+    </button>
+    <button class="nav-item" data-tab="adult">
+      <i class="fa-solid fa-fire"></i>
+      <span>18+ Hub</span>
+    </button>
+    <button class="nav-item" data-tab="gallery">
+      <i class="fa-solid fa-photo-film"></i>
+      <span>Gallery</span>
+    </button>
+    <button class="nav-item" data-tab="browser">
+      <i class="fa-solid fa-compass"></i>
+      <span>Browser</span>
+    </button>
+    <button class="nav-item" data-tab="drive">
+      <i class="fa-brands fa-google-drive"></i>
+      <span>Drive</span>
+    </button>
+  </nav>
+
+  <!-- Next-Gen Cinema Premiere Details Modal (Mobile-First Sheet & Desktop Premiere Card) -->
+  <div id="movieModal" class="modal-overlay hidden">
+    <div class="modal-content glass-card movie-modal-2026">
+      <!-- Mobile Drag Handle Bar -->
+      <div class="modal-drag-handle" aria-hidden="true">
+        <span class="drag-bar"></span>
+      </div>
+
+      <button class="modal-close modal-close-glow" id="btnCloseMovieModal" title="Close Modal">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- Dynamic Backdrop Hero Header -->
+      <div class="modal-backdrop-wrap">
+        <img id="modalBackdropImg" src="" alt="Backdrop" class="modal-backdrop-blur">
+        <div class="modal-backdrop-vignette"></div>
+        <div class="modal-backdrop-accent-glow"></div>
+      </div>
+
+      <!-- Movie Body Layout -->
+      <div class="modal-movie-layout">
+        <!-- Hero Header Row (Poster + Title + Metadata) -->
+        <div class="modal-hero-header-row">
+          <!-- Floating Poster Column -->
+          <div class="modal-poster-wrap">
+            <div class="modal-poster-frame">
+              <img id="modalMoviePoster" src="" alt="Poster" class="modal-poster">
+              <div class="poster-shine-reflection"></div>
+              <div class="poster-badge-hd">HD</div>
+            </div>
+            <span id="modalSourceBadge" class="modal-source-pill">Sinhalasub</span>
+          </div>
+
+          <!-- Movie Info Column -->
+          <div class="modal-movie-info">
+            <div class="modal-meta-row">
+              <span id="modalMovieYear" class="meta-pill year"><i class="fa-solid fa-calendar"></i> 2026</span>
+              <span id="modalMovieRating" class="meta-pill rating"><i class="fa-solid fa-star"></i> 8.5 IMDb</span>
+              <span class="meta-pill sub-badge"><i class="fa-solid fa-closed-captioning"></i> Sinhala Sub</span>
+              <button id="btnModalDirectDl" class="meta-pill btn-modal-dl" title="Direct Download Options"
+                style="background: linear-gradient(135deg, rgba(0, 242, 254, 0.22), rgba(168, 85, 247, 0.25)); border: 1px solid rgba(0, 242, 254, 0.45); color: #00f2fe; font-weight: 700; cursor: pointer;">
+                <i class="fa-solid fa-download"></i> Direct DL
+              </button>
+              <button id="btnModalWatchlist" class="meta-pill btn-modal-watchlist" title="Add to Watchlist"><i
+                  class="fa-regular fa-heart"></i> Watchlist</button>
+              <button id="btnModalTrailer" class="meta-pill btn-modal-trailer" title="Watch Official Trailer"><i
+                  class="fa-brands fa-youtube" style="color: #ff4757;"></i> Trailer</button>
+              <button id="btnModalRefreshLinks" class="meta-pill btn-modal-refresh" title="Refresh Live Stream Links"><i
+                  class="fa-solid fa-rotate-right"></i> Refresh</button>
+            </div>
+
+            <h2 id="modalMovieTitle" class="modal-title-2026">Movie Title</h2>
+          </div>
+        </div>
+
+        <!-- Storyline & Overview Section -->
+        <div class="modal-synopsis-card">
+          <div class="synopsis-header-row">
+            <div class="synopsis-label">
+              <i class="fa-solid fa-align-left" style="color: var(--accent-cyan);"></i>
+              <span>Storyline & Overview</span>
+            </div>
+            <button class="btn-synopsis-toggle hidden" id="btnToggleSynopsis">
+              <span>Read More</span> <i class="fa-solid fa-chevron-down"></i>
+            </button>
+          </div>
+          <p id="modalMovieSynopsis" class="modal-synopsis">Fetching direct cloud streams and qualities...</p>
+        </div>
+
+        <!-- TV Series Season & Episode Navigator (Auto-displayed for TV Series) -->
+        <div id="modalSeriesSection" class="modal-series-section hidden">
+          <div class="series-section-header">
+            <div class="series-header-title">
+              <i class="fa-solid fa-tv" style="color: #e50914;"></i>
+              <span>Seasons & Episodes</span>
+            </div>
+            <span class="series-current-pill" id="modalCurrentEpisodePill">Season 1 &bull; Episode 1</span>
+          </div>
+
+          <!-- Horizontal Season Selector Pills -->
+          <div id="modalSeasonTabs" class="season-pill-tabs"></div>
+
+          <!-- Episode Cards List -->
+          <div id="modalEpisodesList" class="episodes-cards-list"></div>
+        </div>
+
+        <!-- Quality Selection & Instant Transfer Section -->
+        <div class="qualities-section">
+          <div class="qualities-section-header">
+            <div class="qualities-title">
+              <i class="fa-solid fa-layer-group" style="color: var(--accent-cyan);"></i>
+              <span>Available Qualities & Cloud Streams</span>
+            </div>
+            <span class="cloud-zero-data-badge">
+              <i class="fa-solid fa-shield-halved"></i> 0 MB Mobile Data
+            </span>
+          </div>
+
+          <div id="modalQualitiesList" class="qualities-list">
+            <!-- Dynamic Quality Rows & Skeletons -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next-Gen 2026 Cinema Pro Video Player Modal (Master GalleryPlayer Edition) -->
+  <div id="playerModal" class="modal-overlay hidden">
+    <div class="modal-content glass-card player-modal-pro-2026 gallery-popup-card">
+      <!-- Ambient Reactive Glow Aura -->
+      <div id="playerAmbientGlow" class="player-ambient-aura gallery-popup-ambient-glow"></div>
+
+      <!-- Player Top Header Bar -->
+      <div class="gallery-popup-header player-hud-header">
+        <div class="popup-title-left player-hud-title-col">
+          <span id="playerSourceInfo" class="gallery-popup-cat-badge"><i class="fa-solid fa-bolt"></i> 1 Gbps Direct
+            Pipe</span>
+          <h4 id="playerTitle" class="gallery-popup-title player-title-text">Playing Media</h4>
+        </div>
+        <div class="popup-header-actions player-hud-top-actions">
+          <button id="btnPlayerRotateScreen" class="btn-popup-icon-act"
+            title="Rotate Screen Orientation (Landscape/Portrait)">
+            <i class="fa-solid fa-rotate"></i>
+          </button>
+          <button id="btnPlayerPip" class="btn-popup-icon-act" title="Picture in Picture (PiP)">
+            <i class="fa-solid fa-up-right-from-square"></i>
+          </button>
+          <button id="btnPlayerFullscreenTop" class="btn-popup-icon-act highlight" title="Expand Fullscreen">
+            <i class="fa-solid fa-expand"></i>
+          </button>
+          <button id="btnClosePlayer" class="btn-popup-icon-act close" title="Close Player (Esc)">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 16:9 Video Canvas Stage with Center & Bottom Overlay Controls -->
+      <div class="gallery-popup-video-stage player-stage-frame" id="playerStageFrame">
+        <div id="playerZipBanner" class="hidden"
+          style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 240px; padding: 24px; text-align: center; background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(10, 15, 29, 0.95) 100%);">
+          <div
+            style="width: 68px; height: 68px; border-radius: 50%; background: rgba(245, 158, 11, 0.18); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; border: 1px solid rgba(245, 158, 11, 0.4); box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);">
+            <i class="fa-solid fa-file-zipper" style="font-size: 2rem; color: #f59e0b;"></i>
+          </div>
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: #f59e0b; margin-bottom: 6px;">Compressed ZIP Archive
+            File</h3>
+          <p style="font-size: 0.85rem; color: #94a3b8; max-width: 380px; margin-bottom: 16px; line-height: 1.4;">This
+            media file is packed inside a .zip container. Direct video playback is not possible. Please download the
+            file or leech it to Google Drive to extract and watch.</p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+            <button id="btnZipDirectDownload" class="btn-pro-action highlight"
+              style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 700; padding: 8px 18px; border-radius: 20px; font-size: 0.85rem;">
+              <i class="fa-solid fa-download"></i> <span>Download ZIP File</span>
+            </button>
+            <button id="btnZipLeechDrive" class="btn-pro-action primary"
+              style="padding: 8px 18px; border-radius: 20px; font-size: 0.85rem;">
+              <i class="fa-solid fa-cloud-arrow-up"></i> <span>Leech to Google Drive</span>
+            </button>
+          </div>
+        </div>
+
+        <iframe id="iframeVideoPlayer" class="hidden" src=""
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+          allowfullscreen="true"></iframe>
+
+        <video id="htmlVideoPlayer" playsinline webkit-playsinline preload="auto"
+          class="gallery-popup-video-elem hidden"></video>
+        <div class="popup-video-vignette"></div>
+
+        <!-- Center Interactive Controls -->
+        <div class="popup-center-controls" id="playerCenterControls">
+          <button class="btn-skip-circ" id="btnRewind10" title="Rewind 10s">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span>10</span>
+          </button>
+          <div class="popup-center-play-btn" id="btnPlayerCenterPlay" title="Play / Pause">
+            <i class="fa-solid fa-play"></i>
+          </div>
+          <button class="btn-skip-circ" id="btnForward10" title="Forward 10s">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>10</span>
+          </button>
+        </div>
+
+        <!-- Mobile Double-Tap Skip Overlays -->
+        <div id="skipOverlayLeft" class="touch-skip-overlay left hidden">
+          <i class="fa-solid fa-rotate-left"></i>
+          <span>-10s</span>
+        </div>
+        <div id="skipOverlayRight" class="touch-skip-overlay right hidden">
+          <i class="fa-solid fa-rotate-right"></i>
+          <span>+10s</span>
+        </div>
+
+        <!-- Smooth Gesture Volume HUD -->
+        <div id="playerGestureHud" class="player-gesture-hud hidden">
+          <i class="fa-solid fa-volume-high" id="playerGestureIcon"></i>
+          <div class="player-gesture-bar-track">
+            <div class="player-gesture-bar-fill" id="playerGestureFill" style="width: 100%;"></div>
+          </div>
+          <span class="player-gesture-text" id="playerGestureText">Volume: 100%</span>
+        </div>
+
+        <!-- Bottom In-Video Scrubber Control Bar -->
+        <div class="popup-video-controls-overlay" id="playerControlsOverlay">
+          <button class="btn-ctrl-micro" id="btnPlayerPlayPause" title="Play / Pause">
+            <i class="fa-solid fa-play"></i>
+          </button>
+          <span class="popup-time-text" id="playerTimeText">00:00 / 00:00</span>
+
+          <!-- Smooth Draggable Progress Slider -->
+          <div class="popup-progress-track" id="playerProgressTrack">
+            <div class="popup-progress-fill" id="playerProgressFill" style="width: 0%;"></div>
+            <div class="popup-progress-glow-head" id="playerProgressHead"></div>
+          </div>
+
+          <button class="btn-ctrl-micro" id="btnPlayerSpeedToggle" title="Playback Speed">
+            <span id="playerSpeedToggleText"
+              style="font-size: 0.68rem; font-weight: 800; color: var(--accent-cyan);">1.0x</span>
+          </button>
+          <button class="btn-ctrl-micro" id="btnPlayerMute" title="Mute / Unmute">
+            <i class="fa-solid fa-volume-high"></i>
+          </button>
+          <button class="btn-ctrl-micro" id="btnAspectFit" title="Aspect Ratio Fit Mode">
+            <i class="fa-solid fa-crop-simple"></i>
+          </button>
+          <button class="btn-ctrl-micro" id="btnPlayerRotateScreenBottom" title="Rotate Screen (Landscape/Portrait)">
+            <i class="fa-solid fa-rotate"></i>
+          </button>
+          <button class="btn-ctrl-micro highlight" id="btnPlayerFullscreen" title="Full Screen Cinema Mode">
+            <i class="fa-solid fa-expand"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Futuristic 2026 Video Metadata & Metrics Dashboard Banner -->
+      <div class="gallery-popup-footer player-pro-control-deck">
+        <div class="popup-metrics-dashboard">
+          <div class="metric-card size-card">
+            <div class="metric-icon-wrap cyan">
+              <i class="fa-solid fa-database"></i>
+            </div>
+            <div class="metric-info-col">
+              <span class="metric-label">STREAM PIPE</span>
+              <span class="metric-value" id="playerMetricSpeed">--</span>
+            </div>
+          </div>
+
+          <div class="metric-card res-card">
+            <div class="metric-icon-wrap amber">
+              <i class="fa-solid fa-display"></i>
+            </div>
+            <div class="metric-info-col">
+              <span class="metric-label">RESOLUTION</span>
+              <span class="metric-value" id="playerMetricRes">--</span>
+            </div>
+          </div>
+
+          <div class="metric-card duration-card">
+            <div class="metric-icon-wrap purple">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="metric-info-col">
+              <span class="metric-label">DURATION</span>
+              <span class="metric-value" id="playerMetricDuration">--:--</span>
+            </div>
+          </div>
+
+          <div class="metric-card storage-card">
+            <div class="metric-icon-wrap green">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div class="metric-info-col">
+              <span class="metric-label">DATA TRANSFER</span>
+              <span class="metric-value" style="color: #34d399;">0 MB Mobile Data</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Bar: Leech to Drive & Download -->
+        <div class="player-action-bottom-bar" style="margin-top: 10px;">
+          <button id="btnPlayerOpenNativeCinema" class="btn-pro-action highlight"
+            style="background: linear-gradient(135deg, #00f2fe, #4facfe); color: #000; font-weight: 700;"
+            title="Open in Native Hardware-Accelerated Cinema Player (ExoPlayer)">
+            <i class="fa-solid fa-film"></i>
+            <span>Native Cinema Pro</span>
+          </button>
+          <button id="btnPlayerReturnToMovie" class="btn-pro-action movie-return hidden"
+            title="Back to Movie Qualities & Downloads">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Movie Qualities</span>
+          </button>
+          <button id="playerUploadDriveBtn" class="btn-pro-action primary"
+            title="Upload directly to Google Drive (0 MB Data)">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>Leech to Google Drive</span>
+          </button>
+          <a id="playerDirectDownload" href="#" class="btn-pro-action secondary" title="Direct Download to Local Device"
+            download>
+            <i class="fa-solid fa-download"></i>
+            <span>Download MP4</span>
+          </a>
+          <button id="btnCopyStreamLink" class="btn-pro-action tertiary" title="Copy Direct Stream Link">
+            <i class="fa-solid fa-copy"></i>
+            <span>Copy Link</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google Drive Account Linking & OAuth 2.0 Modal (2026 Pro Edition) -->
+  <div id="gdriveAuthModal" class="modal-overlay hidden">
+    <div class="modal-content glass-card settings-modal-2026" style="max-width: 500px;">
+      <div class="settings-top-header">
+        <div class="settings-brand-col">
+          <div class="settings-aura-badge" style="background: rgba(66, 133, 244, 0.18); color: #4285F4;">
+            <i class="fa-brands fa-google-drive"></i>
+          </div>
+          <div>
+            <h2 class="settings-title">Link Google Account</h2>
+            <p class="settings-subtext">Google Drive 0 MB Cloud Leech & Direct Streaming</p>
+          </div>
+        </div>
+        <button class="modal-close modal-close-glow" id="btnCloseGdriveAuthModal" title="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="settings-scroll-body" style="padding: 16px 20px;">
+        <!-- 0. Official Google Live OAuth 2.0 (Real Files & Real Quota Sync) -->
+        <div class="settings-card-block"
+          style="margin-bottom: 16px; border: 1.5px solid #4285F4; background: linear-gradient(135deg, rgba(66, 133, 244, 0.12), rgba(52, 168, 83, 0.08));">
+          <div class="card-block-header"
+            style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="card-icon-pill" style="background: #4285F4; color: #fff;">
+                <i class="fa-brands fa-google-drive"></i>
+              </div>
+              <div>
+                <h3 style="color: #fff; font-size: 0.96rem;">Live Google Drive Sync</h3>
+                <p style="color: #94a3b8; font-size: 0.76rem;">Connect your real Google Drive to view all files &
+                  storage</p>
+              </div>
+            </div>
+            <span
+              style="font-size: 0.7rem; color: #34A853; background: rgba(52, 168, 83, 0.15); padding: 3px 8px; border-radius: 8px; font-weight: 700; border: 1px solid rgba(52, 168, 83, 0.3);">100%
+              Real</span>
+          </div>
+
+          <button id="btnLaunchOfficialGoogleOAuth" class="btn-google-auth-2026"
+            style="width: 100%; justify-content: center; padding: 13px 20px; background: #fff; color: #1e293b; border-radius: 12px; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);">
+            <svg class="google-g-svg" viewBox="0 0 24 24">
+              <path fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+              <path fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+            </svg>
+            <span style="font-weight: 800; font-size: 0.9rem;">Sign in with Google (Live Sync)</span>
+          </button>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Next-Gen 2026 Settings Command Center Modal -->
+  <div id="settingsModal" class="modal-overlay hidden">
+    <div class="modal-content glass-card settings-modal-2026">
+      <div class="settings-top-header">
+        <div class="settings-brand-col">
+          <div class="settings-aura-badge"><i class="fa-solid fa-sliders"></i></div>
+          <div>
+            <h2 class="settings-title">Settings & Cloud Engine Hub</h2>
+            <p class="settings-subtext">Manage Remote Cloud Runner, Colab Tunnels & Google Drive</p>
+          </div>
+        </div>
+        <button class="modal-close modal-close-glow" id="btnCloseSettings" title="Close Settings">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="settings-scroll-body">
+        <!-- 🔑 PRO License & Per-Tab Feature Control (Master Prompt Standards) -->
+        <div class="license-settings-card" id="licenseSettingsCard">
+          <div class="license-card-header">
+            <div class="license-header-title">
+              <i class="fa-solid fa-key"></i>
+              <span>PRO License & Device Access</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button type="button" id="btnSyncLicense" class="btn-sync-license" title="Sync license status with admin server">
+                <i class="fa-solid fa-rotate"></i>
+              </button>
+              <span id="settingLicenseBadge" class="license-status-badge free">FREE TIER</span>
+            </div>
+          </div>
+
+          <div class="license-input-row">
+            <input type="text" id="settingLicenseKeyInput" class="license-input" placeholder="Enter Key e.g. CLD-PRO-ALL-ACCESS" spellcheck="false" autocomplete="off">
+            <button type="button" id="btnActivateLicense" class="btn-activate-license">
+              <i class="fa-solid fa-key"></i>
+              <span>Activate</span>
+            </button>
+          </div>
+
+          <div class="license-device-row">
+            <div>
+              <span>Device ID: </span>
+              <span id="settingLicenseDeviceId" class="license-device-id">Detecting...</span>
+            </div>
+            <span id="licenseLastSyncText" style="color: #64748b; font-size: 0.7rem; font-family: monospace;">Synced: Ready</span>
+          </div>
+
+          <div class="license-plan-info-row" id="settingLicensePlanInfoRow" style="display: flex; justify-content: space-between; align-items: center; background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.05); padding: 8px 12px; border-radius: 8px; margin: 8px 0 10px; font-size: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-crown" style="color: #f59e0b;"></i>
+              <span style="color: #94a3b8;">Plan:</span>
+              <strong id="settingLicensePlanName" style="color: #38bdf8;">FREE TIER</strong>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-calendar-days" style="color: #10b981;"></i>
+              <span style="color: #94a3b8;">Expires:</span>
+              <strong id="settingLicenseExpiryText" style="color: #cbd5e1;">Lifetime</strong>
+            </div>
+          </div>
+
+          <div style="font-size: 0.72rem; font-weight: 700; color: #94a3b8; margin-bottom: 6px;">
+            <i class="fa-solid fa-list-check" style="color: #00f2fe;"></i> Feature Access Permissions:
+          </div>
+          <div id="settingLicenseFeaturesList" class="license-features-grid">
+            <!-- Populated dynamically by license.js -->
+          </div>
+        </div>
+
+        <!-- 🛡️ NetMod-Style Compact V2Ray / Xray VPN Card -->
+        <div class="netmod-card" id="netmodVpnCard">
+          <!-- Top Bar: Core Badge + Protocol Pill + Latency + Master Switch -->
+          <div class="netmod-top-bar">
+            <div class="netmod-badge-group">
+              <span class="netmod-core-badge"><i class="fa-solid fa-bolt-lightning"></i> XRAY CORE</span>
+              <span class="netmod-proto-pill" id="netmodProtoPill">VLESS</span>
+            </div>
+            <div class="netmod-top-actions">
+              <span id="vpnLatencyBadge" class="netmod-ping-badge" title="Tap to test ping">
+                <i class="fa-solid fa-gauge-high"></i> -- ms
+              </span>
+              <label class="netmod-switch" title="Toggle VPN">
+                <input type="checkbox" id="vpnMasterToggle">
+                <span class="netmod-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Middle Bar: Clickable Node Selector (NetMod Signature Element) -->
+          <div class="netmod-node-selector" id="netmodNodeSelector" title="Tap to choose node">
+            <div class="netmod-node-flag" id="netmodNodeFlag">🌐</div>
+            <div class="netmod-node-details">
+              <div class="netmod-node-title" id="netmodNodeTitle">Select VPN Server Node</div>
+              <div class="netmod-node-sub" id="netmodNodeSub">Tap to open server list • Xray Core</div>
+            </div>
+            <div class="netmod-node-status" id="vpnStatusBox">
+              <span class="netmod-pulse-dot" id="netmodPulseDot"></span>
+              <span id="vpnStatusLabel" class="netmod-status-text">OFFLINE</span>
+              <i class="fa-solid fa-chevron-right netmod-chevron"></i>
+            </div>
+          </div>
+
+          <!-- Real-Time Telemetry Strip (Slim Cyber Glass Bar) -->
+          <div class="netmod-traffic-strip" id="vpnTrafficMeter">
+            <div class="netmod-stat-item">
+              <div class="netmod-stat-icon-wrap dl">
+                <i class="fa-solid fa-arrow-down"></i>
+              </div>
+              <div class="netmod-stat-meta">
+                <span class="netmod-stat-label">DL</span>
+                <strong id="vpnDownloadBytes" class="netmod-stat-val">0.0 MB</strong>
+                <span id="vpnDownloadSpeed" class="netmod-stat-speed">0.0 Mbps</span>
+              </div>
+            </div>
+            <div class="netmod-stat-divider"></div>
+            <div class="netmod-stat-item">
+              <div class="netmod-stat-icon-wrap ul">
+                <i class="fa-solid fa-arrow-up"></i>
+              </div>
+              <div class="netmod-stat-meta">
+                <span class="netmod-stat-label">UL</span>
+                <strong id="vpnUploadBytes" class="netmod-stat-val">0.0 MB</strong>
+                <span id="vpnUploadSpeed" class="netmod-stat-speed">0.0 Mbps</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Action Icon Toolbar (NetMod Style Horizontal Bar) -->
+          <div class="netmod-toolbar">
+            <button type="button" id="btnPasteV2Ray" class="netmod-tool-btn" title="Paste & Connect from Clipboard">
+              <i class="fa-solid fa-clipboard" style="color: #c084fc;"></i>
+              <span>Paste</span>
+            </button>
+            <button type="button" id="btnVpnOpenServers" class="netmod-tool-btn" title="Server List">
+              <i class="fa-solid fa-server" style="color: #00f2fe;"></i>
+              <span>Servers</span>
+            </button>
+            <button type="button" id="btnVpnOpenQrScan" class="netmod-tool-btn" title="Scan QR Code">
+              <i class="fa-solid fa-qrcode" style="color: #a855f7;"></i>
+              <span>Scan</span>
+            </button>
+            <button type="button" id="btnToggleUriDrawer" class="netmod-tool-btn" title="Direct URI Editor">
+              <i class="fa-solid fa-code" style="color: #38bdf8;"></i>
+              <span>Config</span>
+            </button>
+            <button type="button" id="btnVpnOpenRouting" class="netmod-tool-btn" title="Routing & Per-App">
+              <i class="fa-solid fa-network-wired" style="color: #3b82f6;"></i>
+              <span>Routing</span>
+            </button>
+            <button type="button" id="btnVpnOpenDiag" class="netmod-tool-btn" title="Diagnostics">
+              <i class="fa-solid fa-stethoscope" style="color: #2ed573;"></i>
+              <span>Diag</span>
+            </button>
+            <button type="button" id="btnVpnOpenSubs" class="netmod-tool-btn" title="Subscriptions">
+              <i class="fa-solid fa-rss" style="color: #f59e0b;"></i>
+              <span>Subs</span>
+            </button>
+            <button type="button" id="btnVpnOpenLogs" class="netmod-tool-btn" title="Audit Logs">
+              <i class="fa-solid fa-terminal" style="color: #94a3b8;"></i>
+              <span>Logs</span>
+            </button>
+          </div>
+
+          <!-- Custom URI Drawer (Manual URL edit/save & connect) -->
+          <div class="netmod-uri-drawer" id="netmodUriDrawer">
+            <div class="netmod-drawer-header">
+              <span><i class="fa-solid fa-link"></i> Add / Edit V2Ray Server URI</span>
+              <span class="netmod-drawer-hint">SS, SSR, Trojan, VLESS, VMess, TUIC, Hysteria2</span>
+            </div>
+            <div class="netmod-uri-row">
+              <input type="text" id="inputV2RayPayload"
+                placeholder="Paste SS | SSR | Trojan | VLESS | VMess | TUIC | Hy2 link..." autocomplete="off"
+                spellcheck="false">
+              <button type="button" id="btnSavePayloadToList" class="netmod-drawer-btn" title="Save to Server List">
+                <i class="fa-solid fa-bookmark"></i>
+              </button>
+              <button type="button" id="btnSaveV2RayPayload" class="netmod-drawer-btn-connect" title="Connect">
+                <i class="fa-solid fa-bolt"></i> Connect
+              </button>
+            </div>
+          </div>
+
+          <!-- Dedicated NetMod Message / Alert Strip -->
+          <div class="netmod-msg-strip hidden" id="netmodMsgStrip">
+            <i class="fa-solid fa-circle-info" id="netmodMsgIcon"></i>
+            <span id="netmodMsgText"></span>
+          </div>
+
+          <!-- Unrestricted Background Sync Banner (All-App Keepalive) -->
+          <div class="netmod-bg-sync-banner hidden" id="netmodBgSyncBanner" style="display: none; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 6px 10px; margin-top: 6px; font-size: 0.72rem; color: #93c5fd; align-items: center; justify-content: space-between; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-shield-halved" style="color: #60a5fa;"></i>
+              <span>Keep VPN & all background apps active when screen is locked</span>
+            </div>
+            <button type="button" id="btnEnableBgSync" style="background: #3b82f6; color: #fff; border: none; border-radius: 4px; padding: 3px 8px; font-size: 0.7rem; font-weight: 600; cursor: pointer;">Enable</button>
+          </div>
+
+          <!-- Hidden Presets Container to maintain reference compatibility -->
+          <div id="savedPayloadsList" style="display: none;"></div>
+        </div>
+
+        <!-- Optional Remote Cloud Runner (Cloudflare / Colab Tunnel) -->
+        <div class="settings-card-block cloud-runner-block">
+          <div class="card-block-header">
+            <div class="card-icon-pill runner-pill" style="background: rgba(0, 242, 254, 0.15); color: #00f2fe;">
+              <i class="fa-solid fa-bolt-lightning"></i>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3>Optional Remote Cloud Runner</h3>
+                <span class="platform-tag" style="background: rgba(0, 242, 254, 0.1); color: #00f2fe; border: 1px solid rgba(0, 242, 254, 0.3); border-radius: 6px; padding: 2px 8px; font-size: 0.7rem; font-weight: 700;">Optional</span>
+              </div>
+              <p>Enter optional Cloudflare Tunnel URL for zero phone data cloud transfers.</p>
+            </div>
+          </div>
+
+          <!-- Active Worker Status Pill -->
+          <div id="cloudWorkerStatusBox" class="cloud-worker-status-box">
+            <div class="status-indicator-col">
+              <span class="status-pulse-dot" style="background: #a0aec0; box-shadow: none;"></span>
+              <span id="cloudWorkerStatusLabel" class="status-label-text">Cloud Runner: Not Configured (Using Direct Phone Data)</span>
+            </div>
+            <span id="cloudWorkerLatencyBadge" class="latency-badge" style="color: #a0aec0; border-color: rgba(255,255,255,0.1);"><i class="fa-solid fa-gauge-high"></i> Ready</span>
+          </div>
+
+          <!-- Worker URL Input Form -->
+          <div class="worker-input-wrap">
+            <label for="inputCloudWorkerUrl"><i class="fa-solid fa-link"></i> Cloud Runner URL (e.g. https://xxxx.trycloudflare.com):</label>
+            <div class="input-with-action">
+              <input type="text" id="inputCloudWorkerUrl" placeholder="https://xxxx.trycloudflare.com (Optional)"
+                autocomplete="off" spellcheck="false">
+              <button id="btnSaveCloudWorker" class="btn-save-worker" title="Save & Test Connection">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span>Save & Ping</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. ☁️ Google Drive Account Profile & Quota -->
+        <div class="settings-card-block">
+          <div class="card-block-header">
+            <div class="card-icon-pill drive-pill"><i class="fa-brands fa-google-drive"></i></div>
+            <div>
+              <h3>Connected Google Drive Account</h3>
+              <p>Destination account where all 0 MB cloud transfers are stored.</p>
+            </div>
+          </div>
+
+          <div id="gdriveAccountCard" class="gdrive-account-profile-card">
+            <div class="gdrive-user-info">
+              <div class="gdrive-avatar-wrap">
+                <img id="settingsGdriveAvatar" src="https://lh3.googleusercontent.com/a/default-user" alt="Avatar">
+              </div>
+              <div class="gdrive-details">
+                <div id="settingsGdriveName" class="gdrive-user-name">Google Drive User</div>
+                <div id="settingsGdriveEmail" class="gdrive-user-email">chathura4003@gmail.com</div>
+              </div>
+            </div>
+
+            <!-- Storage Progress Meter -->
+            <div class="drive-quota-section">
+              <div class="quota-labels">
+                <span><i class="fa-solid fa-hard-drive"></i> Cloud Storage</span>
+                <span id="settingsDriveQuotaText">0 MB / 15 GB Used</span>
+              </div>
+              <div class="quota-track">
+                <div id="settingsDriveQuotaFill" class="quota-fill" style="width: 5%;"></div>
+              </div>
+            </div>
+
+            <div class="account-actions-row">
+              <button id="btnGoogleSignInSettings" class="btn-account-action primary">
+                <i class="fa-solid fa-rotate"></i>
+                <span>Switch / Reconnect Account</span>
+              </button>
+              <button id="btnGoogleDisconnectSettings" class="btn-account-action danger">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Disconnect</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 📁 3 Category Cloud Folders -->
+        <div class="settings-card-block">
+          <div class="card-block-header">
+            <div class="card-icon-pill folder-pill"><i class="fa-solid fa-folder-tree"></i></div>
+            <div>
+              <h3>Category Cloud Subfolders</h3>
+              <p>Automatic categorization path in Google Drive.</p>
+            </div>
+          </div>
+
+          <div class="category-folders-status-grid">
+            <div class="folder-status-pill">
+              <span class="f-icon">🎬</span>
+              <div class="f-info">
+                <div class="f-name">Movies & Cinema</div>
+                <div class="f-path">Cloud Media Downloads / Movies & Cinema</div>
+              </div>
+              <span class="f-badge">Auto Routed</span>
+            </div>
+
+            <div class="folder-status-pill">
+              <span class="f-icon">📱</span>
+              <div class="f-info">
+                <div class="f-name">Social Media & Videos</div>
+                <div class="f-path">Cloud Media Downloads / Social Media & Videos</div>
+              </div>
+              <span class="f-badge">Auto Routed</span>
+            </div>
+
+            <div class="folder-status-pill">
+              <span class="f-icon">🔞</span>
+              <div class="f-info">
+                <div class="f-name">18+ Adult Hub</div>
+                <div class="f-path">Cloud Media Downloads / 18+ Adult Hub</div>
+              </div>
+              <span class="f-badge">Auto Routed</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 🚀 System Updates (Over-The-Air / OTA) -->
+        <div class="settings-card-block settings-ota-card">
+          <div class="card-block-header">
+            <div class="card-icon-pill" style="background: rgba(0, 242, 254, 0.15); color: #00f2fe;">
+              <i class="fa-solid fa-cloud-arrow-down"></i>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3>System Updates (OTA)</h3>
+                <span id="settingsOtaBadge" class="ota-badge-pill up-to-date">Up to Date</span>
+              </div>
+              <p id="settingsOtaStatusText">App version: v1.0.0 (Official Build)</p>
+            </div>
+          </div>
+
+          <div id="settingsOtaChangelogBox" class="settings-ota-changelog" style="display: none;"></div>
+
+          <div style="display: flex; gap: 10px; margin-top: 14px;">
+            <button id="btnOtaCheckSettings" class="btn-colab-copy primary" style="flex: 1;">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              <span>Check for Updates</span>
+            </button>
+            <button id="btnSettingsOtaUpdate" class="btn-colab-copy secondary"
+              style="display: none; background: linear-gradient(135deg, #00f2fe, #4facfe); color: #000; font-weight: 700;">
+              <i class="fa-solid fa-download"></i>
+              <span>Install Update</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. 🧹 Storage & Local Cache Maintenance -->
+        <div class="settings-card-block">
+          <div class="card-block-header">
+            <div class="card-icon-pill" style="background: rgba(255, 71, 87, 0.15); color: #ff4757;">
+              <i class="fa-solid fa-broom"></i>
+            </div>
+            <div>
+              <h3>App Storage & Cache Maintenance</h3>
+              <p>Purge temporary scraped thumbnails, buffers, and cached data.</p>
+            </div>
+          </div>
+
+          <div style="margin-top: 12px;">
+            <button id="btnSettingsClearCache" class="btn-colab-copy"
+              style="width: 100%; border-color: rgba(255, 71, 87, 0.35); color: #ff6b81; background: rgba(255, 71, 87, 0.08);">
+              <i class="fa-solid fa-trash-can"></i>
+              <span>Clear App Cache & Reload</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 5. 🔞 18+ Discovery, Algorithm & Privacy Settings (Master Prompt Sections 35, 36, 70, 71) -->
+        <div class="settings-card-block" style="border: 1px solid rgba(255, 0, 127, 0.3); background: rgba(255, 0, 127, 0.03);">
+          <div class="card-block-header">
+            <div class="card-icon-pill" style="background: rgba(255, 0, 127, 0.2); color: #ff007f;">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+              <h3>18+ Discovery & Privacy Controls</h3>
+              <p>On-device personalization, watch history, and content safety.</p>
+            </div>
+          </div>
+
+          <div class="settings-toggle-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+              <div>
+                <div style="font-weight: 700; font-size: 0.85rem; color: #fff;">Personalized For You Feed</div>
+                <div style="font-size: 0.72rem; color: var(--text-muted);">Learn from real watch completion & likes</div>
+              </div>
+              <input type="checkbox" id="toggleAdultPersonalization" checked style="accent-color: #ff007f; width: 18px; height: 18px; cursor: pointer;">
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+              <div>
+                <div style="font-weight: 700; font-size: 0.85rem; color: #fff;">On-Device Watch History</div>
+                <div style="font-size: 0.72rem; color: var(--text-muted);">Local-only history, never uploaded</div>
+              </div>
+              <input type="checkbox" id="toggleAdultHistory" checked style="accent-color: #ff007f; width: 18px; height: 18px; cursor: pointer;">
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+              <div>
+                <div style="font-weight: 700; font-size: 0.85rem; color: #fff;">Continue Watching Rail</div>
+                <div style="font-size: 0.72rem; color: var(--text-muted);">Resume unfinished playback on browse feed</div>
+              </div>
+              <input type="checkbox" id="toggleAdultContinueWatching" checked style="accent-color: #ff007f; width: 18px; height: 18px; cursor: pointer;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px;">
+            <button id="btnResetAdultTaste" class="btn-colab-copy" style="font-size: 0.78rem; padding: 9px; border-color: rgba(255, 0, 127, 0.35); color: #ff007f;">
+              <i class="fa-solid fa-rotate-left"></i> Reset Algorithm
+            </button>
+            <button id="btnClearAdultHistory" class="btn-colab-copy" style="font-size: 0.78rem; padding: 9px; border-color: rgba(255, 255, 255, 0.15); color: var(--text-muted);">
+              <i class="fa-solid fa-clock-rotate-left"></i> Clear History
+            </button>
+            <button id="btnClearAdultCache" class="btn-colab-copy" style="font-size: 0.78rem; padding: 9px; border-color: rgba(255, 255, 255, 0.15); color: var(--text-muted);">
+              <i class="fa-solid fa-trash-can"></i> Clear 18+ Cache
+            </button>
+            <button id="btnLockAdultGate" class="btn-colab-copy" style="font-size: 0.78rem; padding: 9px; border-color: rgba(255, 71, 87, 0.35); color: #ff4757;">
+              <i class="fa-solid fa-lock"></i> Lock 18+ Tab
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 2026 Gallery Centered Popup Cinema Player Modal (Master Edition) -->
+  <div id="galleryMiniModal" class="modal-overlay hidden">
+    <div class="gallery-popup-card">
+      <!-- Ambient Reactive Glow Aura -->
+      <div class="gallery-popup-ambient-glow"></div>
+
+      <!-- Top Header Bar -->
+      <div class="gallery-popup-header">
+        <div class="popup-title-left">
+          <span id="galleryMiniCatBadge" class="gallery-popup-cat-badge">🎬 Movie</span>
+          <h4 id="galleryMiniTitle" class="gallery-popup-title">Offline Video</h4>
+        </div>
+        <div class="popup-header-actions">
+          <button id="btnPopupRotateScreenTop" class="btn-popup-icon-act"
+            title="Rotate Screen Orientation (Landscape/Portrait)">
+            <i class="fa-solid fa-rotate"></i>
+          </button>
+          <button id="btnPopupFullscreenTop" class="btn-popup-icon-act highlight"
+            title="Expand to Fullscreen Cinema Mode">
+            <i class="fa-solid fa-expand"></i>
+          </button>
+          <button id="btnCloseGalleryMini" class="btn-popup-icon-act close" title="Close Player">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 16:9 Video Canvas Stage with Overlay Controls -->
+      <div class="gallery-popup-video-stage" id="galleryPopupStage">
+        <video id="galleryMiniVideo" playsinline preload="metadata" class="gallery-popup-video-elem"></video>
+        <div class="popup-video-vignette"></div>
+
+        <!-- Center Interactive Controls -->
+        <div class="popup-center-controls">
+          <button class="btn-skip-circ" id="btnPopupRewind10" title="Rewind 10s">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span>10</span>
+          </button>
+          <div class="popup-center-play-btn" id="btnPopupCenterPlay" title="Play / Pause">
+            <i class="fa-solid fa-play"></i>
+          </div>
+          <button class="btn-skip-circ" id="btnPopupForward10" title="Forward 10s">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>10</span>
+          </button>
+        </div>
+
+        <!-- Bottom In-Video Control Bar -->
+        <div class="popup-video-controls-overlay" id="popupControlsOverlay">
+          <button class="btn-ctrl-micro" id="btnPopupPlayPause" title="Play / Pause" aria-label="Play or Pause Video">
+            <i class="fa-solid fa-play"></i>
+          </button>
+          <span class="popup-time-text" id="popupTimeText">00:00 / 00:00</span>
+
+          <!-- Smooth Progress Slider -->
+          <div class="popup-progress-track" id="popupProgressTrack">
+            <div class="popup-progress-fill" id="popupProgressFill" style="width: 0%;"></div>
+            <div class="popup-progress-glow-head" id="popupProgressHead"></div>
+          </div>
+
+          <button class="btn-ctrl-micro" id="btnPopupSpeed" title="Playback Speed">
+            <span id="popupSpeedText"
+              style="font-size: 0.68rem; font-weight: 800; color: var(--accent-cyan);">1.0x</span>
+          </button>
+          <button class="btn-ctrl-micro" id="btnPopupMute" title="Mute/Unmute">
+            <i class="fa-solid fa-volume-high"></i>
+          </button>
+          <button class="btn-ctrl-micro" id="btnPopupRotateScreenBottom" title="Rotate Screen (Landscape/Portrait)">
+            <i class="fa-solid fa-rotate"></i>
+          </button>
+          <button class="btn-ctrl-micro" id="btnPopupPipAction" title="Picture in Picture">
+            <i class="fa-solid fa-crop-simple"></i>
+          </button>
+          <button class="btn-ctrl-micro highlight" id="btnGalleryMiniFullscreen" title="Full Screen Pro">
+            <i class="fa-solid fa-expand"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Futuristic 2026 Video Metadata & Metrics Dashboard Banner -->
+      <div class="gallery-popup-footer">
+        <div class="popup-metrics-dashboard">
+          <!-- Metric Card 1: File Size -->
+          <div class="metric-card size-card">
+            <div class="metric-icon-wrap cyan">
+              <i class="fa-solid fa-database"></i>
+            </div>
+            <div class="metric-info-col">
+              <span class="metric-label">FILE SIZE</span>
+              <span class="metric-value" id="galleryMiniSizeChip">0 MB</span>
+            </div>
+          </div>
+
+          <!-- Metric Card 2: Duration / Length -->
+          <div class="metric-card duration-card">
+            <div class="metric-icon-wrap purple">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="metric-info-col">
+              <span class="metric-label">DURATION</span>
+              <span class="metric-value" id="galleryMiniDurationChip">--:--</span>
+            </div>
+          </div>
+
+          <!-- Metric Card 3: Quality / Resolution -->
+          <div class="metric-card res-card">
+            <div class="metric-icon-wrap amber">
+              <i class="fa-solid fa-display"></i>
+            </div>
+            <div class="metric-info-col">
+              <span class="metric-label">QUALITY</span>
+              <span class="metric-value" id="galleryMiniResChip">1080p FHD</span>
+            </div>
+          </div>
+
+          <!-- Metric Card 4: Codec & Storage -->
+          <div class="metric-card storage-card">
+            <div class="metric-icon-wrap green">
+              <i class="fa-solid fa-sd-card"></i>
+            </div>
+            <div class="metric-info-col">
+              <span class="metric-label">STORAGE</span>
+              <span class="metric-value" id="galleryMiniStorageChip">Offline Disk</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sleek Quick Command Bar -->
+        <div class="popup-footer-actions">
+          <button id="btnPopupLaunchFull" class="btn-popup-main-act full"
+            title="Launch Fullscreen Hardware Accelerated Player">
+            <i class="fa-solid fa-expand"></i>
+            <span>Full Screen Cinema Mode</span>
+          </button>
+          <button id="btnGalleryMiniDrive" class="btn-popup-main-act drive" title="Save to Google Drive">
+            <i class="fa-brands fa-google-drive"></i>
+            <span>Save to Drive</span>
+          </button>
+          <button id="btnGalleryMiniDelete" class="btn-popup-main-act danger" title="Delete File from Storage">
+            <i class="fa-solid fa-trash-can"></i>
+            <span>Delete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2026 Direct Stream & Video Resolution Picker Modal -->
+  <div id="qualityPickerModal" class="modal-overlay hidden">
+    <div class="modal-content quality-picker-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <div class="modal-title-with-icon" style="display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-sliders" style="color: var(--accent-magenta);"></i>
+          <h3 id="qualityPickerTitle" style="font-size: 1.05rem; margin: 0;">Choose Download Resolution</h3>
+        </div>
+        <button id="btnCloseQualityPicker" class="btn-close-modal">&times;</button>
+      </div>
+      <div class="quality-picker-body" style="padding: 16px;">
+        <p class="quality-picker-desc"
+          style="color: var(--text-muted); font-size: 0.82rem; margin-top: 0; margin-bottom: 14px;">Select resolution
+          for instant direct binary download:</p>
+        <div id="qualityPickerList" class="quality-picker-list"
+          style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- Dynamic Resolution Rows -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2026 Cinejoy & Cinema Direct Download Resolution Picker Modal -->
+  <div id="movieDownloadModal" class="modal-overlay hidden" style="z-index: 10005;">
+    <div class="modal-content cinejoy-download-content"
+      style="max-width: 520px; border-radius: 18px; background: rgba(13, 17, 23, 0.98); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(0, 242, 254, 0.12); overflow: hidden;">
+      <div class="modal-header"
+        style="padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="display: flex; flex-direction: column; gap: 4px; max-width: 85%;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-cloud-arrow-down" style="color: #00f2fe; font-size: 1.15rem;"></i>
+            <h3 id="movieDownloadTitle"
+              style="font-size: 1.12rem; font-weight: 800; margin: 0; color: #f8fafc; line-height: 1.35; letter-spacing: -0.2px;">
+              Downloads</h3>
+          </div>
+          <span id="movieDownloadSubtitle" style="font-size: 0.8rem; color: #94a3b8;">Searching direct high-speed cloud
+            mirrors...</span>
+        </div>
+        <button id="btnCloseMovieDownload" class="btn-close-modal"
+          style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; border: none;">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 16px; max-height: 72vh; overflow-y: auto;">
+        <div id="movieDownloadList" style="display: flex; flex-direction: column; gap: 10px;">
+          <!-- Dynamically inserted download option rows -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🛡️ Custom V2Ray Payload Save Modal -->
+  <div id="savePayloadModal" class="modal-overlay hidden" style="z-index: 10005;">
+    <div class="modal-content"
+      style="max-width: 440px; border-radius: 16px; background: rgba(15, 18, 30, 0.96); backdrop-filter: blur(24px); border: 1px solid rgba(168, 85, 247, 0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.85), 0 0 30px rgba(168, 85, 247, 0.25);">
+      <div class="modal-header"
+        style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div
+            style="width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(0, 242, 254, 0.3)); display: flex; align-items: center; justify-content: center; color: #00f2fe; font-size: 1.1rem; border: 1px solid rgba(0, 242, 254, 0.4);">
+            <i class="fa-solid fa-bookmark"></i>
+          </div>
+          <div>
+            <h3
+              style="margin: 0; font-size: 1.05rem; font-weight: 700; background: linear-gradient(135deg, #fff, #c084fc); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+              Save VPN Payload</h3>
+            <p style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">Save custom node configuration to
+              quick-switch profiles</p>
+          </div>
+        </div>
+        <button id="btnCloseSavePayloadModal" class="btn-close-modal"
+          style="background: rgba(255,255,255,0.05); border-radius: 50%; width: 28px; height: 28px; border: none; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 18px;">
+        <!-- Node Preview Card -->
+        <div
+          style="background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; margin-bottom: 14px; display: flex; align-items: center; gap: 12px;">
+          <span id="savePayloadModalFlag" style="font-size: 2rem;">🇸🇬</span>
+          <div style="flex: 1; min-width: 0;">
+            <div id="savePayloadModalProtoBadge"
+              style="display: inline-block; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: rgba(0,242,254,0.15); color: #00f2fe; margin-bottom: 4px;">
+              VLESS</div>
+            <div id="savePayloadModalHost"
+              style="font-size: 0.76rem; color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              1.1.1.1:443</div>
+          </div>
+        </div>
+
+        <!-- Custom Node Name Input -->
+        <div style="margin-bottom: 16px;">
+          <label
+            style="display: block; font-size: 0.78rem; font-weight: 600; color: #94a3b8; margin-bottom: 6px;">Profile /
+            Node Name:</label>
+          <input type="text" id="inputSavePayloadName" placeholder="e.g. 🇸🇬 Singapore Turbo VIP"
+            style="width: 100%; background: rgba(0,0,0,0.45); border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 10px; color: #fff; padding: 10px 14px; font-size: 0.88rem; outline: none; box-sizing: border-box; transition: all 0.2s;"
+            autocomplete="off">
+        </div>
+
+        <!-- Actions -->
+        <div style="display: flex; gap: 10px;">
+          <button id="btnCancelSavePayload"
+            style="flex: 1; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; font-size: 0.84rem; font-weight: 600; cursor: pointer;">
+            Cancel
+          </button>
+          <button id="btnConfirmSavePayload"
+            style="flex: 1.4; padding: 10px; border-radius: 10px; background: linear-gradient(135deg, #a855f7 0%, #00f2fe 100%); border: none; color: #000; font-size: 0.84rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 15px rgba(0,242,254,0.3);">
+            <i class="fa-solid fa-check"></i>
+            <span>Save Profile</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🛡️ Modal 1: Full VPN Server List Hub -->
+  <div id="vpnServerListModal" class="modal-overlay hidden" style="z-index: 10006;">
+    <div class="modal-content"
+      style="max-width: 520px; max-height: 85vh; border-radius: 16px; background: rgba(15, 18, 30, 0.98); backdrop-filter: blur(24px); border: 1px solid rgba(0, 242, 254, 0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.85); display: flex; flex-direction: column;">
+      <div class="modal-header"
+        style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div
+            style="width: 34px; height: 34px; border-radius: 10px; background: rgba(0, 242, 254, 0.15); display: flex; align-items: center; justify-content: center; color: #00f2fe; font-size: 1.1rem; border: 1px solid rgba(0, 242, 254, 0.3);">
+            <i class="fa-solid fa-server"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #fff;">VPN Servers & Nodes</h3>
+            <p id="serverListCountSubtitle" style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">0 configured
+              nodes</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button id="btnTestAllServers" class="btn-micro-action"
+            style="background: rgba(0,242,254,0.15); border: 1px solid rgba(0,242,254,0.3); color: #00f2fe; border-radius: 6px; padding: 4px 8px; font-size: 0.72rem; cursor: pointer;">
+            <i class="fa-solid fa-gauge-high"></i> Ping All
+          </button>
+          <button id="btnCloseServerListModal" class="btn-close-modal"
+            style="background: rgba(255,255,255,0.05); border-radius: 50%; width: 28px; height: 28px; border: none; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+        </div>
+      </div>
+      <div style="padding: 10px 18px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; gap: 6px;">
+        <input type="text" id="serverListSearchInput" placeholder="Search servers by name or country..."
+          style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 10px; color: #fff; font-size: 0.78rem;">
+      </div>
+      <div id="vpnServerListItems" class="modal-body" style="padding: 14px 18px; flex: 1; overflow-y: auto;">
+        <!-- Dynamically rendered server cards -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 🛡️ Modal 2: Real-Time 6-Level VPN Diagnostics -->
+  <div id="vpnDiagnosticsModal" class="modal-overlay hidden" style="z-index: 10007;">
+    <div class="modal-content"
+      style="max-width: 480px; max-height: 85vh; border-radius: 16px; background: rgba(15, 18, 30, 0.98); backdrop-filter: blur(24px); border: 1px solid rgba(46, 213, 115, 0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.85); display: flex; flex-direction: column;">
+      <div class="modal-header"
+        style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div
+            style="width: 34px; height: 34px; border-radius: 10px; background: rgba(46, 213, 115, 0.15); display: flex; align-items: center; justify-content: center; color: #2ed573; font-size: 1.1rem; border: 1px solid rgba(46, 213, 115, 0.3);">
+            <i class="fa-solid fa-stethoscope"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #fff;">VPN Subsystem Diagnostics</h3>
+            <p style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">Real-time multi-level runtime verification
+            </p>
+          </div>
+        </div>
+        <button id="btnCloseDiagnosticsModal" class="btn-close-modal"
+          style="background: rgba(255,255,255,0.05); border-radius: 50%; width: 28px; height: 28px; border: none; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 18px; overflow-y: auto;">
+        <!-- Live System Matrix -->
+        <div class="vpn-diag-grid">
+          <div class="vpn-diag-card">
+            <div class="vpn-diag-label">Core Engine</div>
+            <div id="diagCoreState" class="vpn-diag-val">STOPPED</div>
+          </div>
+          <div class="vpn-diag-card">
+            <div class="vpn-diag-label">TUN Interface</div>
+            <div id="diagTunState" class="vpn-diag-val">DOWN</div>
+          </div>
+          <div class="vpn-diag-card">
+            <div class="vpn-diag-label">VPN State</div>
+            <div id="diagVpnState" class="vpn-diag-val">DISCONNECTED</div>
+          </div>
+          <div class="vpn-diag-card">
+            <div class="vpn-diag-label">DNS Resolution</div>
+            <div id="diagDnsState" class="vpn-diag-val">READY</div>
+          </div>
+          <div class="vpn-diag-card">
+            <div class="vpn-diag-label">Server Reachability</div>
+            <div id="diagServerState" class="vpn-diag-val">--</div>
+          </div>
+          <div class="vpn-diag-card">
+            <div class="vpn-diag-label">Internet Pathway</div>
+            <div id="diagInternetState" class="vpn-diag-val">--</div>
+          </div>
+        </div>
+
+        <button id="btnRunFullDiagnostics" class="btn-save-worker"
+          style="width: 100%; justify-content: center; background: linear-gradient(135deg, #2ed573 0%, #00f2fe 100%); color: #000; font-weight: 700; margin-bottom: 12px;">
+          <i class="fa-solid fa-play"></i> Run 6-Level Diagnostic Test
+        </button>
+
+        <div id="diagTestResultsBox"
+          style="background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; font-size: 0.76rem; line-height: 1.6; color: #94a3b8;">
+          Tap "Run 6-Level Diagnostic Test" to verify syntax, DNS, TCP socket RTT, TLS, and HTTP 204 route.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🛡️ Modal 3: Routing Modes & Per-App VPN -->
+  <div id="vpnRoutingModal" class="modal-overlay hidden" style="z-index: 10008;">
+    <div class="modal-content"
+      style="max-width: 500px; max-height: 85vh; border-radius: 16px; background: rgba(15, 18, 30, 0.98); backdrop-filter: blur(24px); border: 1px solid rgba(59, 130, 246, 0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.85); display: flex; flex-direction: column;">
+      <div class="modal-header"
+        style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div
+            style="width: 34px; height: 34px; border-radius: 10px; background: rgba(59, 130, 246, 0.15); display: flex; align-items: center; justify-content: center; color: #3b82f6; font-size: 1.1rem; border: 1px solid rgba(59, 130, 246, 0.3);">
+            <i class="fa-solid fa-network-wired"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #fff;">Routing & Per-App VPN</h3>
+            <p style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">Configure tunnel rules, DNS, and app
+              bypass</p>
+          </div>
+        </div>
+        <button id="btnCloseRoutingModal" class="btn-close-modal"
+          style="background: rgba(255,255,255,0.05); border-radius: 50%; width: 28px; height: 28px; border: none; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 18px; overflow-y: auto;">
+        <!-- Routing Mode -->
+        <label style="font-size: 0.78rem; font-weight: 700; color: #cbd5e1; display: block; margin-bottom: 6px;">Routing
+          Mode:</label>
+        <select id="selectRoutingMode"
+          style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 0.8rem; margin-bottom: 14px;">
+          <option value="FULL_VPN">🌐 Full VPN (Route all applications)</option>
+          <option value="BYPASS_LAN">🏠 Bypass LAN (Direct private subnet 192.168.x)</option>
+          <option value="PER_APP_ALLOW">✅ Only Selected Apps (Per-App whitelist)</option>
+          <option value="PER_APP_DISALLOW">🚫 Exclude Selected Apps (Per-App bypass)</option>
+        </select>
+
+        <!-- DNS Provider -->
+        <label style="font-size: 0.78rem; font-weight: 700; color: #cbd5e1; display: block; margin-bottom: 6px;">DNS
+          Server (Leak-Protected):</label>
+        <select id="selectVpnDns"
+          style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 0.8rem; margin-bottom: 14px;">
+          <option value="1.1.1.1,8.8.8.8">Cloudflare & Google (1.1.1.1, 8.8.8.8)</option>
+          <option value="1.1.1.1,1.0.0.1">Cloudflare Fast (1.1.1.1, 1.0.0.1)</option>
+          <option value="8.8.8.8,8.8.4.4">Google Public DNS (8.8.8.8, 8.8.4.4)</option>
+          <option value="94.140.14.14,94.140.15.15">AdGuard Anti-Ad DNS (94.140.14.14)</option>
+        </select>
+
+        <!-- MTU & Auto-Reconnect -->
+        <div style="display: flex; gap: 12px; margin-bottom: 14px;">
+          <div style="flex: 1;">
+            <label style="font-size: 0.74rem; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 4px;">MTU
+              (Default: 1400):</label>
+            <input type="number" id="inputVpnMtu" value="1400" min="1280" max="1500"
+              style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 6px 10px; color: #fff; font-size: 0.8rem;">
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+            <label
+              style="font-size: 0.74rem; font-weight: 600; color: #94a3b8; margin-bottom: 4px;">Auto-Reconnect:</label>
+            <label
+              style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #fff; cursor: pointer;">
+              <input type="checkbox" id="chkAutoReconnect" checked>
+              <span>Auto-recover network</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Per-App Selector List (Shown if PER_APP_ALLOW or PER_APP_DISALLOW) -->
+        <div id="perAppListSection" class="hidden">
+          <label
+            style="font-size: 0.78rem; font-weight: 700; color: #cbd5e1; display: block; margin-bottom: 6px;">Installed
+            Applications:</label>
+          <input type="text" id="appFilterInput" placeholder="Filter apps by name..."
+            style="width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 10px; color: #fff; font-size: 0.76rem; margin-bottom: 8px;">
+          <div id="vpnInstalledAppsList"
+            style="max-height: 200px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 6px;">
+            <!-- Dynamic app checkboxes -->
+          </div>
+        </div>
+
+        <button id="btnSaveRoutingConfig" class="btn-save-worker"
+          style="width: 100%; justify-content: center; background: linear-gradient(135deg, #3b82f6 0%, #00f2fe 100%); color: #000; font-weight: 700; margin-top: 14px;">
+          <i class="fa-solid fa-floppy-disk"></i> Apply & Save Routing
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🛡️ Modal 4: Subscriptions Manager -->
+  <div id="vpnSubscriptionsModal" class="modal-overlay hidden" style="z-index: 10009;">
+    <div class="modal-content"
+      style="max-width: 480px; max-height: 85vh; border-radius: 16px; background: rgba(15, 18, 30, 0.98); backdrop-filter: blur(24px); border: 1px solid rgba(245, 158, 11, 0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.85); display: flex; flex-direction: column;">
+      <div class="modal-header"
+        style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div
+            style="width: 34px; height: 34px; border-radius: 10px; background: rgba(245, 158, 11, 0.15); display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 1.1rem; border: 1px solid rgba(245, 158, 11, 0.3);">
+            <i class="fa-solid fa-rss"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #fff;">Subscription Manager</h3>
+            <p style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">Sync remote nodes from HTTPS subscription
+              links</p>
+          </div>
+        </div>
+        <button id="btnCloseSubsModal" class="btn-close-modal"
+          style="background: rgba(255,255,255,0.05); border-radius: 50%; width: 28px; height: 28px; border: none; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 18px; overflow-y: auto;">
+        <!-- Add Subscription Form -->
+        <div
+          style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; margin-bottom: 14px;">
+          <label
+            style="font-size: 0.74rem; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 4px;">Subscription
+            Name:</label>
+          <input type="text" id="inputSubName" placeholder="e.g. VIP Node Pack"
+            style="width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 6px 10px; color: #fff; font-size: 0.78rem; margin-bottom: 8px;">
+          <label
+            style="font-size: 0.74rem; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 4px;">Subscription
+            HTTPS URL:</label>
+          <input type="url" id="inputSubUrl" placeholder="https://example.com/sub/token"
+            style="width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 6px 10px; color: #fff; font-size: 0.78rem; margin-bottom: 8px;">
+          <button id="btnAddSubscription" class="btn-save-worker"
+            style="width: 100%; justify-content: center; background: linear-gradient(135deg, #f59e0b 0%, #00f2fe 100%); color: #000; font-weight: 700;">
+            <i class="fa-solid fa-plus"></i> Add Subscription
+          </button>
+        </div>
+
+        <div id="vpnSubscriptionsList">
+          <!-- Dynamic subscription items -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🛡️ Modal 5: Safe Audit Logs -->
+  <div id="vpnLogsModal" class="modal-overlay hidden" style="z-index: 10010;">
+    <div class="modal-content"
+      style="max-width: 540px; max-height: 85vh; border-radius: 16px; background: rgba(15, 18, 30, 0.98); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.85); display: flex; flex-direction: column;">
+      <div class="modal-header"
+        style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div
+            style="width: 34px; height: 34px; border-radius: 10px; background: rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.1rem; border: 1px solid rgba(255, 255, 255, 0.2);">
+            <i class="fa-solid fa-terminal"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #fff;">VPN Subsystem Audit Logs</h3>
+            <p style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">Sanitized logs (UUIDs & secrets
+              auto-masked)</p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button id="btnCopySafeLogs" class="btn-micro-action"
+            style="background: rgba(0,242,254,0.15); border: 1px solid rgba(0,242,254,0.3); color: #00f2fe; border-radius: 6px; padding: 4px 8px; font-size: 0.72rem; cursor: pointer;">
+            <i class="fa-solid fa-copy"></i> Copy Safe Log
+          </button>
+          <button id="btnClearSafeLogs" class="btn-micro-action"
+            style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #f87171; border-radius: 6px; padding: 4px 8px; font-size: 0.72rem; cursor: pointer;">
+            <i class="fa-solid fa-trash"></i> Clear
+          </button>
+          <button id="btnCloseLogsModal" class="btn-close-modal"
+            style="background: rgba(255,255,255,0.05); border-radius: 50%; width: 28px; height: 28px; border: none; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body" style="padding: 14px 18px; flex: 1; display: flex; flex-direction: column;">
+        <div id="vpnLogLinesContainer" class="vpn-log-container" style="flex: 1;">
+          <!-- Real-time log entries -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🛡️ Modal 6: QR Scanner & Decoder -->
+  <div id="vpnQrScanModal" class="modal-overlay hidden" style="z-index: 10011;">
+    <div class="modal-content"
+      style="max-width: 440px; border-radius: 16px; background: rgba(15, 18, 30, 0.98); backdrop-filter: blur(24px); border: 1px solid rgba(192, 132, 252, 0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.85);">
+      <div class="modal-header"
+        style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div
+            style="width: 34px; height: 34px; border-radius: 10px; background: rgba(192, 132, 252, 0.15); display: flex; align-items: center; justify-content: center; color: #c084fc; font-size: 1.1rem; border: 1px solid rgba(192, 132, 252, 0.3);">
+            <i class="fa-solid fa-qrcode"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #fff;">Import Node from QR Code</h3>
+            <p style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">Select QR code image screenshot or photo
+            </p>
+          </div>
+        </div>
+        <button id="btnCloseQrModal" class="btn-close-modal"
+          style="background: rgba(255,255,255,0.05); border-radius: 50%; width: 28px; height: 28px; border: none; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 18px;">
+        <input type="file" id="inputQrImageFile" accept="image/*" style="display: none;">
+        <div id="dropQrZone"
+          style="border: 2px dashed rgba(192, 132, 252, 0.35); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; background: rgba(192, 132, 252, 0.04); margin-bottom: 14px;">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: #c084fc; margin-bottom: 8px;"></i>
+          <p style="margin: 0; font-size: 0.85rem; font-weight: 600; color: #fff;">Choose QR Code Image</p>
+          <small style="color: #94a3b8; font-size: 0.72rem;">Supports VLESS, VMess, Trojan, and Shadowsocks QR
+            codes</small>
+        </div>
+
+        <!-- Decoded Result Preview Card -->
+        <div id="qrPreviewCard" class="hidden"
+          style="background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; margin-bottom: 14px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="qrDecodedFlag" style="font-size: 1.8rem;">🌐</span>
+            <div style="flex: 1; min-width: 0;">
+              <div id="qrDecodedProto"
+                style="display: inline-block; font-size: 0.62rem; font-weight: 800; padding: 1px 5px; border-radius: 4px; background: rgba(0,242,254,0.15); color: #00f2fe;">
+                VLESS</div>
+              <div id="qrDecodedName"
+                style="font-size: 0.84rem; font-weight: 700; color: #fff; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                Singapore Fast Node</div>
+              <div id="qrDecodedHost" style="font-size: 0.72rem; color: #94a3b8;">1.1.1.1:443</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 12px;">
+            <button id="btnImportQrOnly" class="btn-micro-action"
+              style="flex: 1; padding: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 8px; font-weight: 600;">
+              Import Node
+            </button>
+            <button id="btnImportAndTestQr" class="btn-save-worker"
+              style="flex: 1.2; justify-content: center; background: linear-gradient(135deg, #a855f7 0%, #00f2fe 100%); color: #000; font-weight: 700;">
+              Import & Test
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📁 Google Drive: File Details Modal / Sheet -->
+  <div id="driveFileDetailsModal" class="modal-overlay hidden" style="z-index: 10008;">
+    <div class="modal-content glass-card"
+      style="max-width: 480px; padding: 0; overflow: hidden; border-radius: 18px; border: 1px solid rgba(66, 133, 244, 0.35); background: rgba(15, 18, 30, 0.98); box-shadow: 0 24px 60px rgba(0,0,0,0.85);">
+      <div
+        style="padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; background: rgba(66, 133, 244, 0.08);">
+        <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+          <div id="detailFileIconWrap"
+            style="width: 38px; height: 38px; border-radius: 10px; background: rgba(66, 133, 244, 0.2); display: flex; align-items: center; justify-content: center; color: #4285F4; font-size: 1.2rem; flex-shrink: 0;">
+            <i class="fa-solid fa-file"></i>
+          </div>
+          <div style="min-width: 0;">
+            <h3 id="detailFileName"
+              style="margin: 0; font-size: 0.95rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              File Name</h3>
+            <p id="detailFileSubtext" style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">Google Drive File
+            </p>
+          </div>
+        </div>
+        <button id="btnCloseDriveDetailsModal" class="btn-close-modal"
+          style="background: rgba(255,255,255,0.06); border-radius: 50%; width: 30px; height: 30px; border: none; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">&times;</button>
+      </div>
+
+      <div style="padding: 18px 20px; max-height: 65vh; overflow-y: auto;">
+        <!-- Metadata table -->
+        <div
+          style="display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 14px; margin-bottom: 18px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem;">
+            <span style="color: #94a3b8;"><i class="fa-solid fa-hard-drive"></i> Size:</span>
+            <span id="detailFileSize" style="color: #fff; font-weight: 600;">0 MB</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem;">
+            <span style="color: #94a3b8;"><i class="fa-solid fa-code"></i> Type:</span>
+            <span id="detailFileMime"
+              style="color: #cbd5e1; font-family: monospace; font-size: 0.72rem; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">mime/type</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem;">
+            <span style="color: #94a3b8;"><i class="fa-solid fa-calendar-plus"></i> Created:</span>
+            <span id="detailFileCreated" style="color: #cbd5e1;">-</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem;">
+            <span style="color: #94a3b8;"><i class="fa-solid fa-clock-rotate-left"></i> Modified:</span>
+            <span id="detailFileModified" style="color: #cbd5e1;">-</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem;">
+            <span style="color: #94a3b8;"><i class="fa-solid fa-key"></i> File ID:</span>
+            <span id="detailFileId"
+              style="color: #64748b; font-family: monospace; font-size: 0.68rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis;">-</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons Grid -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <button id="btnDetailStream" class="btn-micro-action"
+            style="padding: 12px; border-radius: 12px; background: linear-gradient(135deg, #00f2fe, #4facfe); border: none; color: #000; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <i class="fa-solid fa-play"></i> Stream Now
+          </button>
+          <button id="btnDetailDownload" class="btn-micro-action"
+            style="padding: 12px; border-radius: 12px; background: rgba(52, 168, 83, 0.2); border: 1px solid rgba(52, 168, 83, 0.4); color: #34A853; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <i class="fa-solid fa-download"></i> Save to Device
+          </button>
+          <button id="btnDetailShare" class="btn-micro-action"
+            style="padding: 12px; border-radius: 12px; background: rgba(66, 133, 244, 0.2); border: 1px solid rgba(66, 133, 244, 0.4); color: #4285F4; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <i class="fa-solid fa-share-nodes"></i> Get Share Link
+          </button>
+          <button id="btnDetailRename" class="btn-micro-action"
+            style="padding: 12px; border-radius: 12px; background: rgba(251, 188, 5, 0.2); border: 1px solid rgba(251, 188, 5, 0.4); color: #fbbc05; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <i class="fa-solid fa-pen-to-square"></i> Rename
+          </button>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <button id="btnDetailDelete" class="btn-micro-action"
+            style="width: 100%; padding: 11px; border-radius: 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #ef4444; font-weight: 700; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <i class="fa-solid fa-trash-can"></i> Delete from Google Drive
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🗑️ Google Drive: Permanent Delete Confirmation Modal -->
+  <div id="driveDeleteModal" class="modal-overlay hidden" style="z-index: 10012;">
+    <div class="modal-content glass-card"
+      style="max-width: 420px; border-radius: 16px; padding: 22px; background: rgba(15, 18, 30, 0.98); border: 1px solid rgba(239, 68, 68, 0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.85);">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <div
+          style="width: 40px; height: 40px; border-radius: 12px; background: rgba(239, 68, 68, 0.2); display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 1.2rem;">
+          <i class="fa-solid fa-trash-can"></i>
+        </div>
+        <div>
+          <h3 style="margin: 0; font-size: 1.02rem; font-weight: 700; color: #fff;">Delete Drive File</h3>
+          <p style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">Permanent Google Drive Action</p>
+        </div>
+      </div>
+      <div
+        style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 10px; padding: 12px; margin-bottom: 14px;">
+        <p style="margin: 0 0 6px 0; font-size: 0.78rem; color: #fca5a5; line-height: 1.4;">
+          <i class="fa-solid fa-triangle-exclamation"></i> Are you sure you want to permanently delete this file?
+        </p>
+        <div id="driveDeleteFileName"
+          style="font-size: 0.82rem; color: #fff; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 6px 10px; background: rgba(0,0,0,0.3); border-radius: 6px;">
+          file_name.mp4
+        </div>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button id="btnCancelDriveDelete"
+          style="flex: 1; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; font-size: 0.84rem; font-weight: 600; cursor: pointer;">Cancel</button>
+        <button id="btnConfirmDriveDelete"
+          style="flex: 1.4; padding: 10px; border-radius: 10px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; color: #fff; font-size: 0.84rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);">
+          <i class="fa-solid fa-trash-can"></i> Delete File
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✏️ Google Drive: Rename Modal -->
+  <div id="driveRenameModal" class="modal-overlay hidden" style="z-index: 10009;">
+    <div class="modal-content glass-card"
+      style="max-width: 420px; border-radius: 16px; padding: 20px; background: rgba(15, 18, 30, 0.98); border: 1px solid rgba(251, 188, 5, 0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.85);">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+        <div
+          style="width: 36px; height: 36px; border-radius: 10px; background: rgba(251, 188, 5, 0.15); display: flex; align-items: center; justify-content: center; color: #fbbc05; font-size: 1.1rem;">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </div>
+        <div>
+          <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #fff;">Rename File</h3>
+          <p style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">Enter new file name for Google Drive</p>
+        </div>
+      </div>
+      <input type="text" id="driveRenameInput"
+        style="width: 100%; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: #fff; padding: 10px 14px; font-size: 0.88rem; outline: none; box-sizing: border-box; margin-bottom: 16px;">
+      <div style="display: flex; gap: 10px;">
+        <button id="btnCancelDriveRename"
+          style="flex: 1; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; font-size: 0.84rem; font-weight: 600; cursor: pointer;">Cancel</button>
+        <button id="btnSaveDriveRename"
+          style="flex: 1.3; padding: 10px; border-radius: 10px; background: linear-gradient(135deg, #fbbc05, #f59e0b); border: none; color: #000; font-size: 0.84rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <i class="fa-solid fa-check"></i> Save
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔒 Google Drive: Safe Share Confirmation Modal (Rule 21) -->
+  <div id="driveShareConfirmModal" class="modal-overlay hidden" style="z-index: 10010;">
+    <div class="modal-content glass-card"
+      style="max-width: 440px; border-radius: 16px; padding: 22px; background: rgba(15, 18, 30, 0.98); border: 1px solid rgba(66, 133, 244, 0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.85);">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <div
+          style="width: 40px; height: 40px; border-radius: 12px; background: rgba(66, 133, 244, 0.2); display: flex; align-items: center; justify-content: center; color: #4285F4; font-size: 1.25rem;">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+          <h3 style="margin: 0; font-size: 1.02rem; font-weight: 700; color: #fff;">Safe Sharing Access</h3>
+          <p style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">Google Drive Public Link Generator</p>
+        </div>
+      </div>
+      <div
+        style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 10px; padding: 12px; margin-bottom: 14px;">
+        <p style="margin: 0; font-size: 0.78rem; color: #fca5a5; line-height: 1.4;">
+          <i class="fa-solid fa-triangle-exclamation"></i> <strong>Notice:</strong> This action will update Google Drive
+          permissions so that <strong>anyone with the link</strong> can view and download this file.
+        </p>
+      </div>
+      <div id="driveShareTargetName"
+        style="font-size: 0.82rem; color: #cbd5e1; font-weight: 600; margin-bottom: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 6px 10px; background: rgba(0,0,0,0.3); border-radius: 8px;">
+        file_name.mp4
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button id="btnCancelDriveShare"
+          style="flex: 1; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; font-size: 0.84rem; font-weight: 600; cursor: pointer;">Cancel</button>
+        <button id="btnConfirmDriveShare"
+          style="flex: 1.5; padding: 10px; border-radius: 10px; background: linear-gradient(135deg, #4285F4, #34A853); border: none; color: #fff; font-size: 0.84rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);">
+          <i class="fa-solid fa-link"></i> Make Public & Copy Link
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔒 Google Drive: Safe Unlink Confirmation Modal (2026 Edition) -->
+  <div id="driveUnlinkModal" class="modal-overlay hidden" style="z-index: 10015;">
+    <div class="modal-content glass-card"
+      style="max-width: 440px; border-radius: 16px; padding: 22px; background: rgba(15, 18, 30, 0.98); border: 1px solid rgba(239, 68, 68, 0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.85);">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <div
+          style="width: 42px; height: 42px; border-radius: 12px; background: rgba(239, 68, 68, 0.2); display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 1.25rem;">
+          <i class="fa-solid fa-link-slash"></i>
+        </div>
+        <div>
+          <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #fff;">Unlink Google Account</h3>
+          <p style="margin: 2px 0 0 0; font-size: 0.75rem; color: #94a3b8;">Google Drive Cloud Integration</p>
+        </div>
+      </div>
+      <div
+        style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; padding: 14px; margin-bottom: 14px;">
+        <p style="margin: 0 0 8px 0; font-size: 0.82rem; color: #fff; line-height: 1.4; font-weight: 600;">
+          Are you sure you want to unlink this Google account?
+        </p>
+        <p style="margin: 0; font-size: 0.76rem; color: #94a3b8; line-height: 1.4;">
+          Account: <strong id="unlinkModalEmail" style="color: #4285f4;">user@gmail.com</strong><br>
+          Your offline downloaded videos, favorites, and watch history will remain 100% safe on your device.
+        </p>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button id="btnCancelDriveUnlink"
+          style="flex: 1; padding: 11px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Cancel</button>
+        <button id="btnConfirmDriveUnlink"
+          style="flex: 1.4; padding: 11px; border-radius: 10px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; color: #fff; font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35);">
+          <i class="fa-solid fa-link-slash"></i> Unlink Account
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📁 Google Drive: Create Folder Modal -->
+  <div id="driveCreateFolderModal" class="modal-overlay hidden" style="z-index: 10009;">
+    <div class="modal-content glass-card"
+      style="max-width: 420px; border-radius: 16px; padding: 20px; background: rgba(15, 18, 30, 0.98); border: 1px solid rgba(251, 188, 5, 0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.85);">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+        <div
+          style="width: 36px; height: 36px; border-radius: 10px; background: rgba(251, 188, 5, 0.15); display: flex; align-items: center; justify-content: center; color: #fbbc05; font-size: 1.1rem;">
+          <i class="fa-solid fa-folder-plus"></i>
+        </div>
+        <div>
+          <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #fff;">New Drive Folder</h3>
+          <p style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">Create folder in Cloud Drive Leech</p>
+        </div>
+      </div>
+      <input type="text" id="driveNewFolderName" placeholder="e.g. Action Movies 2026"
+        style="width: 100%; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: #fff; padding: 10px 14px; font-size: 0.88rem; outline: none; box-sizing: border-box; margin-bottom: 16px;">
+      <div style="display: flex; gap: 10px;">
+        <button id="btnCancelCreateFolder"
+          style="flex: 1; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; font-size: 0.84rem; font-weight: 600; cursor: pointer;">Cancel</button>
+        <button id="btnConfirmCreateFolder"
+          style="flex: 1.3; padding: 10px; border-radius: 10px; background: linear-gradient(135deg, #fbbc05, #f59e0b); border: none; color: #000; font-size: 0.84rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <i class="fa-solid fa-plus"></i> Create Folder
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⚡ Google Drive: 0 MB Cloud Leech Transfer Link Modal -->
+  <div id="driveTransferModal" class="modal-overlay hidden" style="z-index: 10009;">
+    <div class="modal-content glass-card"
+      style="max-width: 440px; border-radius: 16px; padding: 20px; background: rgba(15, 18, 30, 0.98); border: 1px solid rgba(66, 133, 244, 0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.85);">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+        <div
+          style="width: 38px; height: 38px; border-radius: 10px; background: rgba(66, 133, 244, 0.2); display: flex; align-items: center; justify-content: center; color: #4285F4; font-size: 1.15rem;">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+        </div>
+        <div>
+          <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: #fff;">0 MB Cloud Leech</h3>
+          <p style="margin: 2px 0 0 0; font-size: 0.72rem; color: #94a3b8;">Stream remote URL directly into Google Drive
+          </p>
+        </div>
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-size: 0.76rem; color: #94a3b8; margin-bottom: 5px;">Remote File / Direct
+          Media URL:</label>
+        <input type="url" id="inputDriveTransferUrl" placeholder="https://domain.com/movie.mp4"
+          style="width: 100%; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: #fff; padding: 10px 12px; font-size: 0.82rem; outline: none; box-sizing: border-box;">
+      </div>
+      <div style="margin-bottom: 16px;">
+        <label style="display: block; font-size: 0.76rem; color: #94a3b8; margin-bottom: 5px;">File Name
+          (optional):</label>
+        <input type="text" id="inputDriveTransferName" placeholder="e.g. MyVideo.mp4"
+          style="width: 100%; background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: #fff; padding: 10px 12px; font-size: 0.82rem; outline: none; box-sizing: border-box;">
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button id="btnCancelDriveTransfer"
+          style="flex: 1; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; font-size: 0.84rem; font-weight: 600; cursor: pointer;">Cancel</button>
+        <button id="btnConfirmDriveTransfer"
+          style="flex: 1.4; padding: 10px; border-radius: 10px; background: linear-gradient(135deg, #4285F4, #00f2fe); border: none; color: #000; font-size: 0.84rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <i class="fa-solid fa-bolt-lightning"></i> Start Transfer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔒 Enterprise Feature Locked Modal (Sections 14 & 34 of Master Prompt) -->
+  <div id="featureLockedModal" class="modal-overlay hidden" style="z-index: 10020;">
+    <div class="modal-content glass-card feature-locked-card">
+      <div class="locked-icon-wrapper">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <span id="lockedFeatureTier" class="locked-tier-pill">PRO REQUIRED</span>
+      <h3 id="lockedFeatureTitle" class="locked-feature-title">Feature Locked</h3>
+      <p id="lockedFeatureDesc" class="locked-feature-desc">
+        This tab is not enabled for your current license. Please activate a PRO License Key to unlock this feature.
+      </p>
+      <!-- Inline Quick Activation Bar -->
+      <div class="locked-key-input-wrap" style="margin: 14px 0 10px; width: 100%;">
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <input type="text" id="modalLockedKeyInput" class="license-input" placeholder="Paste PRO Key e.g. CLD-PRO-..." style="flex: 1; padding: 10px 12px; font-size: 0.85rem; border-radius: 8px; font-family: monospace;" spellcheck="false" autocomplete="off">
+          <button type="button" id="btnModalUnlockDirect" class="btn-locked-unlock" style="white-space: nowrap; padding: 10px 14px;">
+            <i class="fa-solid fa-bolt"></i> Unlock
+          </button>
+        </div>
+      </div>
+
+      <div class="locked-actions-row">
+        <button type="button" id="btnCloseFeatureLocked" class="btn-locked-back">
+          <i class="fa-solid fa-arrow-left"></i> Back
+        </button>
+        <button type="button" id="btnGoSettingsFromLocked" class="btn-locked-back" style="background: rgba(255,255,255,0.06);">
+          <i class="fa-solid fa-gear"></i> Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⚠️ Controlled In-App 404 Error Screen Modal (Master Prompt Section 35) -->
+  <div id="inApp404Modal" class="modal-overlay hidden" style="z-index: 10030;">
+    <div class="modal-content glass-card feature-404-card">
+      <div class="glitch-404-header">
+        <span class="code-404">404</span>
+        <span class="badge-404">ENDPOINT RESTRICTED</span>
+      </div>
+      <div class="locked-icon-wrapper" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.35);">
+        <i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i>
+      </div>
+      <h3 id="error404Title" class="locked-feature-title" style="color: #f87171;">404 — Endpoint Restricted</h3>
+      <p id="error404Desc" class="locked-feature-desc">
+        HTTP 404: The requested module / service endpoint is disabled or unauthorized under the active license.
+      </p>
+      <div class="locked-actions-row">
+        <button type="button" id="btnClose404Modal" class="btn-locked-back">
+          <i class="fa-solid fa-xmark"></i> Dismiss
+        </button>
+        <button type="button" id="btnUnlockFrom404" class="btn-locked-unlock" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff;">
+          <i class="fa-solid fa-key"></i> Activate PRO
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🛡️ Fullscreen Cyber Emergency Maintenance Overlay -->
+  <div id="cldMaintenanceOverlay" class="maintenance-overlay hidden">
+    <div class="maintenance-box">
+      <div class="maintenance-icon">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+      </div>
+      <h2>System Maintenance in Progress</h2>
+      <p id="cldMaintenanceMsg">The system is currently undergoing scheduled upgrades. Please check back shortly.</p>
+      <div class="maintenance-status-pill">
+        <span class="pulse-dot"></span>
+        <span>STANDBY MODE</span>
+      </div>
+      <div>
+        <button type="button" class="btn-maintenance-retry" onclick="window.syncLicenseWithServer(true)">
+          <i class="fa-solid fa-rotate"></i> <span>Check Status</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔞 Adult Recommendation & Privacy Settings Modal -->
+  <div id="adultSettingsModal" class="modal-overlay hidden" style="z-index: 10012;">
+    <div class="modal-content glass-card" style="max-width: 440px; width: 92%; border: 1px solid rgba(255, 0, 127, 0.3); box-shadow: 0 16px 40px rgba(255, 0, 127, 0.15);">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-sliders" style="color: var(--accent-magenta); font-size: 1.2rem;"></i>
+          <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #fff;">18+ Recommendation Settings</h3>
+        </div>
+        <button id="btnCloseAdultSettingsModal" class="btn-close-modal" style="background: none; border: none; color: rgba(255,255,255,0.6); font-size: 1.3rem; cursor: pointer;">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 18px 0; max-height: 70vh; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
+        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6); line-height: 1.4; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px;">
+          <i class="fa-solid fa-shield-halved" style="color: #00e676; margin-right: 6px;"></i> All preferences &amp; watch events are kept strictly on-device (Local Only). No telemetry, no cloud sync, zero minor categories.
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 600; font-size: 0.9rem; color: #fff;">Personalization</div>
+            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">Use taste profile to recommend videos</div>
+          </div>
+          <input type="checkbox" id="toggleAdultPersonalization" style="width: 18px; height: 18px; accent-color: var(--accent-magenta);">
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 600; font-size: 0.9rem; color: #fff;">Watch History</div>
+            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">Record local watch duration &amp; events</div>
+          </div>
+          <input type="checkbox" id="toggleAdultHistory" style="width: 18px; height: 18px; accent-color: var(--accent-magenta);">
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 600; font-size: 0.9rem; color: #fff;">Continue Watching</div>
+            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">Show resume rail for partially watched streams</div>
+          </div>
+          <input type="checkbox" id="toggleAdultContinueWatching" style="width: 18px; height: 18px; accent-color: var(--accent-magenta);">
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-weight: 600; font-size: 0.9rem; color: #fff;">Source Personalization</div>
+            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5);">Prioritize hubs you interact with most</div>
+          </div>
+          <input type="checkbox" id="toggleAdultSourcePersonalization" style="width: 18px; height: 18px; accent-color: var(--accent-magenta);">
+        </div>
+
+        <div>
+          <div style="font-weight: 600; font-size: 0.9rem; color: #fff; margin-bottom: 6px;">Trending Influence</div>
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 8px;">Blend of viral videos into For You feed</div>
+          <select id="selectAdultTrendingInfluence" style="width: 100%; background: #1a1528; color: #fff; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 8px 10px; font-size: 0.85rem;">
+            <option value="low">Low (10% Trending / 90% Pure Taste)</option>
+            <option value="balanced" selected>Balanced (20% Trending / 80% Taste)</option>
+            <option value="high">High (40% Trending / 60% Taste)</option>
+          </select>
+        </div>
+
+        <div>
+          <div style="font-weight: 600; font-size: 0.9rem; color: #fff; margin-bottom: 6px;">Quality Preference</div>
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 8px;">Prioritize high-definition releases</div>
+          <select id="selectAdultQualityPref" style="width: 100%; background: #1a1528; color: #fff; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 8px 10px; font-size: 0.85rem;">
+            <option value="any" selected>Any Quality (All Streams)</option>
+            <option value="1080p">1080p Full HD Preferred</option>
+            <option value="4k">4K Ultra HD Preferred</option>
+          </select>
+        </div>
+
+        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px; display: flex; flex-direction: column; gap: 8px;">
+          <button id="btnAdultResetRecommendations" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #fff; padding: 9px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">
+            <i class="fa-solid fa-arrows-rotate" style="margin-right: 6px;"></i> Reset Recommendation Taste Profile
+          </button>
+          <button id="btnAdultClearHistory" style="width: 100%; background: rgba(255, 68, 68, 0.15); border: 1px solid rgba(255, 68, 68, 0.3); color: #ff5252; padding: 9px; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">
+            <i class="fa-solid fa-trash-can" style="margin-right: 6px;"></i> Clear Watch History &amp; Continue Watching
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Scripts: Modular Architecture -->
+  <script src="/js/app-config.js?v=2026.4.8" defer></script>
+  <script src="/js/license.js?v=2026.4.8" defer></script>
+  <script src="/js/core.js?v=2026.3.14" defer></script>
+  <script src="/js/standalone-engine.js?v=2026.3.14" defer></script>
+  <script src="/js/ota.js?v=2026.3.14" defer></script>
+  <script src="/js/player.js?v=2026.3.14" defer></script>
+  <script src="/js/settings.js?v=2026.3.14" defer></script>
+  <script src="/js/tasks.js?v=2026.3.14" defer></script>
+  <script src="/js/downloads.js?v=2026.4.10" defer></script>
+  <script src="/js/gallery.js?v=2026.3.14" defer></script>
+  <script src="/js/movies.js?v=2026.3.14" defer></script>
+  <script src="/js/media.js?v=2026.4.10" defer></script>
+  <script src="/js/adult.js?v=2026.3.14" defer></script>
+  <script src="/js/drive.js?v=2026.3.14" defer></script>
+  <script src="/app.js?v=2026.3.14" defer></script>
+</body>
+
+</html>

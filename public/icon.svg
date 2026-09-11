@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="140 110 744 744" width="100%" height="100%">
+
+    <defs>
+      <!-- Vibrant Cyber Gradient for the Monogram 'C' -->
+      <linearGradient id="cGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#00f2fe" />
+        <stop offset="35%" stop-color="#00c6ff" />
+        <stop offset="70%" stop-color="#0072ff" />
+        <stop offset="100%" stop-color="#7928ca" />
+      </linearGradient>
+
+      <!-- High-Voltage Gradient for Lightning Bolt -->
+      <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#00ffcc" />
+        <stop offset="50%" stop-color="#00f2fe" />
+        <stop offset="100%" stop-color="#4facfe" />
+      </linearGradient>
+
+      <!-- Cloud Top Bulb Neon Gradient -->
+      <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.95" />
+        <stop offset="50%" stop-color="#a855f7" stop-opacity="0.9" />
+        <stop offset="100%" stop-color="#ff0080" stop-opacity="0.85" />
+      </linearGradient>
+
+      <!-- Multi-stage Neon Bloom Filter -->
+      <filter id="neonGlowCyan" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="28" result="blur1" />
+        <feGaussianBlur stdDeviation="14" result="blur2" />
+        <feGaussianBlur stdDeviation="5" result="blur3" />
+        <feMerge>
+          <feMergeNode in="blur1" />
+          <feMergeNode in="blur2" />
+          <feMergeNode in="blur3" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+
+      <filter id="subtleGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="10" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+
+      <!-- Center Aura Glow (transparent edges) -->
+      <radialGradient id="centerGlow" cx="50%" cy="50%" r="45%">
+        <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.25" />
+        <stop offset="55%" stop-color="#7928ca" stop-opacity="0.08" />
+        <stop offset="100%" stop-color="#00f2fe" stop-opacity="0" />
+      </radialGradient>
+
+      <linearGradient id="squircleBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#0e131f" />
+        <stop offset="50%" stop-color="#070a10" />
+        <stop offset="100%" stop-color="#040609" />
+      </linearGradient>
+
+      <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.8" />
+        <stop offset="50%" stop-color="#7928ca" stop-opacity="0.4" />
+        <stop offset="100%" stop-color="#00f2fe" stop-opacity="0.6" />
+      </linearGradient>
+    </defs>
+
+
+      <!-- Holographic Ambient Aura -->
+      <circle cx="512" cy="500" r="340" fill="url(#centerGlow)" />
+
+      <!-- Subtle Cyber Tech Rings -->
+      <g opacity="0.15" stroke="#00f2fe" stroke-width="2">
+        <circle cx="512" cy="500" r="320" fill="none" stroke-dasharray="8,16" />
+        <circle cx="512" cy="500" r="220" fill="none" />
+      </g>
+
+      <!-- THE MONOGRAM 'C' -->
+      <g filter="url(#neonGlowCyan)">
+        <path d="
+          M 670, 310
+          C 580, 230, 430, 230, 340, 315
+          C 240, 410, 240, 614, 340, 709
+          C 430, 794, 580, 794, 670, 714
+          C 696, 690, 696, 650, 668, 626
+          C 642, 602, 602, 602, 578, 626
+          C 525, 676, 435, 676, 385, 626
+          C 325, 566, 325, 458, 385, 398
+          C 435, 348, 525, 348, 578, 398
+          C 602, 422, 642, 422, 668, 398
+          C 696, 374, 696, 334, 670, 310
+          Z"
+          fill="url(#cGrad)"
+        />
+
+        <!-- Cloud Top Bulb -->
+        <path d="
+          M 430, 265
+          C 445, 195, 525, 175, 575, 220
+          C 605, 205, 645, 215, 665, 245
+          C 675, 260, 675, 280, 665, 305
+          C 630, 285, 595, 280, 560, 290
+          C 520, 255, 460, 255, 430, 265
+          Z"
+          fill="url(#cloudGrad)"
+          opacity="0.9"
+        />
+      </g>
+
+      <!-- LIGHTNING BOLT -->
+      <g filter="url(#subtleGlow)">
+        <path d="
+          M 545, 360
+          L 460, 500
+          L 520, 500
+          L 470, 670
+          L 600, 490
+          L 535, 490
+          L 585, 360
+          Z"
+          fill="url(#arrowGrad)"
+        />
+        <!-- Holographic Disc Projection Base -->
+        <ellipse cx="512" cy="740" rx="140" ry="24" fill="none" stroke="#00f2fe" stroke-width="5" stroke-dasharray="16,10" opacity="0.85" />
+        <ellipse cx="512" cy="740" rx="80" ry="14" fill="#00f2fe" opacity="0.35" filter="url(#subtleGlow)" />
+      </g>
+
+      <!-- Cyber Sparkle Stars -->
+      <g fill="#ffffff">
+        <circle cx="680" cy="270" r="5" opacity="0.9" />
+        <circle cx="720" cy="512" r="4" opacity="0.75" />
+        <circle cx="280" cy="340" r="4" opacity="0.85" />
+        <circle cx="310" cy="680" r="5" opacity="0.85" />
+        <polygon points="680,240 684,248 692,252 684,256 680,264 676,256 668,252 676,248" fill="#00ffcc" opacity="0.95" />
+      </g>
+
+</svg>

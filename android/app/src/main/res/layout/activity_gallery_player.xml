@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/galleryPlayerRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:keepScreenOn="true">
+
+    <!-- 1. Media3 ExoPlayer Surface -->
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/galleryExoPlayerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:resize_mode="fit"
+        app:show_buffering="never"
+        app:use_controller="false" />
+
+    <!-- 2. Dynamic Video Filter Color Overlay -->
+    <View
+        android:id="@+id/videoFilterOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#00000000"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 3. Loading Indicator -->
+    <ProgressBar
+        android:id="@+id/galleryPlayerLoader"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:indeterminate="true"
+        android:indeterminateTint="#0084FF"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 4. Gesture Brightness & Volume HUD -->
+    <LinearLayout
+        android:id="@+id/galleryGestureHud"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:background="@drawable/bg_gallery_hud"
+        android:elevation="14dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/galleryGestureIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_gallery_audio_boost"
+            app:tint="#0084FF" />
+
+        <TextView
+            android:id="@+id/galleryGestureText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Volume: 80%"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:id="@+id/galleryGestureProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_marginTop="8dp"
+            android:max="100"
+            android:progress="80"
+            android:progressTint="#0084FF" />
+    </LinearLayout>
+
+    <!-- 5. Gesture Seek Time HUD -->
+    <LinearLayout
+        android:id="@+id/gallerySeekHud"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_gallery_hud"
+        android:elevation="14dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="26dp"
+        android:paddingVertical="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/gallerySeekDiff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+0:15"
+            android:textColor="#0084FF"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/gallerySeekTarget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="04:30 / 12:45"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- 6. TOP BAR (Matching Screenshot: Back, Title, Snapshot, Volume/Boost, More) -->
+    <LinearLayout
+        android:id="@+id/galleryTopBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_gallery_top_bar"
+        android:elevation="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnGalleryBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:src="@drawable/ic_gallery_back"
+            app:tint="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/galleryVideoTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Rainforest Birds"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/btnGallerySnapshot"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginEnd="4dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Capture Frame"
+            android:src="@drawable/ic_gallery_snapshot"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/btnGalleryPip"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginEnd="4dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Picture-in-Picture"
+            android:src="@drawable/ic_gallery_pip"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/btnGalleryAudioBoost"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginEnd="4dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Audio Boost"
+            android:src="@drawable/ic_gallery_audio_boost"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/btnGalleryMenu"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Player Settings"
+            android:src="@drawable/ic_gallery_more"
+            app:tint="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- 7. CENTER PLAYBACK CONTROLS (Matching Screenshot: Rewind 10s, Big Glass Center Play, Forward 10s) -->
+    <LinearLayout
+        android:id="@+id/galleryCenterControls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnGalleryRewind10"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="32dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Rewind 10 seconds"
+            android:src="@drawable/ic_gallery_rewind10"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/btnGalleryCenterPlay"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@drawable/bg_gallery_center_play"
+            android:contentDescription="Play/Pause"
+            android:elevation="4dp"
+            android:src="@drawable/ic_gallery_pause"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/btnGalleryForward10"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="32dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Forward 10 seconds"
+            android:src="@drawable/ic_gallery_forward10"
+            app:tint="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- 8. BOTTOM CONTROLS CONTAINER -->
+    <LinearLayout
+        android:id="@+id/galleryBottomControlsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_gallery_bottom_bar"
+        android:elevation="10dp"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- 8A. Quick Feature Chips Row (above seekbar) -->
+        <LinearLayout
+            android:id="@+id/galleryQuickFeaturesRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="6dp">
+
+            <ImageButton
+                android:id="@+id/btnGalleryAudioTrack"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="6dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Audio Track"
+                android:src="@drawable/ic_gallery_audio"
+                app:tint="#DDF" />
+
+            <ImageButton
+                android:id="@+id/btnGallerySubtitle"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="6dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Subtitles CC"
+                android:src="@drawable/ic_gallery_subtitle"
+                app:tint="#DDF" />
+
+            <ImageButton
+                android:id="@+id/btnGalleryFilter"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="6dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Video Filter"
+                android:src="@drawable/ic_gallery_filter"
+                app:tint="#DDF" />
+
+            <ImageButton
+                android:id="@+id/btnGalleryAspect"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="6dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Aspect Ratio"
+                android:src="@drawable/ic_gallery_aspect"
+                app:tint="#DDF" />
+
+            <ImageButton
+                android:id="@+id/btnGalleryPlaylist"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="6dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Playlist"
+                android:src="@drawable/ic_gallery_playlist"
+                app:tint="#DDF" />
+
+            <ImageButton
+                android:id="@+id/btnGalleryRepeat"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Repeat Mode"
+                android:src="@drawable/ic_gallery_repeat"
+                app:tint="#DDF" />
+        </LinearLayout>
+
+        <!-- 8B. Seek Bar Row (Time, Smooth Track with Thumb, Duration) -->
+        <LinearLayout
+            android:id="@+id/gallerySeekBarRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/galleryCurrentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="00:00"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <SeekBar
+                android:id="@+id/gallerySeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:maxHeight="5dp"
+                android:minHeight="5dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:progressDrawable="@drawable/seekbar_gallery_track"
+                android:splitTrack="false"
+                android:thumb="@drawable/seekbar_gallery_thumb"
+                android:thumbOffset="9dp" />
+
+            <TextView
+                android:id="@+id/galleryTotalDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="00:00"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- 8C. Bottom Command Action Bar (Lock, Rotate, Prev, Big Blue Play, Next, Shuffle, Fullscreen) -->
+        <LinearLayout
+            android:id="@+id/galleryBottomActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnGalleryLock"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Lock Screen"
+                android:src="@drawable/ic_gallery_lock"
+                app:tint="#FFFFFF" />
+
+            <ImageButton
+                android:id="@+id/btnGalleryRotate"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="6dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Rotate Screen"
+                android:src="@drawable/ic_gallery_rotate"
+                app:tint="#FFFFFF" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/btnGalleryPrev"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Previous Video"
+                android:src="@drawable/ic_gallery_prev"
+                app:tint="#FFFFFF" />
+
+            <ImageButton
+                android:id="@+id/btnGalleryBottomPlay"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/bg_gallery_play_circle"
+                android:contentDescription="Play/Pause"
+                android:elevation="6dp"
+                android:src="@drawable/ic_gallery_pause"
+                app:tint="#FFFFFF" />
+
+            <ImageButton
+                android:id="@+id/btnGalleryNext"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Next Video"
+                android:src="@drawable/ic_gallery_next"
+                app:tint="#FFFFFF" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/btnGalleryShuffle"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginEnd="6dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Shuffle Mode"
+                android:src="@drawable/ic_gallery_shuffle"
+                app:tint="#FFFFFF" />
+
+            <ImageButton
+                android:id="@+id/btnGalleryFullscreen"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Toggle Fullscreen"
+                android:src="@drawable/ic_gallery_fullscreen"
+                app:tint="#FFFFFF" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 9. Floating Unlock Button (Visible only when screen locked) -->
+    <LinearLayout
+        android:id="@+id/galleryUnlockContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:background="@drawable/bg_gallery_circle_btn"
+        android:clickable="true"
+        android:elevation="16dp"
+        android:focusable="true"
+        android:gravity="center"
+        android:padding="12dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_gallery_unlock"
+            app:tint="#00F2FE" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

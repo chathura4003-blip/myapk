@@ -1,0 +1,20 @@
+{
+  "name": "cloud-drive-leech-mobile",
+  "version": "1.0.5",
+  "description": "Cloud-to-Google Drive Movie, Media & 18+ Downloader Mobile App",
+  "scripts": {
+    "build": "node bin/build-apk.js",
+    "build:apk": "node bin/build-apk.js",
+    "sync:apk": "npx cap sync android",
+    "ota:publish": "node bin/publish-ota.js",
+    "sync": "node bin/live-mode.js push",
+    "live:on": "node bin/live-mode.js on",
+    "live:off": "node bin/live-mode.js off",
+    "live:push": "node bin/live-mode.js push"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0"
+  }
+}

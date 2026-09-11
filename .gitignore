@@ -1,0 +1,32 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Build outputs
+android/app/build/
+android/build/
+android/.gradle/
+*.apk
+*.aab
+
+# Environment & secrets
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Temp files
+temp_*
+scratch/
+*.class
+*.bat
+!android/gradlew.bat
+
+# Capacitor
+android/app/src/main/assets/public/
+
+# Admin panel (excluded)
+admin-panel/

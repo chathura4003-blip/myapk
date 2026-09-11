@@ -1,0 +1,22 @@
+{
+  "appId": "com.clouddrive.leech",
+  "appName": "Cloud Drive Leech",
+  "webDir": "public",
+  "server": {
+    "allowNavigation": [
+      "127.0.0.1:*"
+    ]
+  },
+  "android": {
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "launchAutoHide": true,
+      "backgroundColor": "#0a0c10",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false
+    }
+  }
+}

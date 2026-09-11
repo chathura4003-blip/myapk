@@ -1,0 +1,843 @@
+/* =========================================================
+   2026 DIRECT DOWNLOAD MANAGER - CYBERPUNK VELVET GLASSMORPHIC STYLES
+   ========================================================= */
+
+/* Downloader Hub Command Deck */
+.dl-hub-command-deck {
+  background: linear-gradient(135deg, rgba(10, 18, 34, 0.92), rgba(15, 24, 48, 0.85));
+  border: 1px solid rgba(0, 242, 254, 0.28);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 242, 254, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.btn-paste-clip {
+  background: rgba(0, 242, 254, 0.12);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  color: var(--accent-cyan);
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-paste-clip:hover {
+  background: rgba(0, 242, 254, 0.25);
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+}
+
+/* Header Stats Row */
+.dl-stats-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.dl-stat-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.2px;
+}
+
+.dl-stat-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.dl-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dl-speed-pill {
+  background: rgba(0, 242, 254, 0.12);
+  border: 1px solid rgba(0, 242, 254, 0.35);
+  color: var(--accent-cyan);
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.15);
+}
+
+.btn-clear-dl-all {
+  background: rgba(255, 71, 87, 0.12);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  color: #ff4757;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-clear-dl-all:hover {
+  background: #ff4757;
+  color: #fff;
+  box-shadow: 0 0 14px rgba(255, 71, 87, 0.4);
+}
+
+/* Cyber Floating URL Capsule (Clean, Spacious & Intuitive) */
+.search-capsule-dl {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(8, 14, 26, 0.95);
+  border: 1.5px solid rgba(0, 242, 254, 0.3);
+  border-radius: var(--radius-full, 9999px);
+  padding: 5px 6px 5px 14px;
+  gap: 8px;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6), 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.search-capsule-dl:focus-within {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 24px rgba(0, 242, 254, 0.4), inset 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.search-radar-badge-dl {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.search-icon-dl {
+  font-size: 1.15rem;
+  z-index: 2;
+  transition: all 0.25s ease;
+}
+
+.radar-ping-ring-dl {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: rgba(0, 242, 254, 0.15);
+  animation: pingAnimation 2.4s infinite cubic-bezier(0, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.dl-url-input-command {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-primary, #f1f5f9);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  outline: none;
+  padding: 8px 0;
+  caret-color: var(--accent-cyan);
+}
+
+.dl-url-input-command::placeholder {
+  color: var(--text-muted, #94a3b8);
+  font-size: 0.85rem;
+}
+
+.btn-clear-dl-input {
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #94a3b8);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-clear-dl-input:hover {
+  color: #ff4757;
+}
+
+.btn-dl-turbo-start {
+  background: linear-gradient(135deg, #00f2fe, #4facfe);
+  color: #000;
+  border: none;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: var(--radius-full, 9999px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 15px rgba(0, 242, 254, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-dl-turbo-start:hover {
+  transform: scale(1.04);
+  box-shadow: 0 0 24px rgba(0, 242, 254, 0.6);
+}
+
+.btn-dl-turbo-start:active {
+  transform: scale(0.97);
+}
+
+/* Social & Cloud Platform Pills Ribbon */
+.social-platforms-ribbon {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 4px 2px 6px 2px;
+  margin-top: 4px;
+}
+
+.social-platforms-ribbon::-webkit-scrollbar {
+  display: none;
+}
+
+.social-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary, #94a3b8);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-full, 9999px);
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.social-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* ⚡ Active / Selected State when URL matches platform */
+.social-pill.selected,
+.social-pill.active {
+  background: rgba(0, 242, 254, 0.18) !important;
+  border-color: var(--accent-cyan, #00f2fe) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.45) !important;
+  transform: scale(1.05);
+  font-weight: 700;
+}
+
+.social-pill[data-platform="youtube"].selected,
+.social-pill[data-platform="youtube"].active {
+  background: rgba(255, 0, 0, 0.2) !important;
+  border-color: #ff0000 !important;
+  box-shadow: 0 0 16px rgba(255, 0, 0, 0.5) !important;
+}
+
+.social-pill[data-platform="tiktok"].selected,
+.social-pill[data-platform="tiktok"].active {
+  background: rgba(0, 242, 254, 0.2) !important;
+  border-color: #00f2fe !important;
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.5) !important;
+}
+
+.social-pill[data-platform="instagram"].selected,
+.social-pill[data-platform="instagram"].active {
+  background: rgba(225, 48, 108, 0.2) !important;
+  border-color: #e1306c !important;
+  box-shadow: 0 0 16px rgba(225, 48, 108, 0.5) !important;
+}
+
+.social-pill[data-platform="facebook"].selected,
+.social-pill[data-platform="facebook"].active {
+  background: rgba(24, 119, 242, 0.2) !important;
+  border-color: #1877f2 !important;
+  box-shadow: 0 0 16px rgba(24, 119, 242, 0.5) !important;
+}
+
+.social-pill[data-platform="torrent"].selected,
+.social-pill[data-platform="torrent"].active {
+  background: rgba(255, 71, 87, 0.2) !important;
+  border-color: #ff4757 !important;
+  box-shadow: 0 0 16px rgba(255, 71, 87, 0.5) !important;
+}
+
+.social-pill[data-platform="pixeldrain"].selected,
+.social-pill[data-platform="pixeldrain"].active {
+  background: rgba(46, 213, 115, 0.2) !important;
+  border-color: #2ed573 !important;
+  box-shadow: 0 0 16px rgba(46, 213, 115, 0.5) !important;
+}
+
+.social-pill[data-platform="drive"].selected,
+.social-pill[data-platform="drive"].active {
+  background: rgba(66, 133, 244, 0.2) !important;
+  border-color: #4285f4 !important;
+  box-shadow: 0 0 16px rgba(66, 133, 244, 0.5) !important;
+}
+
+.social-pill[data-platform="mega"].selected,
+.social-pill[data-platform="mega"].active {
+  background: rgba(234, 32, 39, 0.2) !important;
+  border-color: #ea2027 !important;
+  box-shadow: 0 0 16px rgba(234, 32, 39, 0.5) !important;
+}
+
+.social-pill[data-platform="mediafire"].selected,
+.social-pill[data-platform="mediafire"].active {
+  background: rgba(0, 112, 243, 0.2) !important;
+  border-color: #0070f3 !important;
+  box-shadow: 0 0 16px rgba(0, 112, 243, 0.5) !important;
+}
+
+.social-pill[data-platform="twitter"].selected,
+.social-pill[data-platform="twitter"].active {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.4) !important;
+}
+
+.social-pill[data-platform="direct"].selected,
+.social-pill[data-platform="direct"].active {
+  background: rgba(0, 242, 254, 0.2) !important;
+  border-color: #00f2fe !important;
+  box-shadow: 0 0 16px rgba(0, 242, 254, 0.5) !important;
+}
+
+/* Filter Bar */
+.dl-segmented-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.dl-segmented-filter-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.dl-filter-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.dl-filter-btn:hover {
+  background: rgba(0, 242, 254, 0.12);
+  color: #fff;
+}
+
+.dl-filter-btn.active {
+  background: linear-gradient(135deg, rgba(0, 242, 254, 0.22), rgba(79, 172, 254, 0.22));
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 14px rgba(0, 242, 254, 0.25);
+}
+
+/* =========================================================
+   2. 2026 CYBERPUNK LIVE DOWNLOAD CARDS
+   ========================================================= */
+.dl-cards-grid-2026 {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dl-card-2026 {
+  background: linear-gradient(145deg, rgba(14, 23, 42, 0.95), rgba(7, 12, 24, 0.98));
+  border: 1px solid rgba(0, 242, 254, 0.22);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 18px;
+  padding: 16px 18px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.dl-card-2026:hover {
+  border-color: rgba(0, 242, 254, 0.45);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(0, 242, 254, 0.15);
+}
+
+/* Top Row */
+.dl-card-top-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dl-file-icon-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(0, 242, 254, 0.12);
+  border: 1px solid rgba(0, 242, 254, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.dl-title-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.dl-file-name-text {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.dl-url-subtext {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.dl-status-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.dl-status-badge.downloading {
+  background: rgba(0, 242, 254, 0.15);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 242, 254, 0.45);
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.2);
+}
+
+.dl-status-badge.completed {
+  background: rgba(46, 213, 115, 0.15);
+  color: #2ed573;
+  border: 1px solid rgba(46, 213, 115, 0.45);
+  box-shadow: 0 0 12px rgba(46, 213, 115, 0.2);
+}
+
+.dl-status-badge.paused {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.45);
+}
+
+.dl-status-badge.failed {
+  background: rgba(255, 71, 87, 0.15);
+  color: #ff4757;
+  border: 1px solid rgba(255, 71, 87, 0.45);
+}
+
+/* Progress Container */
+.dl-progress-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dl-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dl-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #00f2fe 0%, #4facfe 50%, #00c6ff 100%);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
+}
+
+.dl-progress-numbers {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.dl-percent-val {
+  color: var(--accent-cyan);
+  font-weight: 800;
+}
+
+/* 4-Tile Live Data Telemetry Matrix */
+.dl-telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 500px) {
+  .dl-telemetry-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.dl-telemetry-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dl-tile-lbl {
+  font-size: 0.64rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dl-tile-val {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Action Buttons Bar */
+.dl-card-actions-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.btn-dl-act {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.btn-dl-act.primary {
+  background: linear-gradient(135deg, #00f2fe, #4facfe);
+  color: #000;
+  box-shadow: 0 3px 12px rgba(0, 242, 254, 0.35);
+}
+
+.btn-dl-act.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 18px rgba(0, 242, 254, 0.55);
+}
+
+.btn-dl-act.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.btn-dl-act.secondary:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.btn-dl-act.drive {
+  background: rgba(66, 133, 244, 0.15);
+  color: #4285f4;
+  border: 1px solid rgba(66, 133, 244, 0.4);
+}
+
+.btn-dl-act.drive:hover {
+  background: #4285f4;
+  color: #fff;
+  box-shadow: 0 3px 14px rgba(66, 133, 244, 0.4);
+}
+
+.btn-dl-act.danger {
+  background: rgba(255, 71, 87, 0.12);
+  color: #ff4757;
+  border: 1px solid rgba(255, 71, 87, 0.35);
+}
+
+.btn-dl-act.danger:hover {
+  background: #ff4757;
+  color: #fff;
+  box-shadow: 0 3px 14px rgba(255, 71, 87, 0.4);
+}
+
+/* Empty State */
+.dl-empty-state-2026 {
+  text-align: center;
+  padding: 50px 20px;
+  background: rgba(13, 20, 34, 0.6);
+  border: 1px dashed rgba(0, 242, 254, 0.25);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.dl-empty-icon-radar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(0, 242, 254, 0.12);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: var(--accent-cyan);
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.2);
+}
+
+.dl-empty-state-2026 h3 {
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.dl-empty-state-2026 p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  max-width: 400px;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   TORRENT SELECTIVE FILE INSPECTOR UI (MOBILE OPTIMIZED)
+   ========================================================= */
+.torrent-inspector-box {
+  background: linear-gradient(145deg, rgba(14, 23, 42, 0.98), rgba(8, 14, 28, 0.98));
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  border-radius: 18px;
+  padding: 14px;
+  margin-top: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.torrent-meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 10px;
+  gap: 8px;
+  width: 100%;
+}
+
+.torrent-title-main {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.torrent-selection-controls {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.torrent-files-list {
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 2px;
+}
+
+.torrent-file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+.torrent-file-item:hover, .torrent-file-item.selected {
+  background: rgba(0, 242, 254, 0.08);
+  border-color: rgba(0, 242, 254, 0.35);
+}
+
+.torrent-file-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.torrent-file-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.torrent-file-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ================= Downloader Mode Switcher (Device vs Drive) ================= */
+.dl-mode-switcher-bar {
+  display: flex;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  border-radius: 14px;
+  padding: 4px;
+  gap: 6px;
+  margin-top: 8px;
+  margin-bottom: 14px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.dl-mode-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: #94a3b8;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dl-mode-btn i {
+  font-size: 0.95rem;
+  color: #64748b;
+  transition: all 0.2s ease;
+}
+
+.dl-mode-btn.active {
+  background: linear-gradient(135deg, rgba(0, 242, 254, 0.22), rgba(168, 85, 247, 0.2));
+  border: 1px solid rgba(0, 242, 254, 0.45);
+  color: #ffffff;
+  box-shadow: 0 4px 18px rgba(0, 242, 254, 0.22);
+}
+
+.dl-mode-btn.active i {
+  color: #00f2fe;
+  transform: scale(1.1);
+}
+
+.sub-counter-pill {
+  background: rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.dl-mode-btn.active .sub-counter-pill {
+  background: #00f2fe;
+  color: #05070b;
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+}
+

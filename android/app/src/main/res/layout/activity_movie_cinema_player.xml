@@ -1,0 +1,776 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/movieCinemaPlayerRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:keepScreenOn="true">
+
+    <!-- 1. Media3 ExoPlayer Surface -->
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/movieCinemaExoPlayerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:resize_mode="fit"
+        app:show_buffering="never"
+        app:use_controller="false" />
+
+    <!-- 2. Web Stream Fallback View (For Web Embed Players) -->
+    <WebView
+        android:id="@+id/movieCinemaWebView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#000000"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 3. Dynamic Video Filter Color Overlay -->
+    <View
+        android:id="@+id/movieCinemaFilterOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#00000000"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 4. Loading Indicator -->
+    <ProgressBar
+        android:id="@+id/movieCinemaLoader"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:indeterminate="true"
+        android:indeterminateTint="#0084FF"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 5. Gesture Brightness & Volume HUD -->
+    <LinearLayout
+        android:id="@+id/movieCinemaGestureHud"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:background="@drawable/bg_gallery_hud"
+        android:elevation="14dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/movieCinemaGestureIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_gallery_audio_boost"
+            app:tint="#0084FF" />
+
+        <TextView
+            android:id="@+id/movieCinemaGestureText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Volume: 80%"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:id="@+id/movieCinemaGestureProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_marginTop="8dp"
+            android:max="100"
+            android:progress="80"
+            android:progressTint="#0084FF" />
+    </LinearLayout>
+
+    <!-- 6. Gesture Seek Time HUD -->
+    <LinearLayout
+        android:id="@+id/movieCinemaSeekHud"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_gallery_hud"
+        android:elevation="14dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="26dp"
+        android:paddingVertical="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/movieCinemaSeekDiff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+0:15"
+            android:textColor="#0084FF"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/movieCinemaSeekTarget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="04:30 / 12:45"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- 7. TOP BAR (Back, Title + Quality Badge, Server Switch, Snapshot, Boost, PiP, Menu) -->
+    <LinearLayout
+        android:id="@+id/movieCinemaTopBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_gallery_top_bar"
+        android:elevation="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnMovieCinemaBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:src="@drawable/ic_gallery_back"
+            app:tint="#FFFFFF" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/movieCinemaTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Movie Title"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/movieCinemaBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_gallery_chip"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:text="1080p FHD • 60 FPS"
+                    android:textColor="#0084FF"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/movieCinemaProviderBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_gallery_chip"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:text="⚡ 1 Gbps Direct Cloud Pipe"
+                    android:textColor="#00D26A"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- In-Player Quality / Server Switcher -->
+        <ImageButton
+            android:id="@+id/btnMovieCinemaServerSwitch"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Switch Quality Server"
+            android:src="@drawable/ic_gallery_playlist"
+            app:tint="#0084FF" />
+
+        <ImageButton
+            android:id="@+id/btnMovieCinemaSnapshot"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Take Snapshot"
+            android:src="@drawable/ic_gallery_snapshot"
+            app:tint="#FFFFFF" />
+
+        <!-- Top Screen Rotate Button (Full Display / Landscape Toggle) -->
+        <ImageButton
+            android:id="@+id/btnMovieCinemaTopRotate"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Rotate Screen"
+            android:src="@drawable/ic_gallery_rotate"
+            app:tint="#00E5FF" />
+
+        <ImageButton
+            android:id="@+id/btnMovieCinemaPip"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Picture in Picture"
+            android:src="@drawable/ic_gallery_pip"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/btnMovieCinemaAudioBoost"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="200% Audio Boost"
+            android:src="@drawable/ic_gallery_audio_boost"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/btnMovieCinemaMenu"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="More Options"
+            android:src="@drawable/ic_gallery_more"
+            app:tint="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- 8. CENTER CONTROLS (Rewind 10s, Big Play/Pause, Forward 10s) -->
+    <LinearLayout
+        android:id="@+id/movieCinemaCenterControls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="10dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btnMovieCinemaRewind10"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:background="@drawable/bg_gallery_circle_btn"
+            android:contentDescription="Rewind 10 seconds"
+            android:src="@drawable/ic_gallery_rewind10"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/btnMovieCinemaCenterPlay"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginHorizontal="28dp"
+            android:background="@drawable/bg_gallery_center_play"
+            android:contentDescription="Play or Pause"
+            android:elevation="6dp"
+            android:src="@drawable/ic_gallery_play"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/btnMovieCinemaForward10"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:background="@drawable/bg_gallery_circle_btn"
+            android:contentDescription="Forward 10 seconds"
+            android:src="@drawable/ic_gallery_forward10"
+            app:tint="#FFFFFF" />
+
+        <ImageButton
+            android:id="@+id/btnMovieCinemaNextEpisode"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="14dp"
+            android:background="@drawable/bg_gallery_circle_btn"
+            android:contentDescription="Next Episode"
+            android:src="@drawable/ic_gallery_next"
+            android:visibility="gone"
+            app:tint="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- 9. BOTTOM CONTROLS CONTAINER -->
+    <LinearLayout
+        android:id="@+id/movieCinemaBottomControlsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_gallery_bottom_bar"
+        android:elevation="10dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Row 1: Quick Feature Action Chips -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp">
+
+            <Button
+                android:id="@+id/btnMovieCinemaAudioTrack"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_gallery_chip"
+                android:drawableStart="@drawable/ic_gallery_audio"
+                android:drawablePadding="6dp"
+                android:drawableTint="#0084FF"
+                android:minWidth="0dp"
+                android:paddingHorizontal="10dp"
+                android:text="Audio"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnMovieCinemaSubtitle"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_gallery_chip"
+                android:drawableStart="@drawable/ic_gallery_subtitle"
+                android:drawablePadding="6dp"
+                android:drawableTint="#0084FF"
+                android:minWidth="0dp"
+                android:paddingHorizontal="10dp"
+                android:text="Sinhala Subs"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnMovieCinemaFilter"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_gallery_chip"
+                android:drawableStart="@drawable/ic_gallery_filter"
+                android:drawablePadding="6dp"
+                android:drawableTint="#0084FF"
+                android:minWidth="0dp"
+                android:paddingHorizontal="10dp"
+                android:text="Filter"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnMovieCinemaAspect"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_gallery_chip"
+                android:drawableStart="@drawable/ic_gallery_aspect"
+                android:drawablePadding="6dp"
+                android:drawableTint="#0084FF"
+                android:minWidth="0dp"
+                android:paddingHorizontal="10dp"
+                android:text="FIT"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnMovieCinemaEpisodes"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_gallery_chip"
+                android:drawableStart="@drawable/ic_gallery_playlist"
+                android:drawablePadding="6dp"
+                android:drawableTint="#0084FF"
+                android:minWidth="0dp"
+                android:paddingHorizontal="10dp"
+                android:text="Episodes"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Row 2: Precision Scrubber & Timers -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/movieCinemaCurrentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <SeekBar
+                android:id="@+id/movieCinemaSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                android:max="1000"
+                android:progressDrawable="@drawable/seekbar_gallery_track"
+                android:splitTrack="false"
+                android:thumb="@drawable/seekbar_gallery_thumb" />
+
+            <TextView
+                android:id="@+id/movieCinemaTotalDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textColor="#9E9E9E"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Row 3: Bottom Navigation Bar (Lock, Rotate, Play/Pause, Speed, Aspect, Fullscreen) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnMovieCinemaLock"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Lock Screen Controls"
+                android:src="@drawable/ic_gallery_lock"
+                app:tint="#FFFFFF" />
+
+            <ImageButton
+                android:id="@+id/btnMovieCinemaRotate"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Rotate Screen"
+                android:src="@drawable/ic_gallery_rotate"
+                app:tint="#FFFFFF" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <!-- Center Bottom Play Pause Button -->
+            <ImageButton
+                android:id="@+id/btnMovieCinemaBottomPlay"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_gallery_play_circle"
+                android:contentDescription="Play/Pause"
+                android:src="@drawable/ic_gallery_play"
+                app:tint="#FFFFFF" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnMovieCinemaSpeed"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_gallery_chip"
+                android:minWidth="0dp"
+                android:paddingHorizontal="10dp"
+                android:text="1.0x"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+            <ImageButton
+                android:id="@+id/btnMovieCinemaFullscreen"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Fullscreen Aspect"
+                android:src="@drawable/ic_gallery_fullscreen"
+                app:tint="#FFFFFF" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 10. FLOATING UNLOCK BUTTON (Visible when locked) -->
+    <LinearLayout
+        android:id="@+id/movieCinemaUnlockContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:background="@drawable/bg_gallery_hud"
+        android:elevation="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="10dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_gallery_unlock"
+            app:tint="#0084FF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Tap to Unlock"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- 11. NETFLIX AUTO-NEXT EPISODE COUNTDOWN OVERLAY -->
+    <LinearLayout
+        android:id="@+id/netflixNextEpisodeOverlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="90dp"
+        android:background="@drawable/bg_netflix_next_ep_overlay"
+        android:elevation="24dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/bg_gallery_circle_btn"
+            android:padding="6dp"
+            android:src="@drawable/ic_gallery_next"
+            app:tint="#0084FF" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/netflixNextEpisodeCountdownText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next Episode in 5s..."
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/netflixNextEpisodeTitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:maxWidth="180dp"
+                android:text="S1:E2 • The Weirdo"
+                android:textColor="#94A3B8"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnNetflixWatchNextNow"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/bg_netflix_season_pill_active"
+            android:minWidth="0dp"
+            android:paddingHorizontal="12dp"
+            android:text="Watch Now"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/btnNetflixDismissNextOverlay"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Dismiss"
+            android:src="@drawable/ic_chrome_close"
+            app:tint="#94A3B8" />
+    </LinearLayout>
+
+    <!-- 12. NETFLIX SLIDING EPISODES DRAWER -->
+    <View
+        android:id="@+id/netflixDrawerScrim"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#80000000"
+        android:clickable="true"
+        android:elevation="30dp"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/netflixEpisodesDrawer"
+        android:layout_width="380dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_netflix_drawer"
+        android:clickable="true"
+        android:elevation="32dp"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Drawer Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/netflixDrawerSeriesTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Stranger Things"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/netflixDrawerEpisodesSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Seasons &amp; Episodes"
+                    android:textColor="#0084FF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnNetflixCloseDrawer"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Close Drawer"
+                android:src="@drawable/ic_chrome_close"
+                app:tint="#94A3B8" />
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#1E293B" />
+
+        <!-- Horizontal Season Selector Tabs -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/netflixSeasonsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp" />
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#1E293B" />
+
+        <!-- Vertical Episodes List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/netflixEpisodesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingTop="6dp"
+            android:paddingBottom="24dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
