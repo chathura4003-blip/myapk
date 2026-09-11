@@ -747,8 +747,20 @@ if (document.readyState === 'loading') {
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       stopTrafficPolling();
+      stopPingTimer();
     } else if (isVpnConnected) {
       startTrafficPolling();
+      if (window.state?.currentTab === 'settings') {
+        startPingTimer();
+      }
+    }
+  });
+
+  window.addEventListener('cloud:active-tab-changed', (e) => {
+    if (e.detail?.tab !== 'settings') {
+      stopPingTimer();
+    } else if (isVpnConnected && !document.hidden) {
+      startPingTimer();
     }
   });
 

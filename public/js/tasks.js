@@ -415,6 +415,13 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // Start polling when switching to Downloads tab or on init
+window.addEventListener('cloud:active-tab-changed', (e) => {
+  if (e?.detail?.tab === 'downloads') {
+    startTasksPolling();
+  } else {
+    stopTasksPolling();
+  }
+});
 window.addEventListener('tabChanged', (e) => {
   if (e?.detail?.tab === 'downloads') {
     startTasksPolling();

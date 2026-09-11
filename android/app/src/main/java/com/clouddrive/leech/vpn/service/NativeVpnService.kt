@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -68,7 +69,12 @@ class NativeVpnService : VpnService() {
                 val name = intent.getStringExtra("name") ?: "V2Ray Tunnel"
                 val flag = intent.getStringExtra("flag") ?: "🌐"
                 stopTunnel()
-                startForeground(NOTIFICATION_ID, buildNotification("Connecting to $flag $name...", "Establishing secure TUN interface"))
+                val connectingNotif = buildNotification("Connecting to $flag $name...", "Establishing secure TUN interface")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    startForeground(NOTIFICATION_ID, connectingNotif, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+                } else {
+                    startForeground(NOTIFICATION_ID, connectingNotif)
+                }
                 establishTunnel(host, port, name, flag)
             }
             ACTION_DISCONNECT -> {
@@ -173,7 +179,12 @@ class NativeVpnService : VpnService() {
             val initialNet = underlyingNetwork ?: findUsableUnderlyingNetwork()
             updateUnderlyingNetwork(initialNet)
 
-            startForeground(NOTIFICATION_ID, buildNotification("🛡️ Connected: $flag $name", "Real-Time Encrypted Xray-Core Tunnel Active"))
+            val connectedNotif = buildNotification("🛡️ Connected: $flag $name", "Real-Time Encrypted Xray-Core Tunnel Active")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(NOTIFICATION_ID, connectedNotif, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+            } else {
+                startForeground(NOTIFICATION_ID, connectedNotif)
+            }
 
             // Build official Xray JSON Configuration
             val activeCfg = VpnEngineManager.getInstance(applicationContext).activeConfig
@@ -440,6 +451,8 @@ class NativeVpnService : VpnService() {
             .setOngoing(true)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .build()
     }
 
