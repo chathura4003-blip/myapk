@@ -125,6 +125,12 @@ class NativeLicensePlugin : Plugin() {
         call.resolve(ret)
     }
 
+    private fun isPaidPlan(plan: String?): Boolean {
+        if (plan.isNullOrBlank()) return false
+        val p = plan.trim().uppercase()
+        return p != "FREE" && p != "FREE-TIER" && p != "FREE TIER"
+    }
+
     /**
      * Authoritative License Storage: Saves verified license payload with hardware-bound HMAC-SHA256 signature
      * into EncryptedSharedPreferences (AES-256-GCM).
@@ -141,7 +147,7 @@ class NativeLicensePlugin : Plugin() {
             val prefs = getPrefs()
             val installId = getOrCreateInstallId()
 
-            val isPro = plan.equals("PRO", ignoreCase = true) || plan.equals("ENTERPRISE", ignoreCase = true) || plan.equals("PREMIUM", ignoreCase = true)
+            val isPro = isPaidPlan(plan)
             if (isPro) {
                 if (token.isEmpty()) {
                     call.reject("Token is required for PRO plan")
@@ -195,7 +201,7 @@ class NativeLicensePlugin : Plugin() {
             val ret = JSObject()
             ret.put("installationId", installId)
 
-            val isPro = plan.equals("PRO", ignoreCase = true) || plan.equals("ENTERPRISE", ignoreCase = true) || plan.equals("PREMIUM", ignoreCase = true)
+            val isPro = isPaidPlan(plan)
             if (!isPro || token.isNullOrEmpty() || storedSig.isNullOrEmpty()) {
                 ret.put("valid", false)
                 ret.put("plan", "FREE")

@@ -4631,18 +4631,29 @@ btnModalRefreshLinks?.addEventListener('click', async (e) => {
 
 // Startup Trending Movies Feed Loader
 function triggerInitialMovieLoad() {
-  if (isAppFirstLoaded) return;
-  isAppFirstLoaded = true;
-
   // Free tier optimization: Do not run heavy multi-web scraping on startup if user does not have Movie PRO
   if (typeof window.isFeatureAvailable === 'function' && !window.isFeatureAvailable('TAB_MOVIES')) {
     return;
   }
+  if (isAppFirstLoaded) return;
+  isAppFirstLoaded = true;
 
   if (window.searchMovies) {
     window.searchMovies('2026');
   }
 }
+
+// Automatically load trending movies when a PRO license is activated or verified
+window.addEventListener('cld:license-updated', () => {
+  if (typeof window.isFeatureAvailable === 'function' && window.isFeatureAvailable('TAB_MOVIES')) {
+    const grid = document.getElementById('movieGrid');
+    if (!grid || grid.children.length === 0) {
+      if (window.searchMovies) {
+        window.searchMovies('2026');
+      }
+    }
+  }
+});
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', triggerInitialMovieLoad);

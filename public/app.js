@@ -41,5 +41,17 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.switchTab) {
     window.switchTab(initialTab, false);
   }
+
+  // 5. Automatic Switch on Late Native Keystore Verification
+  window.addEventListener('cld:license-updated', () => {
+    const isMovieUnlocked = typeof window.isFeatureAvailable === 'function' && window.isFeatureAvailable('TAB_MOVIES');
+    const cur = window.state?.currentTab;
+    const savedTab = localStorage.getItem('cloud_active_tab');
+    if (isMovieUnlocked && (cur === 'downloads' || !cur)) {
+      if (savedTab === 'movies' && window.switchTab) {
+        window.switchTab('movies', false);
+      }
+    }
+  });
 });
 

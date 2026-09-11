@@ -896,7 +896,15 @@ window.switchTab = function (tabName, pushHistory = true) {
     }
   }
 
-  if (window.state.currentTab === tabName) return;
+  if (window.state.currentTab === tabName) {
+    if (tabName === 'movies') {
+      const movieGrid = document.getElementById('movieGrid');
+      if (movieGrid && movieGrid.children.length === 0 && window.searchMovies) {
+        window.searchMovies('2026');
+      }
+    }
+    return;
+  }
   const prevTab = window.state.currentTab;
   window.state.currentTab = tabName;
 

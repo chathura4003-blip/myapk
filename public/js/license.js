@@ -176,6 +176,14 @@
     return installationIdentity;
   }
 
+  // Helper: Detect any paid/PRO plan variant (e.g. PRO, PRO UNLIMITED, PRO CINEMA VIP, etc.)
+  function isPaidPlan(plan) {
+    if (!plan || typeof plan !== 'string') return false;
+    const p = plan.trim().toUpperCase();
+    return p !== 'FREE' && p !== 'FREE-TIER' && p !== 'FREE TIER' && p !== '';
+  }
+  window.isPaidPlan = isPaidPlan;
+
   /**
    * Authoritative Native Cryptographic License Verification
    * Direct hardware-bound HMAC-SHA256 signature check against EncryptedSharedPreferences (AES-256-GCM).
@@ -185,7 +193,7 @@
     if (window.Capacitor?.Plugins?.NativeLicense?.getVerifiedLicense) {
       try {
         const res = await window.Capacitor.Plugins.NativeLicense.getVerifiedLicense();
-        if (res && res.valid && (res.plan === 'PRO' || res.plan === 'ENTERPRISE' || res.plan === 'PREMIUM') && res.status === 'ACTIVE') {
+        if (res && res.valid && isPaidPlan(res.plan) && res.status === 'ACTIVE') {
           isNativeCryptographicallyVerified = true;
           let parsedPayload = null;
           if (res.payload) {
@@ -220,7 +228,7 @@
           if (res?.tampered) {
             console.warn('[License] 🚨 Cryptographic tamper detected by Android Keystore! Wiping compromised license.');
             resetToFreeTier('TAMPERED');
-          } else if (currentLicense.plan !== 'FREE') {
+          } else if (isPaidPlan(currentLicense.plan)) {
             console.warn('[License] Native Keystore reported unverified or free state. Demoting to Free Tier.');
             resetToFreeTier('UNVERIFIED');
           }
@@ -232,8 +240,7 @@
       }
     } else {
       // Browser fallback
-      const rawPlan = (currentLicense.plan || '').toUpperCase();
-      isNativeCryptographicallyVerified = (rawPlan === 'PRO' || rawPlan === 'ENTERPRISE' || rawPlan === 'PREMIUM') && currentLicense.status === 'ACTIVE';
+      isNativeCryptographicallyVerified = isPaidPlan(currentLicense.plan) && currentLicense.status === 'ACTIVE';
       return isNativeCryptographicallyVerified;
     }
   }
@@ -274,9 +281,8 @@
       }
       if (!payload || !payload.features || typeof payload.features !== 'object') return;
 
-      const rawPlan = (payload.plan || '').toUpperCase();
-      const isPaidPlan = (rawPlan === 'PRO' || rawPlan === 'ENTERPRISE' || rawPlan === 'PREMIUM');
-      if (isPaidPlan) {
+      const isPaid = isPaidPlan(payload.plan);
+      if (isPaid) {
         if (!payload.licenseId || payload.licenseId === 'FREE-TIER' || !token) {
           resetToFreeTier('INVALID_LICENSE');
           return;
@@ -288,7 +294,7 @@
         return;
       }
 
-      const verifiedPlan = isPaidPlan ? rawPlan : 'FREE';
+      const verifiedPlan = isPaid ? payload.plan : 'FREE';
       const isActive = payload.status === 'ACTIVE';
       currentLicense = {
         licenseId: payload.licenseId || 'FREE-TIER',
@@ -298,11 +304,11 @@
         expiresAt: payload.expiresAt || null,
         offlineGraceDays: payload.offlineGraceDays || 7,
         lastVerifiedAt: Date.now(),
-        features: (verifiedPlan !== 'FREE' && isActive)
+        features: (isPaid && isActive)
           ? Object.assign({}, DEFAULT_FREE_FEATURES, payload.features)
           : Object.assign({}, DEFAULT_FREE_FEATURES)
       };
-      isNativeCryptographicallyVerified = (verifiedPlan !== 'FREE' && isActive);
+      isNativeCryptographicallyVerified = (isPaid && isActive);
     } catch (e) {
       console.warn('[License] Error loading cached license:', e);
     }
@@ -311,7 +317,12 @@
   // Save license and cryptographically signed token into Native Keystore & local display cache
   function saveLicense(licenseData, token) {
     currentLicense = licenseData;
-    const isPaid = (licenseData.plan === 'PRO' || licenseData.plan === 'ENTERPRISE' || licenseData.plan === 'PREMIUM') && licenseData.status === 'ACTIVE';
+    const isPaid = isPaidPlan(licenseData.plan) && licenseData.status === 'ACTIVE';
+
+    // Synchronously grant access so instant UI switch is unblocked
+    if (isPaid) {
+      isNativeCryptographicallyVerified = true;
+    }
 
     if (window.Capacitor?.Plugins?.NativeLicense?.saveVerifiedLicense) {
       window.Capacitor.Plugins.NativeLicense.saveVerifiedLicense({
@@ -322,6 +333,8 @@
         payload: JSON.stringify(licenseData)
       }).then(() => {
         isNativeCryptographicallyVerified = isPaid;
+        updateSettingsUI();
+        enforceActiveTabAccess();
       }).catch(err => {
         console.warn('[License] Native saveVerifiedLicense error:', err);
       });
@@ -338,6 +351,7 @@
     } catch (_) {}
 
     updateSettingsUI();
+    enforceActiveTabAccess();
     window.dispatchEvent(new CustomEvent('cld:license-updated', { detail: currentLicense }));
   }
 
@@ -406,7 +420,7 @@
     // Resolve if passed a tab name instead of feature ID
     const resolvedId = TAB_TO_FEATURE_MAP[featureId] || featureId;
     const def = FEATURE_REGISTRY[resolvedId];
-    if (!def) return false; // FIXED: Unknown features default strictly to DENY (Master Prompt Sec 3.E)
+    if (!def) return false; // Unknown features default strictly to DENY
 
     // Free tier features are always allowed
     if (def.tier === 'FREE') return true;
@@ -430,13 +444,24 @@
 
     // Check device binding if specified
     if (currentLicense.deviceBinding && installationIdentity) {
-      if (currentLicense.deviceBinding !== installationIdentity) {
+      const boundList = Array.isArray(currentLicense.boundDevices) ? currentLicense.boundDevices : [currentLicense.deviceBinding];
+      if (boundList.length > 0 && !boundList.includes(installationIdentity)) {
         return false;
       }
     }
 
     // Check specific feature grant
-    return Boolean(currentLicense.features && currentLicense.features[resolvedId] === true);
+    if (currentLicense.features && typeof currentLicense.features === 'object') {
+      if (currentLicense.features[resolvedId] === true) return true;
+      if (currentLicense.features[resolvedId] === false) return false;
+    }
+
+    // If on an active paid plan, grant access unless explicitly disabled
+    if (isPaidPlan(currentLicense.plan) && currentLicense.status === 'ACTIVE') {
+      return true;
+    }
+
+    return false;
   };
 
   /**
@@ -866,6 +891,7 @@
         if (token) {
           const payload = parseJwtPayload(token);
           if (payload?.licenseId) targetKey = payload.licenseId;
+          else if (token.startsWith('CLD-')) targetKey = token;
         }
       }
 
@@ -882,12 +908,12 @@
       const data = await resp.json().catch(() => ({}));
 
       if (resp.ok && data.success && data.license && data.license.status === 'ACTIVE') {
-        const wasFree = !currentLicense || currentLicense.plan === 'FREE';
+        const wasFree = !currentLicense || !isPaidPlan(currentLicense.plan);
         saveLicense(data.license, data.token || token);
         lastNotifiedRevoked = false;
         enforceActiveTabAccess();
-        if (wasFree && data.license.plan !== 'FREE') {
-          if (window.showToast) window.showToast(`🎉 PRO License Activated by Admin (${data.license.plan})!`, 'success');
+        if (wasFree && isPaidPlan(data.license.plan)) {
+          if (window.showToast) window.showToast(`🎉 PRO License Activated (${data.license.plan})!`, 'success');
         } else if (isManual && window.showToast) {
           window.showToast(`License Synced: ${data.license.plan} (ACTIVE)`, 'success');
         }
@@ -966,7 +992,7 @@
         window.showToast('License Server unreachable. Operating in local mode.', 'info');
       }
       // Offline Policy: If offline grace period has expired and not in standalone app mode, demote to Free
-      if (currentLicense.plan !== 'FREE' && !window.IS_STANDALONE_APP) {
+      if (isPaidPlan(currentLicense.plan) && !window.IS_STANDALONE_APP) {
         const graceMs = (currentLicense.offlineGraceDays || 30) * 24 * 3600 * 1000;
         const lastVerified = Number(localStorage.getItem(STORAGE_KEYS.LAST_SYNC) || currentLicense.lastVerifiedAt || 0);
         if (Date.now() - lastVerified > graceMs) {
@@ -985,7 +1011,9 @@
   /**
    * Display Feature Locked Modal
    */
+  let _lastAttemptedLockedFeatureOrTab = 'movies';
   window.showFeatureLockedSheet = function (featureOrTab) {
+    _lastAttemptedLockedFeatureOrTab = featureOrTab || 'movies';
     const featureId = TAB_TO_FEATURE_MAP[featureOrTab] || featureOrTab;
     const def = FEATURE_REGISTRY[featureId] || { name: 'Premium Feature', tier: 'PRO' };
 
@@ -1078,7 +1106,7 @@
     const featuresListEl = document.getElementById('settingLicenseFeaturesList');
 
     if (badgeEl) {
-      const isPro = currentLicense.status === 'ACTIVE' && currentLicense.plan !== 'FREE';
+      const isPro = currentLicense.status === 'ACTIVE' && isPaidPlan(currentLicense.plan);
       badgeEl.textContent = isPro ? currentLicense.plan : (currentLicense.status === 'REVOKED' ? 'REVOKED' : 'FREE TIER');
       badgeEl.className = isPro ? 'license-status-badge active' : 'license-status-badge free';
       if (currentLicense.status === 'REVOKED') {
@@ -1098,11 +1126,11 @@
     const planNameEl = document.getElementById('settingLicensePlanName');
     const expiryEl = document.getElementById('settingLicenseExpiryText');
     if (planNameEl) {
-      const isPro = currentLicense.status === 'ACTIVE' && currentLicense.plan && currentLicense.plan !== 'FREE';
+      const isPro = currentLicense.status === 'ACTIVE' && isPaidPlan(currentLicense.plan);
       planNameEl.textContent = isPro ? currentLicense.plan : (currentLicense.status === 'REVOKED' ? 'REVOKED' : (currentLicense.status === 'BANNED' ? 'BANNED' : 'FREE TIER'));
     }
     if (expiryEl) {
-      if (currentLicense.status === 'ACTIVE' && currentLicense.plan !== 'FREE') {
+      if (currentLicense.status === 'ACTIVE' && isPaidPlan(currentLicense.plan)) {
         expiryEl.textContent = currentLicense.expiresAt ? new Date(currentLicense.expiresAt).toLocaleDateString() : 'Lifetime Access';
       } else {
         expiryEl.textContent = currentLicense.status === 'BANNED' ? 'Blocked' : 'Free Forever';
@@ -1218,7 +1246,21 @@
           btnActivate.disabled = true;
           btnActivate.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Activating...';
           try {
-            await window.activateLicenseKey(key);
+            const res = await window.activateLicenseKey(key);
+            if (res && res.success) {
+              inputKey.value = '';
+              const settingsModal = document.getElementById('settingsModal');
+              if (settingsModal && !settingsModal.classList.contains('hidden')) {
+                if (window.closeSettingsModal) {
+                  window.closeSettingsModal();
+                } else {
+                  settingsModal.classList.add('hidden');
+                }
+              }
+              if (typeof window.switchTab === 'function') {
+                window.switchTab('movies', false);
+              }
+            }
           } finally {
             btnActivate.disabled = false;
             btnActivate.innerHTML = '<i class="fa-solid fa-key"></i> Activate';
@@ -1274,9 +1316,11 @@
           if (res && res.success) {
             window.closeFeatureLockedSheet();
             inputModalKey.value = '';
-            const curTab = window.state?.currentTab;
-            if (curTab && typeof window.switchTab === 'function') {
-              window.switchTab(curTab, false);
+            const targetTab = TAB_TO_FEATURE_MAP[_lastAttemptedLockedFeatureOrTab]
+              ? _lastAttemptedLockedFeatureOrTab
+              : (Object.keys(TAB_TO_FEATURE_MAP).find(k => TAB_TO_FEATURE_MAP[k] === _lastAttemptedLockedFeatureOrTab) || 'movies');
+            if (typeof window.switchTab === 'function') {
+              window.switchTab(targetTab, false);
             }
           }
         } finally {
