@@ -201,10 +201,11 @@
         try { payload = JSON.parse(rawLicense); } catch (_) {}
       }
       if (!payload && token) {
-        payload = parseJwtPayload(token) || { licenseId: token, plan: 'PRO', status: 'ACTIVE' };
+        payload = parseJwtPayload(token);
       }
 
-      if (!payload || !payload.features) {
+      // If no valid payload or missing/invalid features: revert strictly to Free Tier
+      if (!payload || !payload.features || typeof payload.features !== 'object') {
         currentLicense = {
           licenseId: 'FREE-TIER',
           plan: 'FREE',
@@ -216,6 +217,43 @@
           features: Object.assign({}, DEFAULT_FREE_FEATURES)
         };
         return;
+      }
+
+      // Trust verification for paid plans (PRO / ENTERPRISE / PREMIUM):
+      // A non-free plan cannot be trusted without a valid associated token
+      const rawPlan = (payload.plan || '').toUpperCase();
+      const isPaidPlan = (rawPlan === 'PRO' || rawPlan === 'ENTERPRISE' || rawPlan === 'PREMIUM');
+      if (isPaidPlan) {
+        // 1. License ID must not be empty or FREE-TIER
+        if (!payload.licenseId || payload.licenseId === 'FREE-TIER') {
+          console.warn('[License] Paid plan without valid licenseId. Reverting to Free Tier.');
+          resetToFreeTier('INVALID_LICENSE');
+          return;
+        }
+
+        // 2. Stored token must exist
+        if (!token) {
+          console.warn('[License] Paid plan without stored token. Reverting to Free Tier.');
+          resetToFreeTier('MISSING_TOKEN');
+          return;
+        }
+
+        // 3. If token is a JWT, verify payload matches token payload
+        if (token.split('.').length === 3) {
+          const jwtPayload = parseJwtPayload(token);
+          if (!jwtPayload || (jwtPayload.licenseId && jwtPayload.licenseId !== payload.licenseId)) {
+            console.warn('[License] Token claims mismatch. Reverting to Free Tier.');
+            resetToFreeTier('TAMPERED_TOKEN');
+            return;
+          }
+        } else {
+          // If token is raw key string, token must match licenseId
+          if (token !== payload.licenseId) {
+            console.warn('[License] Token key mismatch. Reverting to Free Tier.');
+            resetToFreeTier('TAMPERED_KEY');
+            return;
+          }
+        }
       }
 
       // Check expiration
@@ -231,7 +269,7 @@
       // Check offline grace period
       const lastSync = Number(localStorage.getItem(STORAGE_KEYS.LAST_SYNC) || payload.lastVerifiedAt || 0);
       const graceMs = (payload.offlineGraceDays || 7) * 24 * 3600 * 1000;
-      if (payload.plan !== 'FREE' && lastSync > 0 && (Date.now() - lastSync > graceMs)) {
+      if (isPaidPlan && lastSync > 0 && (Date.now() - lastSync > graceMs)) {
         console.warn('[License] Offline grace period expired. Reverting to Free Tier until server check.');
         currentLicense = Object.assign({}, payload, {
           status: 'EXPIRED',
@@ -248,19 +286,33 @@
         return;
       }
 
+      const verifiedPlan = isPaidPlan ? rawPlan : 'FREE';
+      const isActive = payload.status === 'ACTIVE';
+
       currentLicense = {
-        licenseId: payload.licenseId || 'PRO-ACTIVATED',
-        plan: payload.plan || 'PRO',
+        licenseId: payload.licenseId || 'FREE-TIER',
+        plan: verifiedPlan,
         status: payload.status || 'ACTIVE',
         deviceBinding: payload.deviceBinding || null,
         expiresAt: payload.expiresAt || null,
         offlineGraceDays: payload.offlineGraceDays || 7,
         lastVerifiedAt: lastSync || Date.now(),
-        features: Object.assign({}, DEFAULT_FREE_FEATURES, payload.features)
+        features: (verifiedPlan !== 'FREE' && isActive)
+          ? Object.assign({}, DEFAULT_FREE_FEATURES, payload.features)
+          : Object.assign({}, DEFAULT_FREE_FEATURES)
       };
     } catch (e) {
       console.warn('[License] Error loading cached license:', e);
-      currentLicense.features = Object.assign({}, DEFAULT_FREE_FEATURES);
+      currentLicense = {
+        licenseId: 'FREE-TIER',
+        plan: 'FREE',
+        status: 'ACTIVE',
+        deviceBinding: null,
+        expiresAt: null,
+        offlineGraceDays: 7,
+        lastVerifiedAt: Date.now(),
+        features: Object.assign({}, DEFAULT_FREE_FEATURES)
+      };
     }
   }
 
